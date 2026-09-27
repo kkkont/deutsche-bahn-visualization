@@ -1,0 +1,9 @@
+{
+  "selectedStation": "BAHNHOFSPROFIL",
+  "averageDelay": "mittlere Verspätung · Minuten",
+  "overFive": "Mehr als 5 Minuten",
+  "cancellation": "Ausgefallene Halte",
+  "observations": "Erfasste Zughalte",
+  "byTrain": "Mittlere Verspätung nach Zugtyp",
+  "noStation": "Für diese Auswahl ist kein Bahnhof verfügbar."
+}

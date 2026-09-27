@@ -1,0 +1,10 @@
+{
+  "eyebrow": "NETZÜBERSICHT",
+  "title": "Verspätung je Bahnhof",
+  "stations": "Bahnhöfe",
+  "low": "Niedrig",
+  "medium": "Mittel",
+  "high": "Hoch",
+  "networkAttribution": "Bahninfrastruktur: OpenRailwayMap · © OpenStreetMap-Mitwirkende",
+  "pointHint": "Bahnhof auswählen, um Details zu sehen"
+}

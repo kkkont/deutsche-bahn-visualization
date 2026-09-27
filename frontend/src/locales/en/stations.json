@@ -1,0 +1,9 @@
+{
+  "selectedStation": "STATION PROFILE",
+  "averageDelay": "mean delay · minutes",
+  "overFive": "Over 5 minutes",
+  "cancellation": "Cancelled stops",
+  "observations": "Observed train stops",
+  "byTrain": "Mean delay by train type",
+  "noStation": "No station is available for this selection."
+}

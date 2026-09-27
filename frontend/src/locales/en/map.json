@@ -1,0 +1,10 @@
+{
+  "eyebrow": "NETWORK VIEW",
+  "title": "Delay by station",
+  "stations": "stations",
+  "low": "Lower",
+  "medium": "Moderate",
+  "high": "Higher",
+  "networkAttribution": "Rail infrastructure: OpenRailwayMap · © OpenStreetMap contributors",
+  "pointHint": "Select a station to inspect its profile"
+}

@@ -1,0 +1,19 @@
+{
+  "pageTitle": "Bahnbeobachtung | Deutsche Bahn",
+  "brand": "BAHNBEOBACHTUNG",
+  "kicker": "DEUTSCHLAND · PERSONENVERKEHR",
+  "title": "Wo der Fahrplan ins Rutschen kommt",
+  "subtitle": "Verspätungen und Ausfälle an wichtigen deutschen Bahnhöfen erkunden.",
+  "sourceNote": "Monatlich aufbereitete Beobachtungen aus Fahrplandaten der Deutschen Bahn",
+  "filters": "Filter der Visualisierung",
+  "trainType": "Zugtyp",
+  "allTrains": "Alle Zugtypen",
+  "metric": "Kartenfarbe",
+  "metrics": { "delay": "Mittlere Verspätung", "late": "Über 5 Min.", "cancelled": "Ausfallquote" },
+  "period": "Datenmonat",
+  "loading": "Bahnhofsdaten werden geladen …",
+  "dataError": "Der eingebundene Datensatz konnte nicht geladen werden. Starte die Datenpipeline gemäß README.",
+  "switchLanguage": "Oberflächensprache wechseln",
+  "footerSource": "Daten: Deutsche Bahn · CC BY 4.0 · monatlich aufbereiteter Datensatz",
+  "statistaNote": "Statista ist in den Projektnotizen als Vergleich zitiert; Werte sind nicht enthalten."
+}

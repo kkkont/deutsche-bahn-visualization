@@ -1,0 +1,19 @@
+{
+  "pageTitle": "Railway Observatory | Deutsche Bahn",
+  "brand": "RAILWAY OBSERVATORY",
+  "kicker": "GERMANY · PASSENGER RAIL",
+  "title": "Where the timetable slips",
+  "subtitle": "Explore delay and cancellation patterns across major German stations.",
+  "sourceNote": "Monthly processed observations from Deutsche Bahn timetable data",
+  "filters": "Visualization filters",
+  "trainType": "Train type",
+  "allTrains": "All train types",
+  "metric": "Map color",
+  "metrics": { "delay": "Mean delay", "late": "Over 5 min", "cancelled": "Cancellation" },
+  "period": "Source month",
+  "loading": "Loading the station dataset…",
+  "dataError": "The bundled dataset could not be loaded. Run the data pipeline from the project README.",
+  "switchLanguage": "Switch interface language",
+  "footerSource": "Data: Deutsche Bahn · CC BY 4.0 · processed monthly dataset",
+  "statistaNote": "Statista comparison is cited in the project notes; values are not bundled."
+}
