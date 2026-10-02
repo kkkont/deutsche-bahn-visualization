@@ -1,0 +1,55 @@
+.heat { max-width: 1200px; margin: 0 auto; padding: 24px 20px 48px; color: var(--ink, #1d2623); }
+.heat-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 16px; }
+.heat-head h1 { margin: 0 0 4px; font-size: 1.6rem; }
+.heat-head p, .heat-note { margin: 0; color: #5c6b66; font-size: .9rem; }
+.heat-date { color: #5c6b66; font-size: .85rem; font-variant-numeric: tabular-nums; }
+.heat-note { margin-top: 10px; }
+
+.heat-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: end; margin-bottom: 12px; }
+.heat-controls button, .heat-controls select { padding: 7px 12px; font: inherit; font-size: .85rem; cursor: pointer; }
+.heat-controls label { display: flex; flex-direction: column; gap: 4px; font-size: .75rem; color: #5c6b66; }
+.heat-controls .heat-play { background: #bd4438; color: #fff; border: 0; border-radius: 4px; min-width: 110px; }
+.heat-controls button:focus-visible, .heat-pulse svg:focus-visible { outline: 2px solid #e9c46a; outline-offset: 2px; }
+
+.heat-monitor { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; padding: 20px; background: #0f1a17; color: #e6efec; border-radius: 8px; }
+.heat-map { display: flex; flex-direction: column; align-items: center; }
+.heat-mapwrap { position: relative; width: 100%; max-width: 460px; }
+.heat-mapwrap canvas { width: 100%; display: block; }
+.heat-dots { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.heat-dots circle { fill: rgba(255, 255, 255, .75); pointer-events: auto; }
+.heat-dots text { fill: #fff; font-size: 11px; paint-order: stroke; stroke: #0f1a17; stroke-width: 3px; }
+.heat-legend { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: .75rem; color: #9fb1ab; width: 100%; max-width: 460px; }
+.heat-legend i { flex: 1; height: 8px; border-radius: 4px; }
+
+.heat-side h2 { font-size: .85rem; font-weight: 600; color: #9fb1ab; margin: 20px 0 8px; }
+.heat-clock { font-size: 3.2rem; font-weight: 300; font-variant-numeric: tabular-nums; line-height: 1; }
+.heat-nat { margin-top: 8px; font-size: .85rem; color: #9fb1ab; }
+.heat-nat strong { color: #fff; font-size: 1.4rem; margin-right: 4px; }
+.heat-bar { position: relative; display: flex; justify-content: space-between; font-size: .85rem; padding: 6px 0 9px; }
+.heat-bar b { font-variant-numeric: tabular-nums; font-weight: 500; }
+.heat-bar i { position: absolute; left: 0; bottom: 2px; height: 3px; border-radius: 2px; transition: width .15s linear; }
+
+.heat-pulse { grid-column: 1 / -1; }
+.heat-pulse svg { width: 100%; height: auto; display: block; cursor: ew-resize; touch-action: none; }
+.pgrid { stroke: rgba(255, 255, 255, .1); stroke-dasharray: 2 5; }
+.ptick { fill: #7d918a; font-size: 10px; }
+.plabel { fill: #9fb1ab; font-size: 10px; }
+.pline { fill: none; stroke: #e76f51; stroke-width: 2.4; stroke-linecap: round; filter: drop-shadow(0 0 4px rgba(231, 111, 81, .7)); }
+.parea { fill: rgba(231, 111, 81, .12); }
+.phead { stroke: rgba(255, 255, 255, .55); stroke-width: 1; }
+.pdot { fill: #fff; }
+.pring { fill: none; stroke: #fff; stroke-width: 1.5; transform-box: fill-box; transform-origin: center; animation: heat-pulse 1.4s ease-out infinite; }
+@keyframes heat-pulse { from { transform: scale(1); opacity: .9; } to { transform: scale(3.4); opacity: 0; } }
+
+@media (max-width: 800px) { .heat-monitor { grid-template-columns: 1fr; padding: 14px; } }
+@media (prefers-reduced-motion: reduce) { .pring { animation: none; opacity: 0; } .heat-bar i { transition: none; } }
+
+/* delay-change mode */
+.heat-mode { display: inline-flex; border: 1px solid #c9d2ce; border-radius: 4px; overflow: hidden; }
+.heat-mode button { border: 0; border-radius: 0; background: #fff; }
+.heat-mode button[aria-pressed='true'] { background: #1d2623; color: #fff; }
+.heat-flows path.hit { fill: none; stroke: transparent; stroke-width: 10; pointer-events: stroke; }
+.heat-flows path.line { fill: none; stroke-linecap: round; pointer-events: none; }
+.heat-flows polygon { pointer-events: none; }
+.heat-bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px; }
+.heat-empty { font-size: .85rem; color: #9fb1ab; margin-top: 20px; }
