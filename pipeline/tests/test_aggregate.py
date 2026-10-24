@@ -43,3 +43,22 @@ def test_aggregate_frame_omits_stations_without_known_coordinates():
 
     assert result["stations"] == []
     assert result["hourly"] == []
+
+
+def test_global_hourly_includes_unmapped_stations_and_weights_each_measured_stop():
+    frame = pl.DataFrame({
+        "station_name": ["Berlin Hbf", "Unmapped", "Unmapped", "Unmapped", "Unmapped"],
+        "eva": ["8011160", "1", "1", "1", "1"],
+        "train_type": ["ICE", "RE", "RE", "RE", "RE"],
+        "delay_in_min": [12, 0, 0, None, None],
+        "time": [datetime(2024, 7, 1, 8)] * 4 + [datetime(2024, 7, 1, 9)],
+        "arrival_is_canceled": [False] * 5,
+        "departure_is_canceled": [False] * 5,
+    })
+
+    hours = aggregate_frame(frame, "2024-07")["globalHourly"]
+
+    assert [point["hour"] for point in hours] == list(range(24))
+    assert hours[8] == {"hour": 8, "averageDelayMinutes": 4, "delayObservations": 3}
+    assert hours[9] == {"hour": 9, "averageDelayMinutes": None, "delayObservations": 0}
+    assert hours[0] == {"hour": 0, "averageDelayMinutes": None, "delayObservations": 0}

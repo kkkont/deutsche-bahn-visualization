@@ -26,6 +26,9 @@ export function RailMap() {
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
+    const colors = getComputedStyle(containerRef.current)
+    const stationColor = colors.getPropertyValue('--station-location-color').trim() || '#77AADD'
+    const stationOutline = colors.getPropertyValue('--station-location-outline').trim() || '#333333'
     const map = new MapLibreMap({
       container: containerRef.current,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
@@ -57,8 +60,8 @@ export function RailMap() {
           source: 'stations',
           paint: {
             'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 3, 10, 6],
-            'circle-color': '#397a5f',
-            'circle-stroke-color': '#ffffff',
+            'circle-color': stationColor,
+            'circle-stroke-color': stationOutline,
             'circle-stroke-width': 1,
           },
         })

@@ -21,6 +21,31 @@ button, select { font: inherit; }
 button { color: inherit; }
 button:focus-visible, select:focus-visible { outline: 2px solid #bd4438; outline-offset: 3px; }
 .app-shell { max-width: 1600px; margin: 0 auto; padding: 0 42px 24px; }
+.station-map-page {
+  --tol-light-blue: #77AADD;
+  --tol-light-orange: #EE8866;
+  --tol-light-yellow: #EEDD88;
+  --tol-light-pink: #FFAABB;
+  --tol-light-cyan: #99DDFF;
+  --tol-light-mint: #44BB99;
+  --tol-light-pear: #BBCC33;
+  --tol-light-olive: #AAAA00;
+  --tol-light-grey: #DDDDDD;
+  --delay-scale: linear-gradient(to right, #FFFFE5, #FFF7BC, #FEE391, #FEC44F, #FB9A29, #EC7014, #CC4C02, #993404, #662506);
+  --delay-change-scale: linear-gradient(to right, #125A56, #238F9D, #60BCE9, #C6DBED, #ECEADA, #F9D576, #FD9A44, #E94C1F, #A01813);
+  --average-color: #666666;
+  --station-location-color: var(--tol-light-blue);
+  --station-location-outline: #333333;
+  --ink: #222222;
+  --muted: #666666;
+  --line: var(--tol-light-grey);
+  --paper: #FFFFFF;
+  --signal: #333333;
+  --selection-background: var(--tol-light-grey);
+  color: var(--ink);
+}
+.station-map-page .brand-mark { background: var(--tol-light-blue); color: var(--ink); }
+.station-map-page :focus-visible { outline-color: var(--ink); }
 .topbar { height: 66px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
 .brand, .topbar-right { display: flex; align-items: center; }
 .brand { gap: 11px; color: var(--ink); text-decoration: none; }
@@ -46,6 +71,45 @@ h1 { margin: 8px 0 5px; font-size: 34px; line-height: 1.12; font-weight: 600; le
 .station-panel h2 { margin: 14px 0 0; font-size: 22px; line-height: 1.3; font-weight: 600; overflow-wrap: anywhere; }
 .maplibregl-ctrl-group { border-radius: 0 !important; box-shadow: 0 1px 5px #27352e22 !important; }
 .maplibregl-ctrl-group button { width: 31px !important; height: 31px !important; }
+.delay-clock-section { margin-top: 32px; padding: 26px 0 16px; border-top: 1px solid var(--line); }
+.delay-clock-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+.delay-clock-eyebrow { margin: 0 0 6px; font-family: var(--mono); font-size: 10px; color: var(--signal); }
+.delay-clock-heading h2 { margin: 0; font-size: 23px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.delay-clock-period { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.delay-clock-layout { display: grid; grid-template-columns: minmax(280px, 520px) minmax(0, 400px); gap: 48px; align-items: center; padding: 16px 0; }
+.delay-clock-chart { display: block; width: 100%; max-width: 480px; aspect-ratio: 1; }
+.delay-clock-ring { fill: none; stroke: var(--line); }
+.delay-clock-spoke { stroke: var(--line); }
+.delay-clock-tick { fill: var(--muted); font-family: var(--mono); font-size: 9px; }
+.delay-clock-line-outline { fill: none; stroke: var(--muted); stroke-opacity: 0.4; stroke-width: 4.5; stroke-linecap: round; }
+.delay-clock-line { fill: none; stroke-width: 3; stroke-linecap: round; }
+.delay-clock-hour { cursor: pointer; outline: none; }
+.delay-clock-sector { fill: transparent; }
+.delay-clock-sector.selected { fill: var(--selection-background, var(--line)); fill-opacity: 0.4; }
+.delay-clock-hour:hover .delay-clock-sector, .delay-clock-hour:focus-visible .delay-clock-sector { fill: var(--selection-background, var(--line)); fill-opacity: 0.6; }
+.delay-clock-hour:focus-visible .delay-clock-sector { stroke: var(--ink); stroke-width: 1; }
+.delay-clock-hour-label { fill: var(--muted); font-family: var(--mono); font-size: 11px; pointer-events: none; }
+.delay-clock-hour[aria-checked="true"] .delay-clock-hour-label { fill: var(--ink); font-weight: 500; }
+.delay-clock-point { stroke: var(--ink); stroke-width: 1; pointer-events: none; }
+.delay-clock-point.selected { stroke: var(--ink); stroke-width: 2; }
+.delay-clock-center-hour { fill: var(--muted); font-family: var(--mono); font-size: 12px; }
+.delay-clock-center-value { fill: var(--average-color, var(--muted)); font-weight: 600; font-size: 17px; }
+.delay-clock-details { min-width: 0; }
+.delay-clock-scope { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.delay-clock-legend { margin-bottom: 24px; color: var(--muted); font-size: 11px; }
+.delay-clock-legend-ramp { height: 10px; margin: 8px 0 5px; border: 1px solid var(--line); background: var(--delay-scale); }
+.delay-clock-legend-ticks { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 10px; }
+.delay-clock-details label { font-size: 12px; color: var(--muted); }
+.delay-clock-selected-hour { font-family: var(--mono); font-size: 20px; margin: 5px 0 12px; }
+.delay-clock-details input[type="range"] { width: 100%; accent-color: var(--ink); cursor: pointer; }
+.delay-clock-readout { display: flex; flex-direction: column; gap: 6px; margin-top: 24px; }
+.delay-clock-readout span { color: var(--muted); font-size: 12px; }
+.delay-clock-readout strong { font-size: 32px; font-weight: 600; color: var(--average-color, var(--muted)); }
+.delay-clock-metadata { margin: 24px 0 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 11px; }
+.delay-clock-metadata div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.delay-clock-metadata dt { color: var(--muted); }
+.delay-clock-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.delay-clock-metadata a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 900px) {
   .app-shell { padding-inline: 22px; }
   .map-frame { min-height: 360px; }
@@ -58,4 +122,7 @@ h1 { margin: 8px 0 5px; font-size: 34px; line-height: 1.12; font-weight: 600; le
   .map-frame { height: calc(100svh - 170px); min-height: 340px; }
   .map-workspace.has-selection { grid-template-columns: minmax(0, 1fr); }
   .station-panel { min-height: 180px; max-height: none; border-left: 0; border-top: 1px solid var(--line); }
+  .delay-clock-heading { align-items: start; flex-direction: column; gap: 8px; }
+  .delay-clock-layout { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .delay-clock-chart { margin: 0 auto; }
 }

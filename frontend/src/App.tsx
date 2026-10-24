@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RailMap } from './components/RailMap'
+import { DelayClock } from './components/DelayClock'
 
 function App() {
   const { t, i18n } = useTranslation('common')
@@ -17,7 +18,7 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main className="app-shell station-map-page">
       <header className="topbar">
         <a className="brand" href="#top" aria-label={t('common:brand')}>
           <span className="brand-mark">DB</span><span className="brand-name">{t('common:brand')}</span>
@@ -38,6 +39,7 @@ function App() {
       <section aria-label={t('common:title')}>
         <RailMap />
       </section>
+      <DelayClock />
     </main>
   )
 }

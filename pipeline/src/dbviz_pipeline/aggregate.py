@@ -116,12 +116,23 @@ def aggregate_frame(frame: pl.DataFrame, period: str) -> dict:
         if row["station_name"] in supported_stations and row["hour"] is not None
     ]
 
+    global_hours = prepared.filter(pl.col("hour").is_not_null()).group_by("hour").agg(
+        pl.col("delay_in_min").mean().alias("averageDelayMinutes"),
+        pl.col("delay_in_min").count().alias("delayObservations"),
+    )
+    hours_by_number = {row["hour"]: row for row in global_hours.iter_rows(named=True)}
+    global_hourly = [
+        hours_by_number.get(hour, {"hour": hour, "averageDelayMinutes": None, "delayObservations": 0})
+        for hour in range(24)
+    ]
+
     return {
         "period": period,
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "source": SOURCE_URL,
         "stations": stations,
         "hourly": hourly,
+        "globalHourly": global_hourly,
     }
 
 
@@ -142,6 +153,15 @@ def download_and_aggregate(month: str, output: Optional[Path] = None) -> Path:
     destination = output or ROOT / "frontend" / "public" / "data" / "demo.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    clock = {
+        "period": month,
+        "source": SOURCE_URL,
+        "timezone": "Europe/Berlin",
+        "hours": result["globalHourly"],
+    }
+    destination.with_name("delay-clock.json").write_text(
+        json.dumps(clock, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8"
+    )
     return destination
 
 
