@@ -1,4 +1,6 @@
 {
+  "loadingStations": "Loading station locations…",
+  "stationError": "Station locations could not be loaded. Please reload the page.",
   "eyebrow": "NETWORK VIEW",
   "title": "Delay by station",
   "stations": "stations",

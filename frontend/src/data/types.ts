@@ -12,7 +12,6 @@ export interface StationMetric {
   averageDelayMinutes: number
   delayedOverFivePercent: number
   cancelledPercent: number
-  metricValue?: number
 }
 
 export interface HourPoint {

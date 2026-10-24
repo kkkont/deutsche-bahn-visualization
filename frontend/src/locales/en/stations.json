@@ -1,5 +1,6 @@
 {
   "selectedStation": "STATION PROFILE",
+  "closePanel": "Close",
   "averageDelay": "mean delay · minutes",
   "overFive": "Over 5 minutes",
   "cancellation": "Cancelled stops",

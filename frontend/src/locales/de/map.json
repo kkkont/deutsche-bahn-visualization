@@ -1,4 +1,6 @@
 {
+  "loadingStations": "Bahnhofsstandorte werden geladen …",
+  "stationError": "Bahnhofsstandorte konnten nicht geladen werden. Bitte lade die Seite neu.",
   "eyebrow": "NETZÜBERSICHT",
   "title": "Verspätung je Bahnhof",
   "stations": "Bahnhöfe",

@@ -1,5 +1,6 @@
 {
   "selectedStation": "BAHNHOFSPROFIL",
+  "closePanel": "Schließen",
   "averageDelay": "mittlere Verspätung · Minuten",
   "overFive": "Mehr als 5 Minuten",
   "cancellation": "Ausgefallene Halte",

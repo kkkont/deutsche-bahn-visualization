@@ -1,100 +1,134 @@
-import { useEffect, useRef } from 'react'
-import { AttributionControl, LngLatBounds, Map as MapLibreMap, Marker, NavigationControl, setWorkerUrl } from 'maplibre-gl'
+import { useEffect, useRef, useState } from 'react'
+import { AttributionControl, Map as MapLibreMap, NavigationControl, Popup, setWorkerUrl } from 'maplibre-gl'
+import { useTranslation } from 'react-i18next'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
-import type { Metric, StationMetric } from '../data/types'
 
 setWorkerUrl(mapWorkerUrl)
 
-interface RailMapProps {
-  stations: StationMetric[]
-  metric: Metric
-  selectedStationId: string
-  onSelect: (stationId: string) => void
-}
-
-export function RailMap({ stations, metric, selectedStationId, onSelect }: RailMapProps) {
+export function RailMap() {
+  const { t } = useTranslation('map')
+  const { t: stationText } = useTranslation('stations')
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
-  const hasFitBounds = useRef(false)
+  const panelRef = useRef<HTMLElement>(null)
+  const [stationStatus, setStationStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [selectedStationName, setSelectedStationName] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (selectedStationName !== null) panelRef.current?.focus()
+  }, [selectedStationName])
+
+  const closeStationPanel = () => {
+    setSelectedStationName(null)
+    mapRef.current?.getCanvas().focus()
+  }
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
     const map = new MapLibreMap({
       container: containerRef.current,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-      center: [10.4, 51.1],
-      zoom: 5.4,
-      minZoom: 4,
+      bounds: [[5.8, 47.2], [15.1, 55.1]],
+      fitBoundsOptions: { padding: 24 },
+      minZoom: 2,
       maxZoom: 13,
       attributionControl: false,
     })
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new AttributionControl({ compact: true }), 'bottom-right')
 
-    map.on('load', () => {
-      map.resize()
-      map.addSource('railway-network', {
-        type: 'raster',
-        tiles: [
-          'https://a.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
-          'https://b.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
-          'https://c.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
-        ],
-        tileSize: 256,
-        attribution: '© OpenStreetMap contributors · OpenRailwayMap',
-      })
-      map.addLayer({ id: 'railway-network', type: 'raster', source: 'railway-network', paint: { 'raster-opacity': 0.66 } })
+    const controller = new AbortController()
+    const popup = new Popup({ closeButton: false, closeOnClick: false })
+    map.on('load', async () => {
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}data/stations.geojson`, { signal: controller.signal })
+        if (!response.ok) throw new Error('Station locations unavailable')
+        const stations = await response.json()
+        if (controller.signal.aborted) return
+        map.addSource('stations', {
+          type: 'geojson',
+          data: stations,
+          attribution: 'Station locations: Deutsche Bahn (DB), CC BY 4.0 · db-stations',
+        })
+        map.addLayer({
+          id: 'stations',
+          type: 'circle',
+          source: 'stations',
+          paint: {
+            'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 3, 10, 6],
+            'circle-color': '#397a5f',
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 1,
+          },
+        })
+        map.on('mousemove', 'stations', (event) => {
+          const feature = event.features?.[0]
+          if (!feature || feature.geometry.type !== 'Point') return
+          map.getCanvas().style.cursor = 'pointer'
+          popup.setLngLat(feature.geometry.coordinates as [number, number])
+            .setText(String(feature.properties?.name ?? ''))
+            .addTo(map)
+        })
+        map.on('mouseleave', 'stations', () => {
+          map.getCanvas().style.cursor = ''
+          popup.remove()
+        })
+        map.on('click', 'stations', (event) => {
+          const name = event.features?.[0]?.properties?.name
+          if (typeof name !== 'string' || !name.trim()) return
+          popup.remove()
+          setSelectedStationName(name)
+        })
+        setStationStatus('ready')
+      } catch {
+        if (!controller.signal.aborted) setStationStatus('error')
+      }
     })
+
+    const resizeObserver = new ResizeObserver(() => {
+      map.resize()
+      map.fitBounds([[5.8, 47.2], [15.1, 55.1]], { padding: 24, duration: 0 })
+    })
+    resizeObserver.observe(containerRef.current)
     mapRef.current = map
 
     return () => {
+      controller.abort()
+      popup.remove()
+      resizeObserver.disconnect()
       map.remove()
       mapRef.current = null
     }
-  }, [onSelect])
+  }, [])
 
-  useEffect(() => {
-    const map = mapRef.current
-    if (!map) return
-    const markers: Marker[] = []
-    const addMarkers = () => {
-      map.resize()
-      if (!hasFitBounds.current && stations.length) {
-        const bounds = new LngLatBounds()
-        stations.forEach((station) => bounds.extend([station.longitude, station.latitude]))
-        map.fitBounds(bounds, { padding: 42, maxZoom: 5.4, duration: 0 })
-        hasFitBounds.current = true
-      }
-      stations.forEach((station) => {
-        const element = document.createElement('button')
-        const value = station.metricValue ?? 0
-        const color = station.stationId === selectedStationId
-          ? '#1d2926'
-          : metric === 'cancelled'
-            ? value > 4 ? '#bd4438' : value > 1.5 ? '#d49b37' : '#397a5f'
-            : value > 10 ? '#bd4438' : value > 5 ? '#d49b37' : '#397a5f'
-        const size = Math.max(10, Math.min(24, 9 + Math.sqrt(station.observations) / 18))
-        element.type = 'button'
-        element.className = 'station-marker'
-        element.title = station.stationName
-        element.setAttribute('aria-label', station.stationName)
-        element.style.setProperty('--marker-color', color)
-        element.style.width = `${size}px`
-        element.style.height = `${size}px`
-        element.addEventListener('click', () => onSelect(station.stationId))
-        markers.push(new Marker({ element, anchor: 'center' })
-          .setLngLat([station.longitude, station.latitude])
-          .addTo(map))
-      })
-    }
-    if (map.loaded()) addMarkers()
-    else map.once('load', addMarkers)
-    return () => {
-      map.off('load', addMarkers)
-      markers.forEach((marker) => marker.remove())
-    }
-  }, [stations, metric, selectedStationId, onSelect])
-
-  return <div className="rail-map" ref={containerRef} />
+  return <div className={selectedStationName !== null ? 'map-workspace has-selection' : 'map-workspace'}>
+    <div className="map-frame">
+      <div className="rail-map" ref={containerRef} />
+      {stationStatus !== 'ready' && (
+        <div className="station-status" role={stationStatus === 'error' ? 'alert' : 'status'}>
+          {t(stationStatus === 'error' ? 'stationError' : 'loadingStations')}
+        </div>
+      )}
+    </div>
+    {selectedStationName !== null && (
+      <aside
+        ref={panelRef}
+        className="station-panel"
+        aria-labelledby="station-panel-name"
+        tabIndex={-1}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') closeStationPanel()
+        }}
+      >
+        <div className="station-panel-header">
+          <span>{stationText('selectedStation')}</span>
+          <button type="button" onClick={closeStationPanel}>
+            {stationText('closePanel')}
+          </button>
+        </div>
+        <h2 id="station-panel-name">{selectedStationName}</h2>
+      </aside>
+    )}
+  </div>
 }
