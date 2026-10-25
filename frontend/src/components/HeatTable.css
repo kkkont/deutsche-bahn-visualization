@@ -1,0 +1,55 @@
+.heat-table {
+  --cell: 52px;
+  --avg-grey: #ddd;
+  --ink: #1b1f1e;
+  --line: #dce2df;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.heat-scroll { overflow-x: auto; max-width: 100%; }
+
+.heat-table table { border-collapse: separate; border-spacing: 2px; font-size: 0.78rem; }
+
+.heat-table .corner {
+  position: sticky; left: 0; z-index: 2;
+  min-width: 8.5rem; padding: 0 0.5rem 0.4rem 0;
+  text-align: left; font-weight: 500; color: #5c6663; background: inherit;
+}
+
+.heat-table .col-head { height: 7rem; width: var(--cell); vertical-align: bottom; font-weight: 500; }
+.heat-table .col-head span {
+  display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg);
+  white-space: nowrap; padding-bottom: 0.3rem;
+}
+
+.heat-table .row-head {
+  position: sticky; left: 0; z-index: 1;
+  padding-right: 0.5rem; text-align: right; white-space: nowrap; font-weight: 500;
+  background: inherit;
+}
+
+.heat-table .cell { width: var(--cell); height: 34px; padding: 0; text-align: center; border-radius: 3px; }
+.heat-table .cell.self { background: repeating-linear-gradient(45deg, transparent 0 4px, var(--line) 4px 5px); }
+.heat-table .cell.empty { background: transparent; border: 1px dashed var(--line); }
+
+.heat-table .cell-button {
+  width: 100%; height: 100%; border: 0; border-radius: 3px;
+  font: inherit; font-weight: 600; cursor: default;
+}
+.heat-table .cell-button:not(:disabled) { cursor: pointer; }
+.heat-table .cell-button:focus-visible,
+.heat-table .cell-button.selected { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+/* Averages are always grey so they never read as a delay value. */
+.heat-table .cell.avg { background: var(--avg-grey); font-weight: 600; }
+.heat-table .avg-head { color: #5c6663; }
+
+.heat-legend {
+  display: grid; grid-template-columns: auto minmax(120px, 260px) auto; gap: 0.2rem 0.6rem;
+  align-items: center; margin-top: 0.9rem; font-size: 0.75rem; color: #5c6663;
+}
+.legend-bar { height: 10px; border-radius: 5px; }
+.legend-scale {
+  grid-column: 2; display: flex; justify-content: space-between; font-size: 0.7rem;
+}
