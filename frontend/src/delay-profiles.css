@@ -1,0 +1,22 @@
+.delay-profiles { margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--line); }
+.delay-profiles h2 { font-size: 27px; font-weight: 600; margin-bottom: 12px; }
+.delay-profile-chart { min-width: 0; margin-top: 30px; }
+.delay-profile-chart + .delay-profile-chart { margin-top: 35px; padding-top: 25px; border-top: 1px solid var(--line); }
+.delay-profile-chart h3 { font-size: 19px; font-weight: 500; margin-bottom: 7px; }
+.profile-subtitle, .profile-average-note, .profile-help { color: var(--muted); font-size: 12px; line-height: 1.7; }
+.profile-subtitle { margin-bottom: 14px; }
+.profile-svg { display: block; max-width: 100%; overflow: visible; }
+.profile-grid { stroke: var(--line); stroke-width: 1; }
+.profile-tick { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+.profile-axis { fill: var(--ink); font-size: 12px; }
+.profile-direct-label { fill: var(--ink); font-size: 12px; }
+.profile-average-label { font-weight: 600; }
+.profile-label-leader { fill: none; stroke-width: 1; }
+.profile-series { cursor: pointer; }
+.profile-series:focus-visible { outline: none; }
+.profile-series:focus-visible .profile-direct-label { text-decoration: underline; font-weight: 600; }
+.profile-average-note { margin: 8px 0 0; }
+.profile-help { margin-top: 20px; max-width: 950px; }
+.profile-toolbar { margin-bottom: 15px; border-top: 0; padding-top: 0; }
+.profile-toolbar .explorer-station-control { max-width: 100%; }
+.profile-no-measurements { padding: 24px 0; color: var(--muted); font-size: 14px; }

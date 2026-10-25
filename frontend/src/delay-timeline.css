@@ -1,0 +1,52 @@
+.delay-timeline { --timeline-selected: #77aadd; --timeline-average: #666; margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--line); }
+.delay-timeline h2 { font-size: 27px; font-weight: 600; margin-bottom: 12px; }
+.delay-timeline .explorer-heading { margin-bottom: 22px; }
+.timeline-toolbar { align-items: flex-end; }
+.timeline-resolution { display: flex; gap: 0; }
+.timeline-resolution button { min-height: 42px; }
+.timeline-resolution button + button { border-left: 0; }
+.timeline-resolution button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+.timeline-toolbar .explorer-station-control { max-width: 100%; }
+.timeline-legend { display: flex; flex-wrap: wrap; gap: 12px 24px; margin: 6px 0 16px; padding: 0; list-style: none; font-size: 12px; }
+.timeline-legend li { display: flex; align-items: center; gap: 8px; }
+.timeline-delay-ramp { display: inline-block; width: 95px; height: 10px; border: 1px solid #9c8d76; }
+.timeline-line-swatch { width: 25px; height: 2px; background: var(--timeline-average); }
+.timeline-selected-swatch { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--timeline-selected); background: var(--paper); }
+.timeline-frame { position: relative; width: 100%; min-width: 0; }
+.timeline-chart { display: block; max-width: 100%; overflow: visible; }
+.timeline-grid { stroke: var(--line); stroke-width: 1; }
+.timeline-tick { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+.timeline-axis-title { fill: var(--ink); font-size: 12px; }
+.timeline-axis-tick { stroke: var(--muted); }
+.timeline-average { fill: none; stroke: var(--timeline-average); stroke-width: 2; pointer-events: none; }
+.timeline-selected-line { fill: none; stroke: var(--timeline-selected); stroke-width: 1.5; stroke-dasharray: 4 3; pointer-events: none; }
+.timeline-mark { cursor: pointer; }
+.timeline-dot { fill-opacity: .8; stroke: #8b7967; stroke-width: .45; }
+.timeline-dimmed { fill-opacity: .18; }
+.timeline-selected-dot { stroke: var(--timeline-selected); stroke-width: 2.5; }
+.timeline-aggregate-mark { fill: var(--timeline-average); }
+.timeline-mark:hover, .timeline-mark:focus-visible { stroke: var(--ink); stroke-width: 2; outline: none; }
+.timeline-tooltip { position: absolute; padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; background: var(--paper); border: 1px solid var(--line); color: var(--ink); font-size: 12px; line-height: 1.5; pointer-events: none; z-index: 1; overflow-wrap: anywhere; }
+.timeline-status { font-size: 13px; line-height: 1.7; margin-top: 14px; }
+.timeline-status p { margin-bottom: 8px; }
+.timeline-help { color: var(--muted); font-size: 12px; line-height: 1.7; max-width: 950px; }
+.timeline-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.timeline-date-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; margin: 8px 0 20px; }
+.timeline-date-controls label { display: flex; flex-direction: column; gap: 7px; font-size: 12px; }
+.timeline-date-controls input { padding: 8px; background: var(--paper); border: 1px solid var(--line); font: inherit; min-width: 0; max-width: 100%; }
+.timeline-date-controls button { background: transparent; border: 1px solid var(--line); padding: 9px 12px; font: inherit; cursor: pointer; }
+.timeline-date-controls button:disabled { opacity: .5; cursor: default; }
+.timeline-date-controls p { width: 100%; margin: 0; font-size: 13px; color: var(--muted); }
+.timeline-date-shade { fill: #77AADD; fill-opacity: .13; pointer-events: none; }
+.timeline-linked-hover { stroke: #222 !important; stroke-width: 3; }
+.timeline-brush-area { margin-top: 10px; }
+.timeline-brush-area p { font-size: 12px; color: var(--muted); margin: 0 0 4px; }
+.timeline-brush { display: block; max-width: 100%; touch-action: none; }
+.timeline-brush-track { fill: var(--line); }
+.timeline-brush .selection { fill: #77AADD; fill-opacity: .3; stroke: #333; }
+.timeline-brush .handle { fill: #333; }
+@media (max-width: 520px) {
+  .delay-timeline h2 { font-size: 24px; }
+  .timeline-toolbar .explorer-station-control { width: 100%; }
+  .timeline-legend { gap: 10px 16px; }
+}
