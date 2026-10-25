@@ -7,11 +7,13 @@ import './pagenav.css'
 import App from './App.tsx'
 import MareyPage from './MareyPage.tsx'
 import HeatmapPage from './HeatmapPage.tsx'
+import DelayExplorerPage from './DelayExplorerPage.tsx'
 
 const PAGES = [
   { id: 'map', label: 'Station map', Page: App },
   { id: 'marey', label: 'Marey chart', Page: MareyPage },
   { id: 'heatmap', label: 'Delay heatmap', Page: HeatmapPage },
+  { id: 'explorer', label: 'Delay explorer', Page: DelayExplorerPage },
 ] as const
 
 const fromHash = () => PAGES.find((p) => location.hash === `#/${p.id}`)?.id ?? PAGES[0].id
