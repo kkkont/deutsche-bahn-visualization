@@ -18,6 +18,14 @@ One MapLibre circle represents one station. Its fill uses a fixed Tol YlOrBr sca
 
 Map tiles require a network connection. The dropdown and station details remain usable if the map fails. Data, styles and components are separate from the existing views. No chart, train-type filtering, date brushing, or cross-view linking is included in this PR.
 
+## Hexagonal comparison
+
+A second map below the station map groups the same fixture into occupied hexagons. The grid has 50 km sides (about 86.6 km across flats), with approximately 6,495 km² per cell. It is constructed in a spherical Lambert azimuthal equal-area projection centred on 10°E, 52°N, using D3 and a mean Earth radius of 6,371,008.8 m. This is a spherical demo grid, not EPSG:3035. Grid placement and resolution are fixed; MapLibre's display zoom never changes cell membership.
+
+Each cell sums raw daily delay minutes and measured observation counts within the fixture's period before dividing. Unmeasured stations do not contribute to the denominator. Occupied cells with no measurements have a hollow, dashed outline; cells without stations are omitted. Full cells are not clipped at Germany's border, so edge cells retain equal area. Polygon edges are densified before conversion back to geographic GeoJSON.
+
+The fixture produces 17 occupied cells, including two with multiple stations. The Ruhr/Rhine cell groups Dortmund, Düsseldorf, Essen and Köln. Hover or click shows the weighted mean, measurement counts, period and included stations; a separate dropdown supports keyboard selection. Cell selection is independent of station selection. Both maps use the same fixed 0–20 minute colour scale.
+
 ## Verification
 
 From `frontend/`:
@@ -25,7 +33,7 @@ From `frontend/`:
 ```sh
 npm run build
 npm run lint
-node --experimental-strip-types --test tests/delayExplorer.test.ts
+node --experimental-strip-types --test tests/delayExplorer.test.ts tests/delayHexagons.test.ts
 ```
 
-The focused tests cover weighted aggregation, measured zero versus absent measurements, period bounds, fixture identities and coverage. The test command requires Node.js with TypeScript stripping support (Node 22.6+); Vite itself requires Node 20.19+ or 22.12+.
+The focused tests cover weighted aggregation, measured zero versus absent measurements, period bounds, fixture identities and coverage, hexagon area, station containment, stable cell membership and observation conservation. The test command requires Node.js with TypeScript stripping support (Node 22.6+); Vite itself requires Node 20.19+ or 22.12+.

@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { AverageDelayMap } from './components/AverageDelayMap'
+import { HexagonDelayMap } from './components/HexagonDelayMap'
 import demo from './data/delay-explorer-demo.json'
 import { DELAY_COLORS, summarizeStations } from './data/delayExplorer'
+import { summarizeHexagons } from './data/delayHexagons'
 import './delay-explorer.css'
 
 const stations = summarizeStations(demo)
+const cells = summarizeHexagons(demo)
 const number = new Intl.NumberFormat('en-GB')
 const EXPLORER_PERIOD = '1–28 July 2024'
 
@@ -69,6 +72,7 @@ export default function DelayExplorerPage() {
         </div>
       </aside>
     </div>
+    <HexagonDelayMap cells={cells} period={EXPLORER_PERIOD} />
     <footer className="explorer-footer">
       <p>All delay values and observation counts are synthetic scenarios, not claims about these stations. Averages are weighted by measured train-stop counts.</p>
       <p>Station coordinates: existing project dataset · Deutsche Bahn, CC BY 4.0. Colours: <a href="https://tol-colors.readthedocs.io/en/latest/colormaps.html#ylorbr" target="_blank" rel="noreferrer">Tol YlOrBr</a>.</p>

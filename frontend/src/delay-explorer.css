@@ -37,6 +37,16 @@
 .explorer-footer { margin-top: 18px; max-width: 950px; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .explorer-footer p { margin-bottom: 5px; }
 .explorer-footer a { color: inherit; text-decoration: underline; }
+.explorer-hex-section { margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--line); }
+.explorer-hex-section .explorer-heading { margin-bottom: 12px; }
+.explorer-hex-section h2 { font-size: 27px; font-weight: 600; margin-bottom: 12px; }
+.explorer-hex-resolution, .explorer-hex-note { color: var(--muted); font-size: 13px; line-height: 1.7; }
+.explorer-hex-note { margin-top: 16px; max-width: 950px; }
+.explorer-hex-section .explorer-station-control { max-width: 100%; min-width: 0; }
+.explorer-hex-section select { width: 400px; }
+.explorer-cell-stations { padding-left: 18px; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
+.explorer-hex-missing { display: inline-block; width: 17px; height: 15px; flex-shrink: 0; border: 1.5px dashed #333; }
+.explorer-details .explorer-value-missing { font-size: 22px; }
 @media (max-width: 900px) {
   .delay-explorer { padding: 24px 22px; }
   .explorer-heading { align-items: flex-start; flex-direction: column; gap: 16px; }
