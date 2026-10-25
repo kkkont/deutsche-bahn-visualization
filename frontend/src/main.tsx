@@ -7,12 +7,14 @@ import './pagenav.css'
 import App from './App.tsx'
 import MareyPage from './MareyPage.tsx'
 import HeatmapPage from './HeatmapPage.tsx'
+import HeatTablePage from './HeatTablePage.tsx'
 import DelayExplorerPage from './DelayExplorerPage.tsx'
 
 const PAGES = [
   { id: 'map', label: 'Station map', Page: App },
   { id: 'marey', label: 'Marey chart', Page: MareyPage },
   { id: 'heatmap', label: 'Delay heatmap', Page: HeatmapPage },
+  { id: 'heattable', label: 'Delay heat table', Page: HeatTablePage },
   { id: 'explorer', label: 'Delay explorer', Page: DelayExplorerPage },
 ] as const
 

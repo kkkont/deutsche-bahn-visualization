@@ -1,0 +1,8 @@
+.color-legend {
+  display: grid; grid-template-columns: auto minmax(120px, 260px) auto; gap: 0.2rem 0.6rem;
+  align-items: center; margin-top: 0.9rem; font-size: 0.75rem; color: #5c6663;
+}
+.cl-bar { height: 10px; border-radius: 5px; }
+.cl-ticks { grid-column: 2; position: relative; height: 1rem; font-size: 0.7rem; }
+.cl-ticks span { position: absolute; top: 0; white-space: nowrap; }
+.cl-ticks .cl-mid { transform: translateX(-50%); }
