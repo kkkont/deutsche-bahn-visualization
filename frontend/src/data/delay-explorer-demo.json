@@ -1,0 +1,3658 @@
+{
+  "synthetic": true,
+  "periodStart": "2024-07-01",
+  "periodEnd": "2024-07-28",
+  "timezone": "Europe/Berlin",
+  "stations": [
+    {
+      "stationId": "8000013",
+      "stationName": "Augsburg Hbf",
+      "latitude": 48.3655,
+      "longitude": 10.8863
+    },
+    {
+      "stationId": "8000036",
+      "stationName": "Bielefeld Hbf",
+      "latitude": 52.0293,
+      "longitude": 8.532
+    },
+    {
+      "stationId": "8000050",
+      "stationName": "Bremen Hbf",
+      "latitude": 53.083,
+      "longitude": 8.813
+    },
+    {
+      "stationId": "8000080",
+      "stationName": "Dortmund Hbf",
+      "latitude": 51.5178,
+      "longitude": 7.4592
+    },
+    {
+      "stationId": "8010085",
+      "stationName": "Dresden Hbf",
+      "latitude": 51.0402,
+      "longitude": 13.7327
+    },
+    {
+      "stationId": "8000085",
+      "stationName": "Düsseldorf Hbf",
+      "latitude": 51.2194,
+      "longitude": 6.7941
+    },
+    {
+      "stationId": "8010101",
+      "stationName": "Erfurt Hbf",
+      "latitude": 50.9787,
+      "longitude": 11.0386
+    },
+    {
+      "stationId": "8000098",
+      "stationName": "Essen Hbf",
+      "latitude": 51.4516,
+      "longitude": 7.0148
+    },
+    {
+      "stationId": "8000105",
+      "stationName": "Frankfurt (Main) Hbf",
+      "latitude": 50.1071,
+      "longitude": 8.6638
+    },
+    {
+      "stationId": "8000107",
+      "stationName": "Freiburg (Breisgau) Hbf",
+      "latitude": 47.9978,
+      "longitude": 7.8414
+    },
+    {
+      "stationId": "8002549",
+      "stationName": "Hamburg Hbf",
+      "latitude": 53.5527,
+      "longitude": 10.0067
+    },
+    {
+      "stationId": "8000152",
+      "stationName": "Hannover Hbf",
+      "latitude": 52.3765,
+      "longitude": 9.7412
+    },
+    {
+      "stationId": "8000191",
+      "stationName": "Karlsruhe Hbf",
+      "latitude": 48.9933,
+      "longitude": 8.401
+    },
+    {
+      "stationId": "8003200",
+      "stationName": "Kassel-Wilhelmshöhe",
+      "latitude": 51.3127,
+      "longitude": 9.4921
+    },
+    {
+      "stationId": "8000207",
+      "stationName": "Köln Hbf",
+      "latitude": 50.943,
+      "longitude": 6.9589
+    },
+    {
+      "stationId": "8010205",
+      "stationName": "Leipzig Hbf",
+      "latitude": 51.3453,
+      "longitude": 12.3821
+    },
+    {
+      "stationId": "8000240",
+      "stationName": "Mainz Hbf",
+      "latitude": 50.0012,
+      "longitude": 8.259
+    },
+    {
+      "stationId": "8000244",
+      "stationName": "Mannheim Hbf",
+      "latitude": 49.4796,
+      "longitude": 8.4698
+    },
+    {
+      "stationId": "8098262",
+      "stationName": "München Hbf",
+      "latitude": 48.1402,
+      "longitude": 11.5586
+    },
+    {
+      "stationId": "8000284",
+      "stationName": "Nürnberg Hbf",
+      "latitude": 49.4455,
+      "longitude": 11.0827
+    },
+    {
+      "stationId": "8000096",
+      "stationName": "Stuttgart Hbf",
+      "latitude": 48.7837,
+      "longitude": 9.1821
+    }
+  ],
+  "daily": [
+    {
+      "stationId": "8000013",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 50.0,
+      "delayObservations": 100
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 96.75,
+      "delayObservations": 129
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 158.0,
+      "delayObservations": 158
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 93.5,
+      "delayObservations": 187
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 0,
+      "delayObservations": 216
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 245.0,
+      "delayObservations": 245
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 137.0,
+      "delayObservations": 274
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 227.25,
+      "delayObservations": 303
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 332.0,
+      "delayObservations": 332
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 180.5,
+      "delayObservations": 361
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 292.5,
+      "delayObservations": 390
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 419.0,
+      "delayObservations": 419
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 224.0,
+      "delayObservations": 448
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 357.75,
+      "delayObservations": 477
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 506.0,
+      "delayObservations": 506
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 267.5,
+      "delayObservations": 535
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 423.0,
+      "delayObservations": 564
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 593.0,
+      "delayObservations": 593
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 61.0,
+      "delayObservations": 122
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 113.25,
+      "delayObservations": 151
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 180.0,
+      "delayObservations": 180
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 104.5,
+      "delayObservations": 209
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 178.5,
+      "delayObservations": 238
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 267.0,
+      "delayObservations": 267
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 148.0,
+      "delayObservations": 296
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 243.75,
+      "delayObservations": 325
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 354.0,
+      "delayObservations": 354
+    },
+    {
+      "stationId": "8000013",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 191.5,
+      "delayObservations": 383
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 1453.5,
+      "delayObservations": 171
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 1850.0,
+      "delayObservations": 200
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 1889.25,
+      "delayObservations": 229
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 2322.0,
+      "delayObservations": 258
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 2798.25,
+      "delayObservations": 287
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 2765.0,
+      "delayObservations": 316
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 3277.5,
+      "delayObservations": 345
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 3179.0,
+      "delayObservations": 374
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 3727.75,
+      "delayObservations": 403
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 3564.0,
+      "delayObservations": 432
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 4149.0,
+      "delayObservations": 461
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 4777.5,
+      "delayObservations": 490
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 4541.25,
+      "delayObservations": 519
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 5206.0,
+      "delayObservations": 548
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 4904.5,
+      "delayObservations": 577
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 980.5,
+      "delayObservations": 106
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 1113.75,
+      "delayObservations": 135
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 1476.0,
+      "delayObservations": 164
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 1881.75,
+      "delayObservations": 193
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 1942.5,
+      "delayObservations": 222
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 2384.5,
+      "delayObservations": 251
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 2380.0,
+      "delayObservations": 280
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 2858.25,
+      "delayObservations": 309
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 2788.5,
+      "delayObservations": 338
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 3303.0,
+      "delayObservations": 367
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 3861.0,
+      "delayObservations": 396
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 3718.75,
+      "delayObservations": 425
+    },
+    {
+      "stationId": "8000036",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 4313.0,
+      "delayObservations": 454
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 907.5,
+      "delayObservations": 242
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 1219.5,
+      "delayObservations": 271
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 1050.0,
+      "delayObservations": 300
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 1398.25,
+      "delayObservations": 329
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 1163.5,
+      "delayObservations": 358
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 1548.0,
+      "delayObservations": 387
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 1976.0,
+      "delayObservations": 416
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 1668.75,
+      "delayObservations": 445
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 2133.0,
+      "delayObservations": 474
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 1760.5,
+      "delayObservations": 503
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 2261.0,
+      "delayObservations": 532
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 1823.25,
+      "delayObservations": 561
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 2360.0,
+      "delayObservations": 590
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 565.25,
+      "delayObservations": 119
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 555.0,
+      "delayObservations": 148
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 796.5,
+      "delayObservations": 177
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 2163.0,
+      "delayObservations": 206
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 998.75,
+      "delayObservations": 235
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 858.0,
+      "delayObservations": 264
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 1172.0,
+      "delayObservations": 293
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 1529.5,
+      "delayObservations": 322
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 1316.25,
+      "delayObservations": 351
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 1710.0,
+      "delayObservations": 380
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 1431.5,
+      "delayObservations": 409
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 1861.5,
+      "delayObservations": 438
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 1517.75,
+      "delayObservations": 467
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 1984.0,
+      "delayObservations": 496
+    },
+    {
+      "stationId": "8000050",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 2493.75,
+      "delayObservations": 525
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 3443.0,
+      "delayObservations": 313
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 4018.5,
+      "delayObservations": 342
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 3988.25,
+      "delayObservations": 371
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 4600.0,
+      "delayObservations": 400
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 4504.5,
+      "delayObservations": 429
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 5152.5,
+      "delayObservations": 458
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 4991.75,
+      "delayObservations": 487
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 5676.0,
+      "delayObservations": 516
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 6403.75,
+      "delayObservations": 545
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 1184.5,
+      "delayObservations": 103
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 1386.0,
+      "delayObservations": 132
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 1811.25,
+      "delayObservations": 161
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 1947.5,
+      "delayObservations": 190
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 2409.0,
+      "delayObservations": 219
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 2914.0,
+      "delayObservations": 248
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 4916.75,
+      "delayObservations": 277
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 3519.0,
+      "delayObservations": 306
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 3517.5,
+      "delayObservations": 335
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 4095.0,
+      "delayObservations": 364
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 4028.25,
+      "delayObservations": 393
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 4642.0,
+      "delayObservations": 422
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 5299.25,
+      "delayObservations": 451
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 5160.0,
+      "delayObservations": 480
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 5853.5,
+      "delayObservations": 509
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 5649.0,
+      "delayObservations": 538
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 6378.75,
+      "delayObservations": 567
+    },
+    {
+      "stationId": "8000080",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 6109.0,
+      "delayObservations": 596
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 2400.0,
+      "delayObservations": 384
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 2168.25,
+      "delayObservations": 413
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 2652.0,
+      "delayObservations": 442
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 3179.25,
+      "delayObservations": 471
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 2875.0,
+      "delayObservations": 500
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 3438.5,
+      "delayObservations": 529
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 3069.0,
+      "delayObservations": 558
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 3668.75,
+      "delayObservations": 587
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 609.0,
+      "delayObservations": 116
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 870.0,
+      "delayObservations": 145
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 1174.5,
+      "delayObservations": 174
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 1167.25,
+      "delayObservations": 203
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 1508.0,
+      "delayObservations": 232
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 1435.5,
+      "delayObservations": 261
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 1812.5,
+      "delayObservations": 290
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 1674.75,
+      "delayObservations": 319
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 2088.0,
+      "delayObservations": 348
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 2544.75,
+      "delayObservations": 377
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 2334.5,
+      "delayObservations": 406
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 2827.5,
+      "delayObservations": 435
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 2552.0,
+      "delayObservations": 464
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 3081.25,
+      "delayObservations": 493
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 2740.5,
+      "delayObservations": 522
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 3306.0,
+      "delayObservations": 551
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 3915.0,
+      "delayObservations": 580
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 626.75,
+      "delayObservations": 109
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 897.0,
+      "delayObservations": 138
+    },
+    {
+      "stationId": "8010085",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 918.5,
+      "delayObservations": 167
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 6142.5,
+      "delayObservations": 455
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 6050.0,
+      "delayObservations": 484
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 6797.25,
+      "delayObservations": 513
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 6639.5,
+      "delayObservations": 542
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 7423.0,
+      "delayObservations": 571
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 1375.0,
+      "delayObservations": 100
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 1644.75,
+      "delayObservations": 129
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 2133.0,
+      "delayObservations": 158
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 2337.5,
+      "delayObservations": 187
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 2862.0,
+      "delayObservations": 216
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 3001.25,
+      "delayObservations": 245
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 3562.0,
+      "delayObservations": 274
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 4166.25,
+      "delayObservations": 303
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 4233.0,
+      "delayObservations": 332
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 4873.5,
+      "delayObservations": 361
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 4875.0,
+      "delayObservations": 390
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 8484.75,
+      "delayObservations": 419
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 5488.0,
+      "delayObservations": 448
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 6201.0,
+      "delayObservations": 477
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 6957.5,
+      "delayObservations": 506
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 6821.25,
+      "delayObservations": 535
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 7614.0,
+      "delayObservations": 564
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 7412.5,
+      "delayObservations": 593
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 1616.5,
+      "delayObservations": 122
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 1849.75,
+      "delayObservations": 151
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 2340.0,
+      "delayObservations": 180
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 2873.75,
+      "delayObservations": 209
+    },
+    {
+      "stationId": "8000085",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 3034.5,
+      "delayObservations": 238
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 4602.5,
+      "delayObservations": 526
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 4301.25,
+      "delayObservations": 555
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 4964.0,
+      "delayObservations": 584
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 847.5,
+      "delayObservations": 113
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 1171.5,
+      "delayObservations": 142
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 1239.75,
+      "delayObservations": 171
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 1600.0,
+      "delayObservations": 200
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 2003.75,
+      "delayObservations": 229
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 1999.5,
+      "delayObservations": 258
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 2439.5,
+      "delayObservations": 287
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 2370.0,
+      "delayObservations": 316
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 2846.25,
+      "delayObservations": 345
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 2711.5,
+      "delayObservations": 374
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 3224.0,
+      "delayObservations": 403
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 3780.0,
+      "delayObservations": 432
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 3572.75,
+      "delayObservations": 461
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 4165.0,
+      "delayObservations": 490
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 3892.5,
+      "delayObservations": 519
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 4521.0,
+      "delayObservations": 548
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 4183.25,
+      "delayObservations": 577
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 848.0,
+      "delayObservations": 106
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 1181.25,
+      "delayObservations": 135
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 1271.0,
+      "delayObservations": 164
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 1640.5,
+      "delayObservations": 193
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 1665.0,
+      "delayObservations": 222
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 2070.75,
+      "delayObservations": 251
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 2030.0,
+      "delayObservations": 280
+    },
+    {
+      "stationId": "8010101",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 2472.0,
+      "delayObservations": 309
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 1343.25,
+      "delayObservations": 597
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 378.0,
+      "delayObservations": 126
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 581.25,
+      "delayObservations": 155
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 506.0,
+      "delayObservations": 184
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 745.5,
+      "delayObservations": 213
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 605.0,
+      "delayObservations": 242
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 880.75,
+      "delayObservations": 271
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 675.0,
+      "delayObservations": 300
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 987.0,
+      "delayObservations": 329
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 1342.5,
+      "delayObservations": 358
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 1064.25,
+      "delayObservations": 387
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 1456.0,
+      "delayObservations": 416
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 1112.5,
+      "delayObservations": 445
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 1540.5,
+      "delayObservations": 474
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 1131.75,
+      "delayObservations": 503
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 1596.0,
+      "delayObservations": 532
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 6030.75,
+      "delayObservations": 561
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 1622.5,
+      "delayObservations": 590
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 416.5,
+      "delayObservations": 119
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 370.0,
+      "delayObservations": 148
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 575.25,
+      "delayObservations": 177
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 463.5,
+      "delayObservations": 206
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 705.0,
+      "delayObservations": 235
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 990.0,
+      "delayObservations": 264
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 805.75,
+      "delayObservations": 293
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 1127.0,
+      "delayObservations": 322
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 877.5,
+      "delayObservations": 351
+    },
+    {
+      "stationId": "8000098",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 1235.0,
+      "delayObservations": 380
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 2688.0,
+      "delayObservations": 168
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 3250.5,
+      "delayObservations": 197
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 3842.0,
+      "delayObservations": 226
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 4462.5,
+      "delayObservations": 255
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 4544.0,
+      "delayObservations": 284
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 5164.5,
+      "delayObservations": 313
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 5814.0,
+      "delayObservations": 342
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 6492.5,
+      "delayObservations": 371
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 6400.0,
+      "delayObservations": 400
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 7078.5,
+      "delayObservations": 429
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 7786.0,
+      "delayObservations": 458
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 8522.5,
+      "delayObservations": 487
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 8256.0,
+      "delayObservations": 516
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 8992.5,
+      "delayObservations": 545
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 9758.0,
+      "delayObservations": 574
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 1802.5,
+      "delayObservations": 103
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 3036.0,
+      "delayObservations": 132
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 2656.5,
+      "delayObservations": 161
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 3230.0,
+      "delayObservations": 190
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 3832.5,
+      "delayObservations": 219
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 3968.0,
+      "delayObservations": 248
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 4570.5,
+      "delayObservations": 277
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 5202.0,
+      "delayObservations": 306
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 5862.5,
+      "delayObservations": 335
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 5824.0,
+      "delayObservations": 364
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 6484.5,
+      "delayObservations": 393
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 7174.0,
+      "delayObservations": 422
+    },
+    {
+      "stationId": "8000105",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 7892.5,
+      "delayObservations": 451
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 1135.25,
+      "delayObservations": 239
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 1474.0,
+      "delayObservations": 268
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 1336.5,
+      "delayObservations": 297
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 1711.5,
+      "delayObservations": 326
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 1508.75,
+      "delayObservations": 355
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 1920.0,
+      "delayObservations": 384
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 2374.75,
+      "delayObservations": 413
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 2099.5,
+      "delayObservations": 442
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 2590.5,
+      "delayObservations": 471
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 2250.0,
+      "delayObservations": 500
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 2777.25,
+      "delayObservations": 529
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 2371.5,
+      "delayObservations": 558
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 2935.0,
+      "delayObservations": 587
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 667.0,
+      "delayObservations": 116
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 688.75,
+      "delayObservations": 145
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 957.0,
+      "delayObservations": 174
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 913.5,
+      "delayObservations": 203
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 1218.0,
+      "delayObservations": 232
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 1109.25,
+      "delayObservations": 261
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 1450.0,
+      "delayObservations": 290
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 1834.25,
+      "delayObservations": 319
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 1653.0,
+      "delayObservations": 348
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 2073.5,
+      "delayObservations": 377
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 1827.0,
+      "delayObservations": 406
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 2283.75,
+      "delayObservations": 435
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 1972.0,
+      "delayObservations": 464
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 2465.0,
+      "delayObservations": 493
+    },
+    {
+      "stationId": "8000107",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 3001.5,
+      "delayObservations": 522
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 620.0,
+      "delayObservations": 310
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 830.55,
+      "delayObservations": 339
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 1067.2,
+      "delayObservations": 368
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 1329.95,
+      "delayObservations": 397
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 1618.8,
+      "delayObservations": 426
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 1933.75,
+      "delayObservations": 455
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 2274.8,
+      "delayObservations": 484
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 2641.95,
+      "delayObservations": 513
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 3035.2,
+      "delayObservations": 542
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 3454.55,
+      "delayObservations": 571
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 650.0,
+      "delayObservations": 100
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 896.55,
+      "delayObservations": 129
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 1169.2,
+      "delayObservations": 158
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 1467.95,
+      "delayObservations": 187
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 1792.8,
+      "delayObservations": 216
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 2143.75,
+      "delayObservations": 245
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 2520.8,
+      "delayObservations": 274
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 2923.95,
+      "delayObservations": 303
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 3353.2,
+      "delayObservations": 332
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 3808.55,
+      "delayObservations": 361
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 4290.0,
+      "delayObservations": 390
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 4797.55,
+      "delayObservations": 419
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 5331.2,
+      "delayObservations": 448
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 5890.95,
+      "delayObservations": 477
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 6476.8,
+      "delayObservations": 506
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 7088.75,
+      "delayObservations": 535
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 7726.8,
+      "delayObservations": 564
+    },
+    {
+      "stationId": "8002549",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 8390.95,
+      "delayObservations": 593
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 2762.25,
+      "delayObservations": 381
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 2562.5,
+      "delayObservations": 410
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 3073.0,
+      "delayObservations": 439
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 3627.0,
+      "delayObservations": 468
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 3354.75,
+      "delayObservations": 497
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 3945.0,
+      "delayObservations": 526
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 3607.5,
+      "delayObservations": 555
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 4234.0,
+      "delayObservations": 584
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 706.25,
+      "delayObservations": 113
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 994.0,
+      "delayObservations": 142
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 1325.25,
+      "delayObservations": 171
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 1350.0,
+      "delayObservations": 200
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 1717.5,
+      "delayObservations": 229
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 1677.0,
+      "delayObservations": 258
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 2080.75,
+      "delayObservations": 287
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 1975.0,
+      "delayObservations": 316
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 2415.0,
+      "delayObservations": 345
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 2898.5,
+      "delayObservations": 374
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 2720.25,
+      "delayObservations": 403
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 3240.0,
+      "delayObservations": 432
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 2996.5,
+      "delayObservations": 461
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 3552.5,
+      "delayObservations": 490
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 3243.75,
+      "delayObservations": 519
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 3836.0,
+      "delayObservations": 548
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 4471.75,
+      "delayObservations": 577
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 715.5,
+      "delayObservations": 106
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 1012.5,
+      "delayObservations": 135
+    },
+    {
+      "stationId": "8000152",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 1066.0,
+      "delayObservations": 164
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8000191",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 0.0,
+      "delayObservations": 0
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 5099.25,
+      "delayObservations": 523
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 4830.0,
+      "delayObservations": 552
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 5519.5,
+      "delayObservations": 581
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 935.0,
+      "delayObservations": 110
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 1285.75,
+      "delayObservations": 139
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 1386.0,
+      "delayObservations": 168
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 1773.0,
+      "delayObservations": 197
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 2203.5,
+      "delayObservations": 226
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 2231.25,
+      "delayObservations": 255
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 2698.0,
+      "delayObservations": 284
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 2660.5,
+      "delayObservations": 313
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 3163.5,
+      "delayObservations": 342
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 3060.75,
+      "delayObservations": 371
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 3600.0,
+      "delayObservations": 400
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 4182.75,
+      "delayObservations": 429
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 4007.5,
+      "delayObservations": 458
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 4626.5,
+      "delayObservations": 487
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 4386.0,
+      "delayObservations": 516
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 5041.25,
+      "delayObservations": 545
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 4735.5,
+      "delayObservations": 574
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 927.0,
+      "delayObservations": 103
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 1287.0,
+      "delayObservations": 132
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 1408.75,
+      "delayObservations": 161
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 1805.0,
+      "delayObservations": 190
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 1861.5,
+      "delayObservations": 219
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 2294.0,
+      "delayObservations": 248
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 2285.25,
+      "delayObservations": 277
+    },
+    {
+      "stationId": "8003200",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 2754.0,
+      "delayObservations": 306
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 1930.5,
+      "delayObservations": 594
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 492.0,
+      "delayObservations": 123
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 722.0,
+      "delayObservations": 152
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 678.75,
+      "delayObservations": 181
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 945.0,
+      "delayObservations": 210
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 836.5,
+      "delayObservations": 239
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 1139.0,
+      "delayObservations": 268
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 965.25,
+      "delayObservations": 297
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 1304.0,
+      "delayObservations": 326
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 1686.25,
+      "delayObservations": 355
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 1440.0,
+      "delayObservations": 384
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 1858.5,
+      "delayObservations": 413
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 1547.0,
+      "delayObservations": 442
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 2001.75,
+      "delayObservations": 471
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 1625.0,
+      "delayObservations": 500
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 2116.0,
+      "delayObservations": 529
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 2650.5,
+      "delayObservations": 558
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 2201.25,
+      "delayObservations": 587
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 522.0,
+      "delayObservations": 116
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 507.5,
+      "delayObservations": 145
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 739.5,
+      "delayObservations": 174
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 659.75,
+      "delayObservations": 203
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 928.0,
+      "delayObservations": 232
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 1239.75,
+      "delayObservations": 261
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 1087.5,
+      "delayObservations": 290
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 1435.5,
+      "delayObservations": 319
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 1218.0,
+      "delayObservations": 348
+    },
+    {
+      "stationId": "8000207",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 1602.25,
+      "delayObservations": 377
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 1732.5,
+      "delayObservations": 165
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 2182.5,
+      "delayObservations": 194
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 2285.75,
+      "delayObservations": 223
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 2772.0,
+      "delayObservations": 252
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 3301.75,
+      "delayObservations": 281
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 3332.5,
+      "delayObservations": 310
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 3898.5,
+      "delayObservations": 339
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 3864.0,
+      "delayObservations": 368
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 4466.25,
+      "delayObservations": 397
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 4366.5,
+      "delayObservations": 426
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 5005.0,
+      "delayObservations": 455
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 5687.0,
+      "delayObservations": 484
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 5514.75,
+      "delayObservations": 513
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 6233.0,
+      "delayObservations": 542
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 5995.5,
+      "delayObservations": 571
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 1125.0,
+      "delayObservations": 100
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 1322.25,
+      "delayObservations": 129
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 1738.0,
+      "delayObservations": 158
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 2197.25,
+      "delayObservations": 187
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 2322.0,
+      "delayObservations": 216
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 2817.5,
+      "delayObservations": 245
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 2877.0,
+      "delayObservations": 274
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 3408.75,
+      "delayObservations": 303
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 3403.0,
+      "delayObservations": 332
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 3971.0,
+      "delayObservations": 361
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 4582.5,
+      "delayObservations": 390
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 4504.25,
+      "delayObservations": 419
+    },
+    {
+      "stationId": "8010205",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 5152.0,
+      "delayObservations": 448
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 1357.0,
+      "delayObservations": 236
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 1722.5,
+      "delayObservations": 265
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 1617.0,
+      "delayObservations": 294
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 2018.75,
+      "delayObservations": 323
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 1848.0,
+      "delayObservations": 352
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 2286.0,
+      "delayObservations": 381
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 2767.5,
+      "delayObservations": 410
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 2524.25,
+      "delayObservations": 439
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 3042.0,
+      "delayObservations": 468
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 2733.5,
+      "delayObservations": 497
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 3287.5,
+      "delayObservations": 526
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 2913.75,
+      "delayObservations": 555
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 3504.0,
+      "delayObservations": 584
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 762.75,
+      "delayObservations": 113
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 816.5,
+      "delayObservations": 142
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 1111.5,
+      "delayObservations": 171
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 1100.0,
+      "delayObservations": 200
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 1431.25,
+      "delayObservations": 229
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 1354.5,
+      "delayObservations": 258
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 1722.0,
+      "delayObservations": 287
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 2133.0,
+      "delayObservations": 316
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 1983.75,
+      "delayObservations": 345
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 2431.0,
+      "delayObservations": 374
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 2216.5,
+      "delayObservations": 403
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 2700.0,
+      "delayObservations": 432
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 2420.25,
+      "delayObservations": 461
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 2940.0,
+      "delayObservations": 490
+    },
+    {
+      "stationId": "8000240",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 3503.25,
+      "delayObservations": 519
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 3991.0,
+      "delayObservations": 307
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 4620.0,
+      "delayObservations": 336
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 4653.75,
+      "delayObservations": 365
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 5319.0,
+      "delayObservations": 394
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 5287.5,
+      "delayObservations": 423
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 5989.0,
+      "delayObservations": 452
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 5892.25,
+      "delayObservations": 481
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 6630.0,
+      "delayObservations": 510
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 7411.25,
+      "delayObservations": 539
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 7242.0,
+      "delayObservations": 568
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 8059.5,
+      "delayObservations": 597
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 1575.0,
+      "delayObservations": 126
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 2053.75,
+      "delayObservations": 155
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 2254.0,
+      "delayObservations": 184
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 2769.0,
+      "delayObservations": 213
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 3327.5,
+      "delayObservations": 242
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 3455.25,
+      "delayObservations": 271
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 4050.0,
+      "delayObservations": 300
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 4112.5,
+      "delayObservations": 329
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 4743.5,
+      "delayObservations": 358
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 4740.75,
+      "delayObservations": 387
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 5408.0,
+      "delayObservations": 416
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 6118.75,
+      "delayObservations": 445
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 6043.5,
+      "delayObservations": 474
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 6790.5,
+      "delayObservations": 503
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 6650.0,
+      "delayObservations": 532
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 7433.25,
+      "delayObservations": 561
+    },
+    {
+      "stationId": "8000244",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 7227.5,
+      "delayObservations": 590
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 3118.5,
+      "delayObservations": 378
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 2950.75,
+      "delayObservations": 407
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 3488.0,
+      "delayObservations": 436
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 4068.75,
+      "delayObservations": 465
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 3828.5,
+      "delayObservations": 494
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 4445.5,
+      "delayObservations": 523
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 4140.0,
+      "delayObservations": 552
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 4793.25,
+      "delayObservations": 581
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 797.5,
+      "delayObservations": 110
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 1112.0,
+      "delayObservations": 139
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 1470.0,
+      "delayObservations": 168
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 1526.75,
+      "delayObservations": 197
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 1921.0,
+      "delayObservations": 226
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 1912.5,
+      "delayObservations": 255
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 2343.0,
+      "delayObservations": 284
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 2269.25,
+      "delayObservations": 313
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 2736.0,
+      "delayObservations": 342
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 3246.25,
+      "delayObservations": 371
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 3100.0,
+      "delayObservations": 400
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 3646.5,
+      "delayObservations": 429
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 3435.0,
+      "delayObservations": 458
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 4017.75,
+      "delayObservations": 487
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 3741.0,
+      "delayObservations": 516
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 4360.0,
+      "delayObservations": 545
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 5022.5,
+      "delayObservations": 574
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 798.25,
+      "delayObservations": 103
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 1122.0,
+      "delayObservations": 132
+    },
+    {
+      "stationId": "8098262",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 1207.5,
+      "delayObservations": 161
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 1571.5,
+      "delayObservations": 449
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 1195.0,
+      "delayObservations": 478
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 1647.75,
+      "delayObservations": 507
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 1206.0,
+      "delayObservations": 536
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 1695.0,
+      "delayObservations": 565
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 2227.5,
+      "delayObservations": 594
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 338.25,
+      "delayObservations": 123
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 532.0,
+      "delayObservations": 152
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 452.5,
+      "delayObservations": 181
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 682.5,
+      "delayObservations": 210
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 537.75,
+      "delayObservations": 239
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 804.0,
+      "delayObservations": 268
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 1113.75,
+      "delayObservations": 297
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 896.5,
+      "delayObservations": 326
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 1242.5,
+      "delayObservations": 355
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 960.0,
+      "delayObservations": 384
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 1342.25,
+      "delayObservations": 413
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 994.5,
+      "delayObservations": 442
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 1413.0,
+      "delayObservations": 471
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 1875.0,
+      "delayObservations": 500
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 1454.75,
+      "delayObservations": 529
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 1953.0,
+      "delayObservations": 558
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 1467.5,
+      "delayObservations": 587
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 377.0,
+      "delayObservations": 116
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 326.25,
+      "delayObservations": 145
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 522.0,
+      "delayObservations": 174
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 761.25,
+      "delayObservations": 203
+    },
+    {
+      "stationId": "8000284",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 638.0,
+      "delayObservations": 232
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-01",
+      "totalDelayMinutes": 5590.0,
+      "delayObservations": 520
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-02",
+      "totalDelayMinutes": 5352.75,
+      "delayObservations": 549
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-03",
+      "totalDelayMinutes": 6069.0,
+      "delayObservations": 578
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-04",
+      "totalDelayMinutes": 1016.5,
+      "delayObservations": 107
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-05",
+      "totalDelayMinutes": 1394.0,
+      "delayObservations": 136
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-06",
+      "totalDelayMinutes": 1526.25,
+      "delayObservations": 165
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-07",
+      "totalDelayMinutes": 1940.0,
+      "delayObservations": 194
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-08",
+      "totalDelayMinutes": 2397.25,
+      "delayObservations": 223
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-09",
+      "totalDelayMinutes": 2457.0,
+      "delayObservations": 252
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-10",
+      "totalDelayMinutes": 2950.5,
+      "delayObservations": 281
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-11",
+      "totalDelayMinutes": 2945.0,
+      "delayObservations": 310
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-12",
+      "totalDelayMinutes": 3474.75,
+      "delayObservations": 339
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-13",
+      "totalDelayMinutes": 3404.0,
+      "delayObservations": 368
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-14",
+      "totalDelayMinutes": 3970.0,
+      "delayObservations": 397
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-15",
+      "totalDelayMinutes": 4579.5,
+      "delayObservations": 426
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-16",
+      "totalDelayMinutes": 4436.25,
+      "delayObservations": 455
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-17",
+      "totalDelayMinutes": 5082.0,
+      "delayObservations": 484
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-18",
+      "totalDelayMinutes": 4873.5,
+      "delayObservations": 513
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-19",
+      "totalDelayMinutes": 5555.5,
+      "delayObservations": 542
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-20",
+      "totalDelayMinutes": 5281.75,
+      "delayObservations": 571
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-21",
+      "totalDelayMinutes": 1000.0,
+      "delayObservations": 100
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-22",
+      "totalDelayMinutes": 1386.75,
+      "delayObservations": 129
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-23",
+      "totalDelayMinutes": 1540.5,
+      "delayObservations": 158
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-24",
+      "totalDelayMinutes": 1963.5,
+      "delayObservations": 187
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-25",
+      "totalDelayMinutes": 2052.0,
+      "delayObservations": 216
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-26",
+      "totalDelayMinutes": 2511.25,
+      "delayObservations": 245
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-27",
+      "totalDelayMinutes": 2534.5,
+      "delayObservations": 274
+    },
+    {
+      "stationId": "8000096",
+      "date": "2024-07-28",
+      "totalDelayMinutes": 3030.0,
+      "delayObservations": 303
+    }
+  ]
+}

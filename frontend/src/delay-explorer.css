@@ -1,0 +1,56 @@
+.delay-explorer { max-width: 1600px; margin: 0 auto; padding: 30px 42px; }
+.explorer-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 28px; }
+.explorer-heading h1 { margin-bottom: 12px; }
+.explorer-heading p:last-child { color: var(--muted); margin-bottom: 0; }
+.explorer-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--muted); margin-bottom: 10px; }
+.explorer-source { display: flex; flex-direction: column; gap: 7px; font-size: 13px; flex-shrink: 0; }
+.explorer-source strong { font-weight: 500; }
+.explorer-source span { color: var(--muted); }
+.explorer-toolbar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 16px 24px; padding: 18px 0; border-top: 1px solid var(--line); }
+.explorer-station-control { display: flex; flex-direction: column; gap: 7px; font-size: 12px; }
+.explorer-toolbar select { background: var(--paper); border: 1px solid var(--line); padding: 9px 12px; min-width: 240px; max-width: 100%; color: var(--ink); }
+.explorer-toolbar p { margin: 0 auto 10px 0; color: var(--muted); font-size: 13px; }
+.explorer-toolbar button { background: transparent; border: 1px solid var(--line); padding: 9px 14px; cursor: pointer; }
+.explorer-toolbar button:disabled { opacity: .5; cursor: default; }
+.explorer-workspace { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; }
+.explorer-map-frame { min-width: 0; position: relative; height: 620px; background: #e5ebe7; }
+.explorer-map.maplibregl-map { position: absolute; inset: 0; width: 100%; height: 100%; }
+.explorer-map-status { position: absolute; top: 12px; left: 12px; right: 55px; margin: 0; padding: 10px; background: var(--paper); font-size: 13px; }
+.explorer-map .maplibregl-popup-content { font-family: 'Space Grotesk', sans-serif; padding: 12px 15px; line-height: 1.7; color: #222; }
+.explorer-details { min-width: 0; display: flex; flex-direction: column; padding: 22px; background: var(--paper); }
+.explorer-details h2 { font-size: 23px; line-height: 1.3; overflow-wrap: anywhere; }
+.explorer-details p { font-size: 14px; line-height: 1.6; }
+.explorer-details .explorer-value { font-size: 34px; line-height: 1.2; margin: 24px 0 5px; color: #666; }
+.explorer-value span { font-size: 17px; }
+.explorer-muted { color: var(--muted); }
+.explorer-details dl { margin: 24px 0; font-size: 12px; }
+.explorer-details dl div { padding: 10px 0; border-top: 1px solid var(--line); }
+.explorer-details dt { color: var(--muted); margin-bottom: 4px; }
+.explorer-details dd { margin: 0; }
+.explorer-legend { margin-top: auto; padding-top: 25px; }
+.explorer-legend h3 { font-size: 12px; font-weight: 500; line-height: 1.6; }
+.explorer-ramp { height: 12px; border: 1px solid #999; }
+.explorer-ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; margin: 6px 0 18px; }
+.explorer-legend p { display: flex; align-items: center; gap: 9px; font-size: 12px; margin-bottom: 10px; }
+.explorer-hollow, .explorer-selected-mark { display: inline-block; width: 13px; height: 13px; flex-shrink: 0; border: 1px solid #333; border-radius: 50%; }
+.explorer-selected-mark { border: 2.5px solid #222; outline: 1px solid #222; outline-offset: 2px; }
+.explorer-footer { margin-top: 18px; max-width: 950px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.explorer-footer p { margin-bottom: 5px; }
+.explorer-footer a { color: inherit; text-decoration: underline; }
+@media (max-width: 900px) {
+  .delay-explorer { padding: 24px 22px; }
+  .explorer-heading { align-items: flex-start; flex-direction: column; gap: 16px; }
+  .explorer-workspace { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .explorer-map-frame { height: 520px; }
+  .explorer-details { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .explorer-legend { padding-top: 0; margin-top: 0; }
+}
+@media (max-width: 520px) {
+  .delay-explorer { padding: 22px 14px; }
+  .explorer-station-control { width: 100%; }
+  .explorer-toolbar select { min-width: 0; width: 100%; }
+  .explorer-toolbar p { width: 100%; margin: 0; }
+  .explorer-map-frame { height: 440px; }
+  .explorer-details { display: block; }
+  .explorer-legend { padding-top: 24px; }
+}
