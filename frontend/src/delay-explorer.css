@@ -47,6 +47,10 @@
 .explorer-cell-stations { padding-left: 18px; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
 .explorer-hex-missing { display: inline-block; width: 17px; height: 15px; flex-shrink: 0; border: 1.5px dashed #333; }
 .explorer-details .explorer-value-missing { font-size: 22px; }
+.explorer-scope { display: flex; flex-direction: column; gap: 7px; padding: 14px 0; font-size: 13px; line-height: 1.6; }
+.explorer-scope span { color: var(--muted); overflow-wrap: anywhere; }
+.explorer-add-mode { display: flex; align-items: center; gap: 8px; font-size: 13px; align-self: center; }
+.explorer-add-mode input { width: 17px; height: 17px; accent-color: var(--ink); }
 @media (max-width: 900px) {
   .delay-explorer { padding: 24px 22px; }
   .explorer-heading { align-items: flex-start; flex-direction: column; gap: 16px; }

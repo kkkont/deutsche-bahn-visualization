@@ -17,8 +17,9 @@ export function isoWeekLabel(date: string) {
 export interface ProfilePoint extends DelayTimePoint { position: number }
 export interface ProfileSeries { label: string; points: ProfilePoint[] }
 
-export function summarizeProfiles(data: ExplorerDataset, stationId = '') {
-  const scoped = stationId ? { ...data, stations: data.stations.filter((station) => station.stationId === stationId) } : data
+export function summarizeProfiles(data: ExplorerDataset, stationId: string | string[] = '') {
+  const ids = typeof stationId === 'string' ? stationId ? [stationId] : [] : stationId
+  const scoped = ids.length ? { ...data, stations: data.stations.filter((station) => ids.includes(station.stationId)) } : data
   const daily = summarizeTimeline(scoped, 'daily').aggregatePoints
   const weekly = summarizeTimeline(scoped, 'weekly').aggregatePoints
   const weeks = weekly.map((point) => weekStart(calendarTimestamp(point.periodStart)))

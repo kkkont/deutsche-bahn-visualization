@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AttributionControl, Map as MapLibreMap, NavigationControl, Popup, setWorkerUrl } from 'maplibre-gl'
-import type { ExpressionSpecification } from 'maplibre-gl'
+import type { ExpressionSpecification, GeoJSONSource } from 'maplibre-gl'
 import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { DELAY_COLORS, DELAY_MAX_MINUTES } from '../data/delayExplorer'
@@ -10,19 +10,32 @@ import type { DelayHexagon } from '../data/delayHexagons'
 setWorkerUrl(mapWorkerUrl)
 const number = new Intl.NumberFormat('en-GB')
 
-export function HexagonDelayMap({ cells, period }: { cells: DelayHexagon[]; period: string }) {
+const cellFeatures = (cells: DelayHexagon[]) => ({ type: 'FeatureCollection' as const, features: cells.map((cell) => ({
+  type: 'Feature' as const, id: cell.cellId, geometry: { type: 'Polygon' as const, coordinates: [cell.coordinates] },
+  properties: { cellId: cell.cellId, averageDelayMinutes: cell.averageDelayMinutes },
+})) })
+
+export function HexagonDelayMap({ cells, period, selectedStationIds, onSelectStations }: {
+  cells: DelayHexagon[]; period: string; selectedStationIds: string[]; onSelectStations: (ids: string[]) => void;
+}) {
   const container = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
-  const selectedRef = useRef<string | null>(null)
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const selectedId = cells.find((cell) => cell.stations.length === selectedStationIds.length && cell.stations.every((station) => selectedStationIds.includes(station.stationId)))?.cellId ?? null
+  const selectedCells = cells.filter((cell) => cell.stations.some((station) => selectedStationIds.includes(station.stationId))).map((cell) => cell.cellId)
+  const latest = useRef({ cells, period, onSelectStations, selectedCells, selectedId })
+  const popupRef = useRef<Popup | null>(null)
+  useEffect(() => { latest.current = { cells, period, onSelectStations, selectedCells, selectedId } }, [cells, period, onSelectStations, selectedCells, selectedId])
+  useEffect(() => {
+    const source = mapRef.current?.getSource<GeoJSONSource>('delay-hexagons')
+    if (source) { popupRef.current?.remove(); source.setData(cellFeatures(cells)) }
+  }, [cells])
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const selected = cells.find((cell) => cell.cellId === selectedId)
 
   useEffect(() => {
-    selectedRef.current = selectedId
     const map = mapRef.current
-    if (map?.getLayer('hex-selected')) map.setFilter('hex-selected', ['==', ['get', 'cellId'], selectedId ?? ''])
-  }, [selectedId])
+    if (map?.getLayer('hex-selected')) map.setFilter('hex-selected', ['in', ['get', 'cellId'], ['literal', selectedCells]])
+  }, [selectedCells])
 
   useEffect(() => {
     if (!container.current) return
@@ -36,16 +49,11 @@ export function HexagonDelayMap({ cells, period }: { cells: DelayHexagon[]; peri
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new AttributionControl({ compact: true }), 'bottom-right')
     const popup = new Popup({ closeButton: false, closeOnClick: false })
+    popupRef.current = popup
     const color: ExpressionSpecification = ['interpolate', ['linear'], ['coalesce', ['get', 'averageDelayMinutes'], 0]]
     DELAY_COLORS.forEach((value, index) => color.push(index * DELAY_MAX_MINUTES / (DELAY_COLORS.length - 1), value))
     map.on('load', () => {
-      map.addSource('delay-hexagons', { type: 'geojson', data: {
-        type: 'FeatureCollection', features: cells.map((cell) => ({
-          type: 'Feature', id: cell.cellId,
-          geometry: { type: 'Polygon', coordinates: [cell.coordinates] },
-          properties: { cellId: cell.cellId, averageDelayMinutes: cell.averageDelayMinutes },
-        })),
-      } })
+      map.addSource('delay-hexagons', { type: 'geojson', data: cellFeatures(latest.current.cells) })
       map.addLayer({ id: 'hex-fill', type: 'fill', source: 'delay-hexagons', paint: {
         'fill-color': color,
         'fill-opacity': ['case', ['==', ['get', 'averageDelayMinutes'], null], 0, 1],
@@ -57,10 +65,10 @@ export function HexagonDelayMap({ cells, period }: { cells: DelayHexagon[]; peri
         filter: ['==', ['get', 'averageDelayMinutes'], null],
         paint: { 'line-color': '#333333', 'line-width': 1.5, 'line-dasharray': [3, 2] } })
       map.addLayer({ id: 'hex-selected', type: 'line', source: 'delay-hexagons',
-        filter: ['==', ['get', 'cellId'], selectedRef.current ?? ''],
+        filter: ['in', ['get', 'cellId'], ['literal', latest.current.selectedCells]],
         paint: { 'line-color': '#222222', 'line-width': 3 } })
       map.on('mousemove', 'hex-fill', (event) => {
-        const cell = cells.find((item) => item.cellId === event.features?.[0]?.properties?.cellId)
+        const cell = latest.current.cells.find((item) => item.cellId === event.features?.[0]?.properties?.cellId)
         if (!cell) return
         map.getCanvas().style.cursor = 'pointer'
         const content = document.createElement('div')
@@ -73,14 +81,17 @@ export function HexagonDelayMap({ cells, period }: { cells: DelayHexagon[]; peri
         const names = document.createElement('div')
         names.textContent = cell.stations.map((station) => station.stationName).join(', ')
         const dates = document.createElement('div')
-        dates.textContent = period
+        dates.textContent = latest.current.period
         content.append(title, mean, count, names, dates)
         popup.setLngLat(event.lngLat).setDOMContent(content).addTo(map)
       })
       map.on('mouseleave', 'hex-fill', () => { map.getCanvas().style.cursor = ''; popup.remove() })
       map.on('click', 'hex-fill', (event) => {
         const id = event.features?.[0]?.properties?.cellId
-        if (typeof id === 'string') setSelectedId((current) => current === id ? null : id)
+        if (typeof id === 'string') {
+          const cell = latest.current.cells.find((item) => item.cellId === id)
+          if (cell) latest.current.onSelectStations(latest.current.selectedId === id ? [] : cell.stations.map((station) => station.stationId))
+        }
         popup.remove()
       })
       setStatus('ready')
@@ -88,8 +99,8 @@ export function HexagonDelayMap({ cells, period }: { cells: DelayHexagon[]; peri
     map.on('error', () => setStatus('error'))
     const observer = new ResizeObserver(() => map.resize())
     observer.observe(container.current)
-    return () => { observer.disconnect(); popup.remove(); map.remove(); mapRef.current = null }
-  }, [cells, period])
+    return () => { observer.disconnect(); popup.remove(); map.remove(); mapRef.current = null; popupRef.current = null }
+  }, [])
 
   return <section className="explorer-hex-section" aria-labelledby="hex-title">
     <header className="explorer-heading">
@@ -104,18 +115,18 @@ export function HexagonDelayMap({ cells, period }: { cells: DelayHexagon[]; peri
     <div className="explorer-toolbar">
       <div className="explorer-station-control">
         <label htmlFor="explorer-cell">Explore a cell</label>
-        <select id="explorer-cell" value={selectedId ?? ''} onChange={(event) => setSelectedId(event.target.value || null)}>
+        <select id="explorer-cell" value={selectedId ?? ''} onChange={(event) => onSelectStations(cells.find((cell) => cell.cellId === event.target.value)?.stations.map((station) => station.stationId) ?? [])}>
           <option value="">Choose an occupied cell</option>
           {cells.map((cell) => <option key={cell.cellId} value={cell.cellId}>{cell.stations.map((station) => station.stationName).join(' / ')}</option>)}
         </select>
       </div>
       <p>{cells.length} occupied cells · {cells.filter((cell) => cell.stations.length > 1).length} contain multiple stations</p>
-      <button type="button" disabled={!selectedId} onClick={() => setSelectedId(null)}>Clear cell selection</button>
+      <button type="button" disabled={!selectedId} onClick={() => onSelectStations([])}>Clear cell selection</button>
     </div>
     <div className="explorer-workspace">
       <div className="explorer-map-frame">
         <div className="explorer-map" ref={container} role="region" aria-label="Hexagonal map of synthetic mean delays. Use the cell dropdown for keyboard selection."
-          onKeyDown={(event) => { if (event.key === 'Escape') setSelectedId(null) }} />
+          onKeyDown={(event) => { if (event.key === 'Escape') onSelectStations([]) }} />
         {status !== 'ready' && <p className="explorer-map-status" role={status === 'error' ? 'alert' : 'status'}>
           {status === 'error' ? 'Map tiles could not load. You can still explore cells using the dropdown.' : 'Loading hexagon map…'}
         </p>}

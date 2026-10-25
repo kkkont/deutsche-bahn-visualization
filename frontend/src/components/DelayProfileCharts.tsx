@@ -11,10 +11,11 @@ const COLORS = ['#77AADD', '#EE8866', '#EEDD88', '#FFAABB', '#99DDFF', '#44BB99'
 const number = new Intl.NumberFormat('en-GB')
 
 function ProfileChart({ title, subtitle, series, average, ticks, axisLabel, averageDescription, max,
-  data, selectedId, onSelect, filterLabel }: {
+  data, selectedId, selectedCount, onSelect, filterLabel }: {
   title: string; subtitle: string; series: ProfileSeries[]; average: ProfilePoint[];
   ticks: string[]; axisLabel: string; averageDescription: string; max: number;
   data: ExplorerDataset; selectedId: string; onSelect: (id: string) => void; filterLabel: string;
+  selectedCount: number;
 }) {
   const frame = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(600)
@@ -23,7 +24,7 @@ function ProfileChart({ title, subtitle, series, average, ticks, axisLabel, aver
   const active = focused ?? hovered
   const headingId = useId()
   const selectorId = useId()
-  const scope = selectedId ? data.stations.find((station) => station.stationId === selectedId)?.stationName ?? 'Selected station' : 'All stations'
+  const scope = selectedCount > 1 ? `${selectedCount} selected stations` : selectedId ? data.stations.find((station) => station.stationId === selectedId)?.stationName ?? 'Selected station' : 'All stations'
   useEffect(() => {
     if (!frame.current) return
     const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width))
@@ -51,6 +52,7 @@ function ProfileChart({ title, subtitle, series, average, ticks, axisLabel, aver
         <label htmlFor={selectorId}>{filterLabel}</label>
         <select id={selectorId} value={selectedId} onChange={(event) => onSelect(event.target.value)}>
           <option value="">All stations</option>
+          {selectedCount > 1 && <option value="__multiple" disabled>{selectedCount} selected stations</option>}
           {data.stations.map((station) => <option key={station.stationId} value={station.stationId}>{station.stationName}</option>)}
         </select>
       </div>
@@ -89,11 +91,13 @@ function ProfileChart({ title, subtitle, series, average, ticks, axisLabel, aver
   </article>
 }
 
-export function DelayProfileCharts({ data }: { data: ExplorerDataset }) {
-  const [weekdayStationId, setWeekdayStationId] = useState('')
-  const [weekStationId, setWeekStationId] = useState('')
-  const weekdayProfiles = useMemo(() => summarizeProfiles(data, weekdayStationId), [data, weekdayStationId])
-  const weekProfiles = useMemo(() => summarizeProfiles(data, weekStationId), [data, weekStationId])
+export function DelayProfileCharts({ data, selectedStationIds, onSelectStation, onClearStations }: {
+  data: ExplorerDataset; selectedStationIds: string[]; onSelectStation: (id: string) => void; onClearStations: () => void;
+}) {
+  const weekdayProfiles = useMemo(() => summarizeProfiles(data, selectedStationIds), [data, selectedStationIds])
+  const weekProfiles = weekdayProfiles
+  const selectedId = selectedStationIds.length > 1 ? '__multiple' : selectedStationIds[0] ?? ''
+  const select = (id: string) => id ? onSelectStation(id) : onClearStations()
   const max = Math.max(1, ...[...weekdayProfiles.weekdays.series, ...weekProfiles.weeks.series]
     .flatMap((series) => series.points.map((point) => point.averageDelayMinutes ?? 0)))
   return <section className="delay-profiles" aria-labelledby="delay-profiles-title">
@@ -101,18 +105,18 @@ export function DelayProfileCharts({ data }: { data: ExplorerDataset }) {
       <div>
         <p className="explorer-eyebrow">SIMPLE LINE COMPARISONS</p>
         <h2 id="delay-profiles-title">Compare weekdays and weeks.</h2>
-        <p>Compare daily averages across all stations or filter each chart to an individual station.</p>
+        <p>Both line charts follow the shared station selection and brushed date interval.</p>
       </div>
       <div className="explorer-source"><strong>Synthetic demo data</strong><span>{formatTimelinePeriod(data.periodStart, data.periodEnd)} {data.periodStart.slice(0, 4)} · {data.timezone}</span></div>
     </header>
     <ProfileChart title="How does each weekday change across weeks?" subtitle="One line per weekday, Mon–Sun. Each point is that date’s weighted mean for the chosen station scope."
-      data={data} selectedId={weekdayStationId} onSelect={setWeekdayStationId} filterLabel="Filter weekday chart by station"
+      data={data} selectedId={selectedId} selectedCount={selectedStationIds.length} onSelect={select} filterLabel="Shared stations · weekday chart"
       series={weekdayProfiles.weekdays.series} average={weekdayProfiles.weekdays.average} ticks={weekdayProfiles.weekdays.ticks}
       axisLabel="ISO calendar week" averageDescription="all measured train stops in each calendar week" max={max} />
     <ProfileChart title="How does each week unfold from Monday to Sunday?" subtitle="One line per ISO calendar week, showing its daily mean delays from Mon to Sun."
-      data={data} selectedId={weekStationId} onSelect={setWeekStationId} filterLabel="Filter week chart by station"
+      data={data} selectedId={selectedId} selectedCount={selectedStationIds.length} onSelect={select} filterLabel="Shared stations · week chart"
       series={weekProfiles.weeks.series} average={weekProfiles.weeks.average} ticks={weekProfiles.weeks.ticks}
-      axisLabel="Day of week" averageDescription="all measured train stops for each weekday across the four weeks" max={max} />
-    <p className="profile-help">Station filters are independent. All averages use delay totals and measurement counts for that scope. The shared zero-based vertical scale adjusts to both charts’ values. Missing dates break lines. Hover or focus a line or its end label to highlight it; hover a point for its date, delay and count.</p>
+      axisLabel="Day of week" averageDescription="all measured train stops for each weekday in the selected period" max={max} />
+    <p className="profile-help">Station and date filters are shared with the map and scatterplot. All averages use delay totals and measurement counts for that scope. The shared zero-based vertical scale adjusts to both charts’ values. Missing dates break lines. Hover or focus a line or its end label to highlight it; hover a point for its date, delay and count.</p>
   </section>
 }
