@@ -53,3 +53,42 @@
 .heat-flows polygon { pointer-events: none; }
 .heat-bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px; }
 .heat-empty { font-size: .85rem; color: #9fb1ab; margin-top: 20px; }
+
+/* weekday split */
+.heat-days button { padding: 7px 10px; }
+.heat-day { margin-top: 6px; font-size: .85rem; color: #e9c46a; }
+.heat-week { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+.mini { margin: 0; padding: 8px 8px 4px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 6px; cursor: ew-resize; }
+.mini.on { border-color: #e76f51; background: rgba(231, 111, 81, .08); }
+.mini figcaption { display: flex; justify-content: space-between; gap: 6px; font-size: .72rem; color: #9fb1ab; }
+.mini figcaption b { color: #e6efec; font-weight: 600; }
+.mini svg { width: 100%; height: auto; display: block; touch-action: none; }
+.mini .pline { stroke-width: 1.8; filter: none; }
+@media (max-width: 1000px) { .heat-week { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .heat-week { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---- Tol colour guidelines: light panel so YlOrBr / nightfall read as designed ---- */
+.heat-monitor { background: #f7f8f6; color: var(--ink, #1d2623); border: 1px solid #dce2df; }
+.heat-legend, .heat-side h2, .heat-nat, .heat-empty { color: #5c6b66; }
+.heat-legend .lg-title { color: #1d2623; font-weight: 600; margin-right: 4px; white-space: nowrap; }
+.heat-nat strong, .heat-day { color: #1d2623; }
+.heat-day { font-weight: 600; }
+.heat-dots circle { fill: #1d2623; stroke: #fff; stroke-width: .8; }
+.heat-dots text { fill: #1d2623; stroke: #f7f8f6; }
+.heat-flows path.line.halo { stroke: rgba(29, 38, 35, .35); }
+.pgrid { stroke: #dce2df; }
+.ptick, .plabel { fill: #5c6b66; }
+.pline { stroke: #1d2623; stroke-width: 2; filter: none; }
+.pline.avg { stroke: #777777; stroke-width: 2.4; }          /* grey = average */
+.parea { fill: #DDDDDD; opacity: .9; }
+.pavg { fill: none; stroke: #777777; stroke-width: 1.5; stroke-dasharray: 4 3; }
+.phead { stroke: #1d2623; opacity: .6; }
+.pdot { fill: #1d2623; stroke: #fff; stroke-width: 1.5; }
+.pring { stroke: #1d2623; }
+.mini { background: #fff; border-color: #dce2df; }
+.mini.on { border-color: #1d2623; box-shadow: 0 0 0 1px #1d2623; background: #fff; }
+.mini figcaption { color: #5c6b66; }
+.mini figcaption b { color: #1d2623; }
+.mini .pline { stroke-width: 1.6; }
+.chip { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; border: 1px solid rgba(29, 38, 35, .35); }
+.heat-mode button:disabled { opacity: .45; cursor: not-allowed; }

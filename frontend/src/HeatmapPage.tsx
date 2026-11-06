@@ -10,8 +10,8 @@ import './heatmap.css'
      hourly:   [{ stationId, hour (0-23, Europe/Berlin), averageDelayMinutes, delayObservations }] }
    Without it the page falls back to generated demo data. */
 type Station = { stationId: string; stationName: string; lat: number; lon: number }
-type Hourly = { stationId: string; hour: number; averageDelayMinutes: number; delayObservations: number }
-type Segment = { fromId: string; toId: string; hour: number; averageDeltaMinutes: number; trips: number }
+type Hourly = { stationId: string; hour: number; averageDelayMinutes: number; delayObservations: number; weekday?: number }
+type Segment = { fromId: string; toId: string; hour: number; averageDeltaMinutes: number; trips: number; weekday?: number }
 type Data = { period: string; stations: Station[]; hourly: Hourly[]; segments?: Segment[]; demo?: boolean }
 type Mode = 'delay' | 'delta'
 type Flow = { a: Station; b: Station; d: number; trips: number }
@@ -28,12 +28,21 @@ const px = (lon: number, lat: number): [number, number] => [((lon - LON0) / (LON
 const OUTLINE: [number, number][] = [[7.2, 53.25], [8.1, 53.55], [8.55, 53.55], [8.9, 53.9], [8.65, 54.0], [8.6, 54.5], [8.7, 54.9], [9.5, 54.85], [9.9, 54.8], [10.0, 54.45], [11.1, 54.45], [10.9, 53.95], [11.5, 54.0], [12.1, 54.2], [12.45, 54.4], [13.1, 54.65], [13.6, 54.55], [13.9, 54.0], [14.2, 53.93], [14.35, 53.2], [14.6, 52.6], [14.7, 52.1], [14.75, 51.5], [15.0, 51.0], [14.65, 50.85], [13.9, 50.7], [13.0, 50.4], [12.5, 50.3], [12.2, 50.25], [12.4, 50.0], [12.9, 49.5], [13.4, 49.1], [13.85, 48.75], [13.8, 48.55], [13.0, 47.85], [13.05, 47.5], [12.7, 47.65], [11.4, 47.45], [10.45, 47.55], [10.1, 47.3], [9.6, 47.55], [9.2, 47.65], [8.55, 47.6], [7.58, 47.6], [7.6, 48.0], [7.8, 48.6], [8.2, 49.0], [7.0, 49.15], [6.4, 49.45], [6.35, 49.8], [6.1, 50.1], [6.0, 50.5], [6.0, 50.75], [6.1, 51.0], [6.0, 51.5], [6.2, 51.85], [7.0, 52.05], [7.05, 52.4]]
 const outlinePath = () => new Path2D('M' + OUTLINE.map(([lo, la]) => px(lo, la).join(',')).join('L') + 'Z')
 
-const ramp = scaleLinear<string>().domain([0, 0.3, 0.6, 1]).range(['#2a9d8f', '#e9c46a', '#e76f51', '#8e2a6b']).clamp(true)
+// Colour guidelines (Paul Tol, https://tol-colors.readthedocs.io):
+//  - delay level            -> sequential "YlOrBr"
+//  - change in delay        -> diverging "nightfall" (teal = recovered, red = built up; never reversed)
+//  - weekdays               -> qualitative "light" set; grey is reserved for averages
+const YLORBR = ['#FFFFE5', '#FFF7BC', '#FEE391', '#FEC44F', '#FB9A29', '#EC7014', '#CC4C02', '#993404', '#662506']
+const NIGHTFALL = ['#125A56', '#00767B', '#238F9D', '#42A7C6', '#60BCE9', '#9DCCEF', '#C6DBED', '#DEE6E7', '#ECEADA',
+  '#F0E6B2', '#F9D576', '#FFB954', '#FD9A44', '#F57634', '#E94C1F', '#D11807', '#A01813']
+const DAY_COLORS = ['#77AADD', '#99DDFF', '#44BB99', '#BBCC33', '#EEDD88', '#EE8866', '#FFAABB'] // Mon … Sun
+const GREY_FILL = '#DDDDDD' // "light" pale grey
+const ramp = scaleLinear<string>().domain(YLORBR.map((_, i) => i / (YLORBR.length - 1))).range(YLORBR).clamp(true)
 const LUT = Array.from({ length: 256 }, (_, i) => ramp(i / 255).match(/\d+/g)!.map(Number))
 const smooth = (t: number) => { const c = Math.min(1, Math.max(0, t)); return c * c * (3 - 2 * c) }
 
-// Delay change per segment: blue = recovered, orange-red = built up.
-const dramp = scaleLinear<string>().domain([-1, 0, 1]).range(['#3aa6d6', '#7d918a', '#e8563f']).clamp(true)
+// Delay change per segment, -1 … +1 of the colour-scale limit.
+const dramp = scaleLinear<string>().domain(NIGHTFALL.map((_, i) => i / 8 - 1)).range(NIGHTFALL).clamp(true)
 const sgn = (v: number) => `${v > 0.05 ? '+' : v < -0.05 ? '−' : ''}${Math.abs(v).toFixed(1)}`
 const short = (n: string) => n.replace(/ Hbf$/, '')
 
@@ -50,14 +59,61 @@ function flow(a: [number, number], b: [number, number]) {
   }
 }
 
+/* weekday: 0 = Monday … 6 = Sunday. Rows without a weekday count for every day. */
+function aggregate(data: Data, day: number | null) {
+  const hv = new Map<string, { w: number[]; o: number[] }>()
+  const nw: number[] = Array(24).fill(0), no: number[] = Array(24).fill(0)
+  for (const r of data.hourly) {
+    if (day !== null && r.weekday !== undefined && r.weekday !== day) continue
+    const wt = r.delayObservations || 1
+    if (!hv.has(r.stationId)) hv.set(r.stationId, { w: Array(24).fill(0), o: Array(24).fill(0) })
+    const e = hv.get(r.stationId)!
+    e.w[r.hour] += r.averageDelayMinutes * wt; e.o[r.hour] += wt
+    nw[r.hour] += r.averageDelayMinutes * wt; no[r.hour] += wt
+  }
+  const vals = new Map<string, (number | null)[]>()
+  for (const [id, e] of hv) vals.set(id, e.w.map((w, i) => (e.o[i] ? w / e.o[i] : null)))
+  const national = nw.map((w, i) => (no[i] ? w / no[i] : 0))
+
+  const sg = new Map<string, { from: string; to: string; w: number[]; o: number[]; t: number[] }>()
+  const dw: number[] = Array(24).fill(0), dt: number[] = Array(24).fill(0)
+  for (const r of data.segments ?? []) {
+    if (day !== null && r.weekday !== undefined && r.weekday !== day) continue
+    const wt = r.trips || 1, k = `${r.fromId}|${r.toId}`
+    if (!sg.has(k)) sg.set(k, { from: r.fromId, to: r.toId, w: Array(24).fill(0), o: Array(24).fill(0), t: Array(24).fill(0) })
+    const e = sg.get(k)!
+    e.w[r.hour] += r.averageDeltaMinutes * wt; e.o[r.hour] += wt; e.t[r.hour] += r.trips
+    dw[r.hour] += r.averageDeltaMinutes * wt; dt[r.hour] += wt
+  }
+  const seg = new Map<string, { from: string; to: string; delta: (number | null)[]; trips: number[] }>()
+  for (const [k, e] of sg) seg.set(k, { from: e.from, to: e.to, delta: e.w.map((w, i) => (e.o[i] ? w / e.o[i] : null)), trips: e.t })
+  const nationalDelta = dw.map((w, i) => (dt[i] ? w / dt[i] : 0))
+  return { vals, national, seg, nationalDelta }
+}
+
+// One colour scale for every weekday, so Monday and Friday are directly comparable.
+function scaleOf(data: Data) {
+  const v = data.hourly.map((r) => r.averageDelayMinutes).sort((a, b) => a - b)
+  const m = (data.segments ?? []).map((r) => Math.abs(r.averageDeltaMinutes)).sort((a, b) => a - b)
+  return {
+    vmax: Math.max(3, Math.ceil(v[Math.floor(v.length * 0.95)] ?? 5)),
+    dmax: Math.max(0.5, Math.ceil((m[Math.floor(m.length * 0.95)] ?? 1) * 2) / 2),
+  }
+}
+
 export function HeatmapPage() {
-  const { t: rawT } = useTranslation('heatmap')
+  const { t: rawT, i18n } = useTranslation('heatmap')
   const t = (k: string, d: string) => rawT(k, { defaultValue: d })
-  const [data, setData] = useState<Data | null>(null)
+  const dayName = (d: number, w: 'short' | 'long' = 'short') => new Intl.DateTimeFormat(i18n.language || 'en', { weekday: w }).format(new Date(2024, 0, 1 + d))
+  const [local, setLocal] = useState<Data | null | undefined>(undefined) // undefined = loading, null = file missing
+  const [source, setSource] = useState<'local' | 'demo'>('local')
+  const demo = useMemo(() => (source === 'demo' ? demoData() : null), [source])
+  const data: Data | null = source === 'demo' ? demo : local ?? null
   const [hour, setHour] = useState(7.5)
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState(2)
   const [mode, setMode] = useState<Mode>('delay')
+  const [day, setDay] = useState<number | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const small = useRef<HTMLCanvasElement | null>(null)
   const shape = useMemo(outlinePath, [])
@@ -65,8 +121,8 @@ export function HeatmapPage() {
   useEffect(() => {
     fetch('/data/heatmap.json')
       .then((r) => { if (!r.ok) throw new Error(); return r.json() as Promise<Data> })
-      .then(setData)
-      .catch(() => setData(demoData()))
+      .then(setLocal)
+      .catch(() => { setLocal(null); setSource('demo') })
   }, [])
 
   useEffect(() => {
@@ -77,32 +133,14 @@ export function HeatmapPage() {
     return () => cancelAnimationFrame(id)
   }, [playing, speed])
 
-  // station -> 24 hourly values, plus national (observation-weighted) series
-  const model = useMemo(() => {
-    if (!data) return null
-    const vals = new Map<string, (number | null)[]>()
-    const wsum = Array(24).fill(0), osum = Array(24).fill(0)
-    for (const r of data.hourly) {
-      if (!vals.has(r.stationId)) vals.set(r.stationId, Array(24).fill(null))
-      vals.get(r.stationId)![r.hour] = r.averageDelayMinutes
-      wsum[r.hour] += r.averageDelayMinutes * r.delayObservations; osum[r.hour] += r.delayObservations
-    }
-    const national = wsum.map((w, i) => (osum[i] ? w / osum[i] : 0))
-    const sorted = [...vals.values()].flat().filter((v): v is number => v !== null).sort((a, b) => a - b)
-    const vmax = Math.max(3, Math.ceil(sorted[Math.floor(sorted.length * 0.95)] ?? 5))
-    const seg = new Map<string, { from: string; to: string; delta: (number | null)[]; trips: number[] }>()
-    const dw = Array(24).fill(0), dt = Array(24).fill(0), mags: number[] = []
-    for (const r of data.segments ?? []) {
-      const k = `${r.fromId}|${r.toId}`
-      if (!seg.has(k)) seg.set(k, { from: r.fromId, to: r.toId, delta: Array(24).fill(null), trips: Array(24).fill(0) })
-      const e = seg.get(k)!; e.delta[r.hour] = r.averageDeltaMinutes; e.trips[r.hour] = r.trips
-      dw[r.hour] += r.averageDeltaMinutes * r.trips; dt[r.hour] += r.trips; mags.push(Math.abs(r.averageDeltaMinutes))
-    }
-    mags.sort((a, b) => a - b)
-    const nationalDelta: number[] = dw.map((w, i) => (dt[i] ? w / dt[i] : 0))
-    const dmax = Math.max(0.5, Math.ceil((mags[Math.floor(mags.length * 0.95)] ?? 1) * 2) / 2)
-    return { vals, national, vmax, seg, nationalDelta, dmax }
-  }, [data])
+  const scale = useMemo(() => (data ? scaleOf(data) : null), [data])
+  const model = useMemo(() => (data && scale ? { ...aggregate(data, day), ...scale } : null), [data, scale, day])
+  const hasWeekdays = useMemo(() => !!data && data.hourly.some((r) => r.weekday !== undefined), [data])
+  const week = useMemo(
+    () => (data && hasWeekdays ? Array.from({ length: 7 }, (_, d) => { const a = aggregate(data, d); return { national: a.national, delta: a.nationalDelta } }) : null),
+    [data, hasWeekdays],
+  )
+  const allAvg = useMemo(() => (data && hasWeekdays ? aggregate(data, null) : null), [data, hasWeekdays])
 
   const at = (arr: (number | null)[], h: number) => {
     const h0 = Math.floor(h) % 24, f = h - Math.floor(h), a = arr[h0], b = arr[(h0 + 1) % 24]
@@ -159,14 +197,20 @@ export function HeatmapPage() {
     const ctx = cv.getContext('2d')!
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, W, H)
-    ctx.fillStyle = '#1b2a26'; ctx.fill(shape)
+    ctx.fillStyle = '#e4e8e6'; ctx.fill(shape)
     ctx.save(); ctx.clip(shape); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(sc, 0, 0, W, H); ctx.restore()
-    ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1; ctx.stroke(shape)
+    ctx.strokeStyle = 'rgba(29,38,35,.45)'; ctx.lineWidth = 1; ctx.stroke(shape)
   }, [live, model, shape, mode])
 
   if (!data || !model) return <main className="heat"><p className="heat-note">{t('loading', 'Loading…')}</p></main>
 
   const series = mode === 'delay' ? model.national : model.nationalDelta
+  const weekSeries = week ? week.map((w) => (mode === 'delay' ? w.national : w.delta)) : null
+  const avgSeries = allAvg ? (mode === 'delay' ? allAvg.national : allAvg.nationalDelta) : null
+  const wAll = [...(weekSeries?.flat() ?? [0]), ...(avgSeries ?? [])]
+  const wy: [number, number] = mode === 'delay'
+    ? [0, Math.max(...wAll) * 1.15]
+    : [Math.min(-0.5, Math.min(...wAll) * 1.15), Math.max(0.5, Math.max(...wAll) * 1.15)]
   const peak = series.indexOf(Math.max(...series))
   let calm = 6
   for (let h = 6; h <= 22; h++) if (series[h] < series[calm]) calm = h
@@ -184,10 +228,21 @@ export function HeatmapPage() {
       </header>
 
       <section className="heat-controls">
+        <div className="heat-mode" role="group" aria-label={t('source', 'Data source')}>
+          <button aria-pressed={source === 'local'} disabled={local === null} onClick={() => { setSource('local'); setDay(null) }}
+            title={local === null ? t('noLocal', 'No /data/heatmap.json found. Run aggregate_heatmap.py first.') : undefined}>{t('srcLocal', 'Local data')}</button>
+          <button aria-pressed={source === 'demo'} onClick={() => { setSource('demo'); setDay(null) }}>{t('srcDemo', 'Demo data')}</button>
+        </div>
         <div className="heat-mode" role="group" aria-label={t('mode', 'Map mode')}>
           <button aria-pressed={mode === 'delay'} onClick={() => setMode('delay')}>{t('modeDelay', 'Delay level')}</button>
           <button aria-pressed={mode === 'delta'} onClick={() => setMode('delta')}>{t('modeDelta', 'Delay change per trip')}</button>
         </div>
+        {week && (
+          <div className="heat-mode heat-days" role="group" aria-label={t('day', 'Weekday')}>
+            <button aria-pressed={day === null} onClick={() => setDay(null)}>{t('allDays', 'All days')}</button>
+            {Array.from({ length: 7 }, (_, d) => <button key={d} aria-pressed={day === d} onClick={() => setDay(d)}><i className="chip" style={{ background: DAY_COLORS[d] }} />{dayName(d)}</button>)}
+          </div>
+        )}
         <button className="heat-play" onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>
           {playing ? t('pause', 'Pause') : t('play', 'Play day')}
         </button>
@@ -210,11 +265,12 @@ export function HeatmapPage() {
                   {flows.map((f) => {
                     const g = flow(px(f.a.lon, f.a.lat), px(f.b.lon, f.b.lat)), n = f.d / model.dmax, col = dramp(n)
                     return (
-                      <g key={`${f.a.stationId}-${f.b.stationId}`} opacity={0.3 + 0.65 * Math.min(1, Math.abs(n))}>
+                      <g key={`${f.a.stationId}-${f.b.stationId}`} opacity={0.6 + 0.4 * Math.min(1, Math.abs(n))}>
                         <title>{short(f.a.stationName)} → {short(f.b.stationName)}: {sgn(f.d)} min · ~{Math.round(f.trips)} {t('trips', 'trips')}</title>
                         <path className="hit" d={g.d} />
+                        <path className="line halo" d={g.d} strokeWidth={2.4 + 2.8 * Math.sqrt(f.trips / maxTrips)} />
                         <path className="line" d={g.d} stroke={col} strokeWidth={1.2 + 2.8 * Math.sqrt(f.trips / maxTrips)} />
-                        <polygon points={g.head} fill={col} />
+                        <polygon points={g.head} fill={col} stroke="rgba(29,38,35,.45)" strokeWidth={0.6} />
                       </g>
                     )
                   })}
@@ -230,15 +286,16 @@ export function HeatmapPage() {
           </div>
           <div className="heat-legend">
             {mode === 'delay' ? (
-              <><span>0 min</span><i style={{ background: `linear-gradient(90deg, ${[0, 0.3, 0.6, 1].map((v) => ramp(v)).join(',')})` }} /><span>{model.vmax}+ min</span></>
+              <><span className="lg-title">{t('lgDelay', 'Average delay')}</span><span>0 min</span><i style={{ background: `linear-gradient(90deg, ${YLORBR.join(',')})` }} /><span>{model.vmax}+ min</span></>
             ) : (
-              <><span>−{model.dmax} min {t('recovered', 'recovered')}</span><i style={{ background: `linear-gradient(90deg, ${[-1, 0, 1].map((v) => dramp(v)).join(',')})` }} /><span>+{model.dmax} min {t('builtUp', 'built up')}</span></>
+              <><span className="lg-title">{t('lgDelta', 'Change in delay')}</span><span>−{model.dmax} min {t('recovered', 'recovered')}</span><i style={{ background: `linear-gradient(90deg, ${NIGHTFALL.join(',')})` }} /><span>+{model.dmax} min {t('builtUp', 'built up')}</span></>
             )}
           </div>
         </section>
 
         <aside className="heat-side" aria-live="polite">
           <div className="heat-clock">{clock(hour)}</div>
+          <div className="heat-day">{day === null ? t('allDays', 'All days') : dayName(day, 'long')}</div>
           <div className="heat-nat">
             <strong>{mode === 'delay' ? nationalNow.toFixed(1) : sgn(deltaNow)}</strong>{' '}
             {mode === 'delay' ? t('natAvg', 'min average delay, all stations') : t('natDelta', 'min delay change per stop-to-stop trip, all trains')}
@@ -262,8 +319,20 @@ export function HeatmapPage() {
           </>}
         </aside>
 
-        <Pulse series={series} signed={mode === 'delta'} hour={hour} onScrub={(h) => { setPlaying(false); setHour(h) }} peak={peak} calm={calm} t={t}
+        <Pulse series={series} signed={mode === 'delta'} areaColor={day === null ? GREY_FILL : DAY_COLORS[day]} avg={day === null ? null : avgSeries} isAverage={day === null} hour={hour} onScrub={(h) => { setPlaying(false); setHour(h) }} peak={peak} calm={calm} t={t}
           peakLabel={mode === 'delay' ? t('peak', 'peak') : t('buildUp', 'build-up')} calmLabel={mode === 'delay' ? t('calm', 'calm') : t('recovery', 'recovery')} />
+        {weekSeries && (
+          <section className="heat-week" aria-label={t('weekLabel', 'Every weekday')}>
+            {weekSeries.map((ws, d) => {
+              const pk = ws.indexOf(Math.max(...ws))
+              return (
+                <MiniPulse key={d} series={ws} domain={wy} color={DAY_COLORS[d]} avg={avgSeries} hour={hour} selected={day === d} name={dayName(d)}
+                  peakText={`${pad(pk)}:00 · ${mode === 'delay' ? ws[pk].toFixed(1) : sgn(ws[pk])} min`}
+                  onPick={(h) => { setPlaying(false); setDay(d); setHour(h) }} />
+              )
+            })}
+          </section>
+        )}
       </div>
       <p className="heat-note">{mode === 'delay'
         ? t('hint', 'Colours between stations are interpolated and fade out far from any station. Times are Europe/Berlin.')
@@ -272,18 +341,21 @@ export function HeatmapPage() {
   )
 }
 
-function Pulse({ series, signed, hour, onScrub, peak, calm, peakLabel, calmLabel, t }: {
-  series: number[]; signed: boolean; hour: number; onScrub: (h: number) => void; peak: number; calm: number
+function Pulse({ series, signed, areaColor, avg, isAverage, hour, onScrub, peak, calm, peakLabel, calmLabel, t }: {
+  series: number[]; signed: boolean; areaColor: string; avg: number[] | null; isAverage: boolean
+  hour: number; onScrub: (h: number) => void; peak: number; calm: number
   peakLabel: string; calmLabel: string; t: (k: string, d: string) => string
 }) {
   const CW = 960, CH = 150, m = { l: 40, r: 20, t: 18, b: 26 }
   const x = scaleLinear().domain([0, 24]).range([m.l, CW - m.r])
-  const ymax = Math.max(signed ? 0.5 : 0, Math.max(...series) * 1.2)
-  const ymin = signed ? Math.min(-0.5, Math.min(...series) * 1.2) : 0
+  const both = [...series, ...(avg ?? [])]
+  const ymax = Math.max(signed ? 0.5 : 0, Math.max(...both) * 1.2)
+  const ymin = signed ? Math.min(-0.5, Math.min(...both) * 1.2) : 0
   const y = scaleLinear().domain([ymin, ymax]).range([CH - m.b, m.t])
   const pts = series.map((v, i) => [i + 0.5, v] as [number, number])
   const path = line<[number, number]>().x((p) => x(p[0])).y((p) => y(p[1])).curve(curveMonotoneX)(pts)!
   const fill = area<[number, number]>().x((p) => x(p[0])).y0(y(0)).y1((p) => y(p[1])).curve(curveMonotoneX)(pts)!
+  const avgPath = avg ? line<[number, number]>().x((p) => x(p[0])).y((p) => y(p[1])).curve(curveMonotoneX)(avg.map((v, i) => [i + 0.5, v])) : null
   const h0 = Math.floor(hour) % 24, f = hour - Math.floor(hour)
   const nowV = series[h0] + (series[(h0 + 1) % 24] - series[h0]) * f
   const scrub = (e: React.PointerEvent<SVGSVGElement>) => {
@@ -298,8 +370,9 @@ function Pulse({ series, signed, hour, onScrub, peak, calm, peakLabel, calmLabel
         onKeyDown={(e) => { if (e.key === 'ArrowRight') onScrub((hour + 0.5) % 24); if (e.key === 'ArrowLeft') onScrub((hour + 23.5) % 24) }}>
         {y.ticks(3).map((v) => <g key={v}><line x1={m.l} x2={CW - m.r} y1={y(v)} y2={y(v)} className="pgrid" /><text x={m.l - 6} y={y(v) + 3} textAnchor="end" className="ptick">{v}m</text></g>)}
         {[0, 3, 6, 9, 12, 15, 18, 21, 24].map((h) => <text key={h} x={x(h)} y={CH - 8} textAnchor="middle" className="ptick">{pad(h % 24)}:00</text>)}
-        <path d={fill} className="parea" />
-        <path d={path} className="pline" />
+        <path d={fill} className="parea" style={{ fill: areaColor }} />
+        {avgPath && <path d={avgPath} className="pavg" />}
+        <path d={path} className={isAverage ? 'pline avg' : 'pline'} />
         <text x={x(peak + 0.5)} y={y(series[peak]) - 8} textAnchor="middle" className="plabel">{peakLabel}</text>
         <text x={x(calm + 0.5)} y={y(series[calm]) - 8} textAnchor="middle" className="plabel">{calmLabel}</text>
         <line x1={x(hour)} x2={x(hour)} y1={m.t - 6} y2={CH - m.b} className="phead" />
@@ -307,6 +380,37 @@ function Pulse({ series, signed, hour, onScrub, peak, calm, peakLabel, calmLabel
         <circle cx={x(hour)} cy={y(nowV)} r={5} className="pring" />
       </svg>
     </section>
+  )
+}
+
+function MiniPulse({ series, domain, color, avg, hour, selected, name, peakText, onPick }: {
+  series: number[]; domain: [number, number]; color: string; avg: number[] | null; hour: number; selected: boolean; name: string; peakText: string; onPick: (h: number) => void
+}) {
+  const CW = 220, CH = 84, m = { l: 4, r: 4, t: 8, b: 6 }
+  const x = scaleLinear().domain([0, 24]).range([m.l, CW - m.r])
+  const y = scaleLinear().domain(domain).range([CH - m.b, m.t])
+  const path = line<[number, number]>().x((p) => x(p[0])).y((p) => y(p[1])).curve(curveMonotoneX)(series.map((v, i) => [i + 0.5, v]))!
+  const base = y(Math.max(domain[0], Math.min(0, domain[1])))
+  const fillPath = area<[number, number]>().x((p) => x(p[0])).y0(base).y1((p) => y(p[1])).curve(curveMonotoneX)(series.map((v, i) => [i + 0.5, v]))!
+  const avgPath = avg ? line<[number, number]>().x((p) => x(p[0])).y((p) => y(p[1])).curve(curveMonotoneX)(avg.map((v, i) => [i + 0.5, v])) : null
+  const h0 = Math.floor(hour) % 24, f = hour - Math.floor(hour)
+  const nowV = series[h0] + (series[(h0 + 1) % 24] - series[h0]) * f
+  const pick = (e: React.PointerEvent<SVGSVGElement>) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    onPick(Math.min(23.99, Math.max(0, x.invert(((e.clientX - r.left) / r.width) * CW))))
+  }
+  return (
+    <figure className={selected ? 'mini on' : 'mini'}>
+      <figcaption><b>{name}</b><span>{peakText}</span></figcaption>
+      <svg viewBox={`0 0 ${CW} ${CH}`} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); pick(e) }} onPointerMove={(e) => { if (e.buttons) pick(e) }}>
+        {domain[0] < 0 && <line className="pgrid" x1={m.l} x2={CW - m.r} y1={y(0)} y2={y(0)} />}
+        <path className="parea" d={fillPath} style={{ fill: color }} />
+        {avgPath && <path className="pavg" d={avgPath} />}
+        <path className="pline" d={path} />
+        <line className="phead" x1={x(hour)} x2={x(hour)} y1={m.t - 4} y2={CH - m.b} />
+        <circle className="pdot" cx={x(hour)} cy={y(nowV)} r={3} />
+      </svg>
+    </figure>
   )
 }
 
@@ -327,9 +431,11 @@ function demoData(): Data {
   let seed = 11
   const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647
   const stations = S.map(([stationName, lon, lat], i) => ({ stationId: String(i), stationName, lon, lat }))
-  const hourly = S.flatMap(([, , , f], i) => profile.map((p, hour) => ({
-    stationId: String(i), hour, averageDelayMinutes: p * f * (0.85 + rnd() * 0.3), delayObservations: Math.round(40 + 120 * f * (hour > 5 ? 1 : 0.2)),
-  })))
+  // Friday is the worst day, Saturday the calmest; weekends have a weaker morning rush and Sunday a strong evening return peak.
+  const dayMul = (d: number, h: number) => [1, 0.95, 1, 1.1, 1.35, 0.7, 0.9][d] * (d >= 5 && h >= 6 && h <= 9 ? 0.6 : 1) * (d === 6 && h >= 16 && h <= 20 ? 1.3 : 1)
+  const hourly = S.flatMap(([, , , f], i) => [0, 1, 2, 3, 4, 5, 6].flatMap((weekday) => profile.map((p, hour) => ({
+    stationId: String(i), hour, weekday, averageDelayMinutes: p * f * dayMul(weekday, hour) * (0.85 + rnd() * 0.3), delayObservations: Math.round((40 + 120 * f * (hour > 5 ? 1 : 0.2)) / 4),
+  }))))
   // Stop-to-stop links; third value = typical delay build-up (min) at the busiest hour, negative = recovery.
   const E: [string, string, number?][] = [['Hamburg', 'Hannover', 0.6], ['Hamburg', 'Bremen', 0.3], ['Hamburg', 'Kiel', 0.1], ['Hamburg', 'Schwerin'], ['Schwerin', 'Rostock'], ['Hamburg', 'Flensburg'],
     ['Bremen', 'Hannover'], ['Bremen', 'Osnabrück'], ['Osnabrück', 'Münster'], ['Münster', 'Dortmund', 0.9], ['Dortmund', 'Essen', 0.8], ['Essen', 'Düsseldorf', 0.9], ['Düsseldorf', 'Köln', 1.1],
@@ -343,11 +449,11 @@ function demoData(): Data {
   for (const [a, b, ef] of E) {
     for (const rev of [false, true]) {
       const base = (ef ?? rnd() * 2 - 0.6) * (rev ? 0.6 : 1) + (rev ? rnd() * 0.4 - 0.2 : 0)
-      for (let hour = 0; hour < 24; hour++) {
+      for (let weekday = 0; weekday < 7; weekday++) for (let hour = 0; hour < 24; hour++) {
         segments.push({
-          fromId: idx(rev ? b : a), toId: idx(rev ? a : b), hour,
-          averageDeltaMinutes: base * (profile[hour] / 3.5) + (rnd() - 0.5) * 0.3,
-          trips: Math.round(hour > 4 ? 30 + rnd() * 50 : 4 + rnd() * 8),
+          fromId: idx(rev ? b : a), toId: idx(rev ? a : b), hour, weekday,
+          averageDeltaMinutes: base * (profile[hour] / 3.5) * dayMul(weekday, hour) + (rnd() - 0.5) * 0.3,
+          trips: Math.round((hour > 4 ? 30 + rnd() * 50 : 4 + rnd() * 8) / 4),
         })
       }
     }
