@@ -70,6 +70,7 @@ def build_outputs(
         "trainTypes": [row["train_type"]],
         "observations": row["observations"],
         "delayObservations": row["delay_count"],
+        "totalDelayMinutes": row["delay_sum"] or 0,
         "averageDelayMinutes": _ratio(row["delay_sum"], row["delay_count"]) or 0,
         "delayedOverFivePercent": _ratio(row["over_five_count"], row["delay_count"], 100) or 0,
         "cancelledPercent": _ratio(row["cancelled_count"] or 0, row["observations"], 100) or 0,

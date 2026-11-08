@@ -57,6 +57,7 @@ def test_summarizes_station_and_hour(stations):
     assert station["observations"] == 2
     assert station["delayObservations"] == 2
     assert station["averageDelayMinutes"] == 7
+    assert station["totalDelayMinutes"] == 14
     assert station["delayedOverFivePercent"] == 50
     assert station["cancelledPercent"] == 50
     assert [point["hour"] for point in result["hourly"]] == [8, 9]
@@ -90,6 +91,7 @@ def test_months_combine_by_observation_weight_not_by_monthly_means(stations):
     outputs, _ = build([june, july], stations, months=["2024-07", "2024-06"])
 
     assert outputs["demo.json"]["stations"][0]["averageDelayMinutes"] == 2.4
+    assert outputs["demo.json"]["stations"][0]["totalDelayMinutes"] == 12
     assert outputs["delay-clock.json"]["months"] == ["2024-06", "2024-07"]
     assert outputs["delay-clock.json"]["period"] == "2024-06/2024-07"
     explorer = outputs["delay-explorer.json"]
