@@ -151,3 +151,10 @@ h1 { margin: 8px 0 5px; font-size: 34px; line-height: 1.12; font-weight: 600; le
   .rail-map-controls label { flex: 1 1 150px; }
   .rail-map-controls { gap: 12px; }
 }
+.rail-drill-scope { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-bottom: 14px; padding: 12px; background: var(--paper); border: 1px solid var(--line); font-size: 12px; }
+.rail-drill-scope strong { flex: 1 1 240px; }
+.rail-drill-scope > span { flex-basis: 100%; color: var(--muted); line-height: 1.5; }
+.rail-sparse-note { font-size: 12px; line-height: 1.5; color: var(--muted); }
+.rail-area-actions { position: sticky; top: 0; z-index: 1; background: var(--paper); padding-block: 8px; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.rail-area-actions button { border: 1px solid var(--line); padding: 7px 10px; background: var(--paper); font-size: 12px; cursor: pointer; }
+.rail-area-actions button:disabled { opacity: 0.5; cursor: default; }

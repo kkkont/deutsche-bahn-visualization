@@ -30,5 +30,18 @@
   "gridNote": "Feste flächentreue Hexagone · {{side}} km Kantenlänge · je ≈ {{area}} km²",
   "coverageNote": "Die Hexagone beschreiben nur kartierte Bahnhöfe über alle erfassten Verkehrsarten. Leere Gebiete enthalten keine kartierten Beobachtungen; ungefüllte Hexagone haben keine Verspätungsmessungen.",
   "approximateNote": "Näherungswerte: Dieser Export enthält gerundete Mittelwerte je Verkehrsart. Hexagone verwenden nach Beobachtungszahl gewichtete Mittelwerte, keine Summen von Bahnhofsmittelwerten.",
-  "dataSource": "Daten: Deutsche Bahn · CC BY 4.0 · piebro/deutsche-bahn-data"
+  "dataSource": "Daten: Deutsche Bahn · CC BY 4.0 · piebro/deutsche-bahn-data",
+  "nationalScope": "Deutschlandübersicht · {{side}} km Kantenlänge",
+  "localScope": "Gebiet {{id}} · {{side}} km Kantenlänge",
+  "drillHint": "Hexagon anklicken, um seine Bahnhöfe in kleineren Hexagonen zu erkunden. Zoomen allein ändert die Rastergröße nicht.",
+  "localHint": "Nur kartierte Bahnhöfe dieses Gebiets werden gezeigt. Ein Hexagon öffnet {{nextSide}}-km-Hexagone; ein blauer Punkt oder Bahnhofsname zeigt Bahnhofsinformationen. Beim Zoomen bleibt das {{side}}-km-Raster erhalten.",
+  "backGermany": "Zurück zu Deutschland",
+  "areaSummary": "Gebietsübersicht",
+  "clippedNote": "Hexagone am Rand werden auf das ausgewählte Gebiet zugeschnitten und haben kleinere Flächen.",
+  "binResolution": "{{side}} km Kantenlänge",
+  "singleStationNote": "Dieses Gebiet enthält einen kartierten Bahnhof. Kleinere Hexagone liefern räumliche Details, aber keine zusätzlichen Beobachtungen.",
+  "localGridNote": "{{side}} km Kantenlänge · innere Hexagone ≈ {{area}} km²; Randhexagone sind zugeschnitten.",
+  "areaNavigation": "Gebietsnavigation",
+  "detailHint": "Feinste Rasterstufe · {{side}} km Kantenlänge. Ein Hexagon vergrößert die Ansicht; ein Bahnhof zeigt seine Details. Beim Zoomen bleibt dieses Raster erhalten.",
+  "backOneLevel": "Eine Ebene zurück"
 }

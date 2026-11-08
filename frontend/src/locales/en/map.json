@@ -30,5 +30,18 @@
   "gridNote": "Fixed equal-area bins · {{side}} km sides · ≈ {{area}} km² each",
   "coverageNote": "Bins describe the mapped stations only, across all observed service types. Empty areas have no mapped observations; outlined empty bins have no measured delays.",
   "approximateNote": "Means are approximate: this export contains rounded service-type averages. Bins use observation-weighted averages, not sums of station means.",
-  "dataSource": "Data: Deutsche Bahn · CC BY 4.0 · piebro/deutsche-bahn-data"
+  "dataSource": "Data: Deutsche Bahn · CC BY 4.0 · piebro/deutsche-bahn-data",
+  "nationalScope": "Germany overview · {{side}} km bin sides",
+  "localScope": "Area {{id}} · {{side}} km bin sides",
+  "drillHint": "Click a bin to explore its stations in smaller bins. Zooming alone keeps the current bin size.",
+  "localHint": "Only this area’s mapped stations are shown. Click a bin to drill into {{nextSide}} km bins, or select a blue marker or station name for station details. Zooming keeps the {{side}} km grid.",
+  "backGermany": "Back to Germany",
+  "areaSummary": "Area summary",
+  "clippedNote": "Boundary bins are clipped to the selected area and have smaller areas.",
+  "binResolution": "{{side}} km bin sides",
+  "singleStationNote": "This area has one mapped station. Smaller bins provide location detail, but no additional observations.",
+  "localGridNote": "{{side}} km hexagon sides · interior bins ≈ {{area}} km²; boundary bins are clipped.",
+  "areaNavigation": "Area navigation",
+  "detailHint": "Finest bin level · {{side}} km sides. Click a bin to zoom closer, or select a station for its details. Zooming keeps this grid.",
+  "backOneLevel": "Back one level"
 }
