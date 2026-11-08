@@ -16,6 +16,7 @@ export interface StationMetric {
 }
 
 export interface HourPoint {
+  totalDelayMinutes?: number
   stationId: string
   trainType: string
   hour: number

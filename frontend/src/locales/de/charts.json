@@ -17,5 +17,21 @@
   "dayProfile": "TAGESVERLAUF",
   "hourlyDelay": "Verspätung im Tagesverlauf",
   "minutes": "MINUTEN",
-  "minutesShort": "Min."
+  "minutesShort": "Min.",
+  "playDay": "Tag abspielen",
+  "pauseDay": "Pause",
+  "playSpeed": "Tempo",
+  "hoursPerSecond": "Std./s",
+  "playbackHour": "Wiedergabestunde",
+  "linkedPlayback": "Verknüpfte Tageswiedergabe",
+  "mappedCount": "{{count}} kartierte Bahnhöfe",
+  "mappedNetwork": "Kartiertes Netz · {{count}} Bahnhöfe",
+  "typicalDayNote": "Typischer Tagesverlauf: Stundenmittel über den gesamten angezeigten Zeitraum · Europe/Berlin. Keine Daten eines einzelnen Tages oder Live-Daten.",
+  "approximateHourly": "Näherungswerte, da dieser Export gerundete Mittelwerte je Verkehrsart enthält.",
+  "pulseTitle": "Stündlicher Verspätungspuls",
+  "pulseHint": "Beim Überfahren erscheinen Stundenbereich und Verspätung. Graue Linie: gewichteter Mittelwert der Kartenauswahl. Stunde per Klick, Ziehen oder Pfeiltasten wählen.",
+  "pulseTime": "Stunde im Verspätungspuls",
+  "measuredStops": "gemessene Zughalte",
+  "mappedCount_one": "{{count}} kartierter Bahnhof",
+  "mappedCount_other": "{{count}} kartierte Bahnhöfe"
 }

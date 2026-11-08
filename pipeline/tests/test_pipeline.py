@@ -62,6 +62,7 @@ def test_summarizes_station_and_hour(stations):
     assert station["cancelledPercent"] == 50
     assert [point["hour"] for point in result["hourly"]] == [8, 9]
     assert [point["delayObservations"] for point in result["hourly"]] == [1, 1]
+    assert [point["totalDelayMinutes"] for point in result["hourly"]] == [2, 12]
 
 
 def test_alias_evas_merge_into_one_station(stations):
