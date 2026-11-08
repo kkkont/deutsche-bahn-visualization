@@ -17,5 +17,21 @@
   "dayProfile": "DAY PROFILE",
   "hourlyDelay": "Delay through the day",
   "minutes": "MINUTES",
-  "minutesShort": "min"
+  "minutesShort": "min",
+  "playDay": "Play day",
+  "pauseDay": "Pause",
+  "playSpeed": "Speed",
+  "hoursPerSecond": "h/s",
+  "playbackHour": "Playback hour",
+  "linkedPlayback": "Linked daily playback",
+  "mappedCount": "{{count}} mapped stations",
+  "mappedNetwork": "Mapped network · {{count}} stations",
+  "typicalDayNote": "Typical-day hourly averages pooled across the displayed period · Europe/Berlin. This is not a specific day or live data.",
+  "approximateHourly": "Means are approximate because this export contains rounded service-type averages.",
+  "pulseTitle": "Hourly delay pulse",
+  "pulseHint": "Hover for the hour range and delay. Grey line: weighted mean for the map selection. Click or drag to choose an hour; arrow keys also work.",
+  "pulseTime": "Hour on the delay pulse",
+  "measuredStops": "measured train stops",
+  "mappedCount_one": "{{count}} mapped station",
+  "mappedCount_other": "{{count}} mapped stations"
 }

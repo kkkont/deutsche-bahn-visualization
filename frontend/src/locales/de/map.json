@@ -43,5 +43,9 @@
   "localGridNote": "{{side}} km Kantenlänge · innere Hexagone ≈ {{area}} km²; Randhexagone sind zugeschnitten.",
   "areaNavigation": "Gebietsnavigation",
   "detailHint": "Feinste Rasterstufe · {{side}} km Kantenlänge. Ein Hexagon vergrößert die Ansicht; ein Bahnhof zeigt seine Details. Beim Zoomen bleibt dieses Raster erhalten.",
-  "backOneLevel": "Eine Ebene zurück"
+  "backOneLevel": "Eine Ebene zurück",
+  "hourlyDetails": "Stündliche Verspätungsmessungen · {{hour}}:00",
+  "fullPeriodDetails": "Die folgenden Anzahlen und Anteile gelten für den gesamten exportierten Zeitraum.",
+  "hourlyApproximateNote": "Näherungswerte, da dieser Export gerundete Mittelwerte je Verkehrsart enthält.",
+  "mapGuidance": "Kartenhinweise & Daten"
 }

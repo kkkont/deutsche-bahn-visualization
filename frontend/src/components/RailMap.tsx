@@ -10,9 +10,9 @@ import { HEX_AREA_KM2, HEX_SIDE_METRES } from '../data/delayHexagons'
 import { drillIntoCell, LOCAL_HEX_SIDE_METRES, DETAIL_HEX_SIDE_METRES } from '../data/railMapDrilldown'
 import type { DelayHexagon } from '../data/delayHexagons'
 import type { RailStation } from '../data/railMapData'
-import { prepareRailMap } from '../data/railMapData'
-import type { Dataset } from '../data/types'
-import type { StationLocations } from '../data/railMapData'
+import type { prepareRailMap } from '../data/railMapData'
+import { refreshCell } from '../data/linkedHourly'
+import type { MapScope } from '../data/linkedHourly'
 
 setWorkerUrl(mapWorkerUrl)
 type Selection = { kind: 'station' | 'cell'; id: string } | null
@@ -27,14 +27,16 @@ const stationFeatures = (stations: RailStation[]) => ({ type: 'FeatureCollection
   properties: { stationId: item.stationId, stationName: item.stationName },
 })) })
 
-export function RailMap() {
+export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange }: {
+  data: MapData; hourlyStations: RailStation[]; hour: number; approximate: boolean; onScopeChange: (scope: MapScope) => void;
+}) {
   const { t, i18n } = useTranslation('map')
   const { t: stationText } = useTranslation('stations')
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
+  const popupRef = useRef<Popup | null>(null)
   const panelRef = useRef<HTMLElement>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
-  const [data, setData] = useState<MapData | null>(null)
   const [selection, setSelection] = useState<Selection>(null)
   const [drillPath, setDrillPath] = useState<DelayHexagon[]>([])
   const parent = drillPath.at(-1) ?? null
@@ -57,28 +59,20 @@ export function RailMap() {
   const locale = i18n.resolvedLanguage ?? 'en'
   const count = new Intl.NumberFormat(locale)
   const decimal = new Intl.NumberFormat(locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 })
-  const value = (mean: number | null | undefined) => mean == null ? t('noMeasurements') : `${data?.approximate ? '≈ ' : ''}${decimal.format(mean)} min`
+  const value = (mean: number | null | undefined) => mean == null ? t('noMeasurements') : `${approximate ? '≈ ' : ''}${decimal.format(mean)} min`
   const period = data?.period.split('/').map((month) => new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${month}-01T00:00:00Z`))).join(' – ') ?? ''
-  const latest = useRef({ t, stationText, value, count, period, cells, parent, chooseCell })
-  useEffect(() => { latest.current = { t, stationText, value, count, period, cells, parent, chooseCell } })
+  const latest = useRef({ t, stationText, value, count, period, cells, parent, chooseCell, hourlyStations, hour })
+  useEffect(() => { latest.current = { t, stationText, value, count, period, cells, parent, chooseCell, hourlyStations, hour } })
   const station = selection?.kind === 'station' ? data?.stations.find((item) => item.stationId === selection.id) : null
   const cell = selection?.kind === 'cell' ? cells.find((item) => item.cellId === selection.id) ?? (parent?.cellId === selection.id ? parent : null) : (station ? null : parent)
   const highlightedIds = useMemo(() => station ? [station.stationId] : cell?.stations.map((item) => item.stationId) ?? [], [station, cell])
 
-  useEffect(() => {
-    const controller = new AbortController()
-    const read = async (file: string) => {
-      const response = await fetch(`${import.meta.env.BASE_URL}data/${file}`, { signal: controller.signal })
-      if (!response.ok) throw new Error(`Cannot load ${file}`)
-      return response.json()
-    }
-    void Promise.all([read('demo.json'), read('stations.geojson')]).then(([metrics, locations]: [Dataset, StationLocations]) => {
-      const prepared = prepareRailMap(metrics, locations)
-      if (!prepared.stations.length) throw new Error('No station locations')
-      if (!controller.signal.aborted) setData({ ...prepared, source: metrics.source, period: metrics.period })
-    }).catch(() => { if (!controller.signal.aborted) setStatus('error') })
-    return () => controller.abort()
-  }, [])
+  const scopeIds = useMemo(() => station ? [station.stationId] : cell ? cell.stations.map((item) => item.stationId) : data.stations.map((item) => item.stationId), [station, cell, data])
+  const scopeName = station?.stationName ?? (cell ? t('cellTitle', { id: cell.cellId }) : null)
+  useEffect(() => onScopeChange({ stationIds: scopeIds, name: scopeName }), [scopeIds, scopeName, onScopeChange])
+  const stationById = useMemo(() => new Map(hourlyStations.map((item) => [item.stationId, item])), [hourlyStations])
+  const displayCells = useMemo(() => cells.map((item) => refreshCell(item, stationById)), [cells, stationById])
+  const summary = station ? stationById.get(station.stationId)! : cell ? refreshCell(cell, stationById) : null
 
   useEffect(() => {
     if (selection || parent) {
@@ -99,11 +93,12 @@ export function RailMap() {
   useEffect(() => {
     const map = mapRef.current
     if (!map?.getSource('delay-hexagons')) return
-    map.getSource<GeoJSONSource>('delay-hexagons')!.setData(cellFeatures(cells))
+    popupRef.current?.remove()
+    map.getSource<GeoJSONSource>('delay-hexagons')!.setData(cellFeatures(displayCells))
     map.getSource<GeoJSONSource>('stations')!.setData(stationFeatures(visibleStations))
     map.getSource<GeoJSONSource>('parent-area')!.setData(cellFeatures(parent ? [parent] : []))
     map.setLayoutProperty('station-labels', 'visibility', parent ? 'visible' : 'none')
-  }, [cells, visibleStations, parent, status])
+  }, [displayCells, visibleStations, parent, status])
 
   useEffect(() => {
     const map = mapRef.current
@@ -142,11 +137,12 @@ export function RailMap() {
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new AttributionControl({ compact: true }), 'bottom-right')
     const popup = new Popup({ closeButton: false, closeOnClick: false })
+    popupRef.current = popup
     map.on('movestart', () => popup.remove())
     const color: ExpressionSpecification = ['interpolate', ['linear'], ['coalesce', ['get', 'averageDelayMinutes'], 0]]
     DELAY_COLORS.forEach((hex, index) => color.push(index * DELAY_MAX_MINUTES / (DELAY_COLORS.length - 1), hex))
     map.on('load', () => {
-      map.addSource('delay-hexagons', { type: 'geojson', data: cellFeatures(latest.current.cells),
+      map.addSource('delay-hexagons', { type: 'geojson', data: cellFeatures(latest.current.cells.map((item) => refreshCell(item, new Map(latest.current.hourlyStations.map((station) => [station.stationId, station]))))),
         attribution: 'Train observations: Deutsche Bahn · CC BY 4.0 · piebro/deutsche-bahn-data' })
       map.addSource('parent-area', { type: 'geojson', data: cellFeatures(latest.current.parent ? [latest.current.parent] : []) })
       map.addLayer({ id: 'hex-fill', type: 'fill', source: 'delay-hexagons', paint: {
@@ -205,13 +201,13 @@ export function RailMap() {
         const content = document.createElement('div')
         const title = document.createElement('strong'), mean = document.createElement('div'), stops = document.createElement('div'), period = document.createElement('div')
         const item = feature.layer.id === 'stations'
-          ? data.stations.find((entry) => entry.stationId === feature.properties.stationId)
-          : ui.cells.find((entry) => entry.cellId === feature.properties.cellId)
+          ? ui.hourlyStations.find((entry) => entry.stationId === feature.properties.stationId)
+          : (() => { const target = ui.cells.find((entry) => entry.cellId === feature.properties.cellId); return target ? refreshCell(target, new Map(ui.hourlyStations.map((station) => [station.stationId, station]))) : undefined })()
         if (!item) return
         title.textContent = 'stationName' in item ? item.stationName : ui.t('cellTitle', { id: item.cellId })
         mean.textContent = `${ui.stationText('averageDelay')}: ${ui.value(item.averageDelayMinutes)}`
         stops.textContent = `${ui.t('measuredStops')}: ${ui.count.format(item.delayObservations)}`
-        period.textContent = ui.period
+        period.textContent = `${ui.period} · ${String(ui.hour).padStart(2, '0')}:00–${String((ui.hour + 1) % 24).padStart(2, '0')}:00`
         content.append(title, mean, stops, period)
         popup.setLngLat(event.lngLat).setDOMContent(content).addTo(map)
       })
@@ -226,7 +222,7 @@ export function RailMap() {
   const closePanel = () => { setSelection(null); mapRef.current?.getCanvas().focus() }
   return <>
     {data && <div className="rail-map-controls">
-      <div className="rail-map-scope"><strong>{t('delayMapTitle')}</strong><span>{period} · {t('coverage', { count: visibleStations.length })}</span></div>
+      <div className="rail-map-scope"><strong>{t('delayMapTitle')}</strong><span>{period} · {String(hour).padStart(2, '0')}:00 · {t('coverage', { count: visibleStations.length })}</span></div>
       <label>{t('selectStation')}<select aria-label={t('selectStation')} value={station?.stationId ?? ''} onChange={(event) => setSelection(event.target.value ? { kind: 'station', id: event.target.value } : null)}>
         <option value="">{t('chooseStation')}</option>
         {visibleStations.map((item) => <option key={item.stationId} value={item.stationId}>{item.stationName}</option>)}
@@ -238,8 +234,12 @@ export function RailMap() {
     </div>}
     {data && <div className="rail-drill-scope" role="status">
       <strong>{parent ? t('localScope', { id: parent.cellId, side: side / 1000 }) : t('nationalScope', { side: side / 1000 })}</strong>
-      <span>{parent ? t(drillPath.length === 1 ? 'localHint' : 'detailHint', { side: side / 1000, nextSide: DETAIL_HEX_SIDE_METRES / 1000 }) : t('drillHint')}</span>
-      {parent && <span>{t('clippedNote')}</span>}
+      <details className="rail-map-help"><summary>{t('mapGuidance')}</summary><div>
+        <p>{parent ? t(drillPath.length === 1 ? 'localHint' : 'detailHint', { side: side / 1000, nextSide: DETAIL_HEX_SIDE_METRES / 1000 }) : t('drillHint')}</p>
+        {parent && <p>{t('clippedNote')}</p>}
+        <p>{t('coverageNote')} {approximate && t('hourlyApproximateNote')}</p>
+        <a href={data.source} target="_blank" rel="noreferrer">{t('dataSource')}</a>
+      </div></details>
     </div>}
     <div className={selection || parent ? 'map-workspace has-selection' : 'map-workspace'}>
       <div className="map-frame">
@@ -257,17 +257,19 @@ export function RailMap() {
         <h2 id="station-panel-name">{station?.stationName ?? t('cellTitle', { id: cell!.cellId })}</h2>
         <p className="rail-detail-period">{period}{cell && <> · {t('binResolution', { side: (cell === parent ? parentSide : side) / 1000 })}</>}</p>
         {cell === parent && parent?.stations.length === 1 && <p className="rail-sparse-note">{t('singleStationNote')}</p>}
+        <p className="rail-hour-scope">{t('hourlyDetails', { hour: String(hour).padStart(2, '0') })}</p>
         <dl className="rail-detail-metrics">
-          <div><dt>{stationText('averageDelay')}</dt><dd>{value((station ?? cell)!.averageDelayMinutes)}</dd></div>
-          <div><dt>{t('measuredStops')}</dt><dd>{count.format((station ?? cell)!.delayObservations)}</dd></div>
+          <div><dt>{stationText('averageDelay')}</dt><dd>{value(summary!.averageDelayMinutes)}</dd></div>
+          <div><dt>{t('measuredStops')}</dt><dd>{count.format(summary!.delayObservations)}</dd></div>
           {station && <>
+            <p className="rail-period-note">{t('fullPeriodDetails')}</p>
             <div><dt>{stationText('observations')}</dt><dd>{count.format(station.observations)}</dd></div>
             <div><dt>{stationText('overFive')}</dt><dd>{station.delayedOverFivePercent == null ? '—' : `≈ ${decimal.format(station.delayedOverFivePercent)}%`}</dd></div>
             <div><dt>{stationText('cancellation')}</dt><dd>{station.cancelledPercent == null ? '—' : `≈ ${decimal.format(station.cancelledPercent)}%`}</dd></div>
             <div><dt>{t('evaIds')}</dt><dd>{station.evas.join(', ')}</dd></div>
             <div><dt>{t('trainTypes')}</dt><dd>{station.trainTypes.join(', ') || '—'}</dd></div>
           </>}
-          {cell && <div><dt>{t('measuredStations')}</dt><dd>{cell.measuredStationCount} / {cell.stations.length}</dd></div>}
+          {cell && <div><dt>{t('measuredStations')}</dt><dd>{'measuredStationCount' in summary! ? summary.measuredStationCount : 0} / {cell.stations.length}</dd></div>}
         </dl>
         {station && <p>{t('coordinates', { latitude: station.latitude.toFixed(4), longitude: station.longitude.toFixed(4) })}</p>}
         {cell && <><h3>{t('stationsInCell')}</h3><ul className="rail-cell-stations">{cell.stations.map((item) => <li key={item.stationId}>
@@ -278,8 +280,7 @@ export function RailMap() {
     </div>
     {data && <div className="rail-map-legend">
       <div><strong>{t('legendTitle')}</strong><div className="rail-delay-ramp" /><div className="rail-delay-ticks">{[0, 5, 10, 15, 20].map((tick) => <span key={tick}>{tick}{tick === 20 ? '+' : ''}</span>)}</div></div>
-      <p><span className="rail-station-key" />{t('stationKey')} · {t(parent ? 'localGridNote' : 'gridNote', { side: side / 1000, area: count.format(Math.round(HEX_AREA_KM2 * (side / HEX_SIDE_METRES) ** 2)) })}<br />{t('coverageNote')} {data.approximate && t('approximateNote')}</p>
-      <a href={data.source} target="_blank" rel="noreferrer">{t('dataSource')}</a>
+      <p><span className="rail-station-key" />{t('stationKey')} · {t(parent ? 'localGridNote' : 'gridNote', { side: side / 1000, area: count.format(Math.round(HEX_AREA_KM2 * (side / HEX_SIDE_METRES) ** 2)) })}</p>
     </div>}
   </>
 }

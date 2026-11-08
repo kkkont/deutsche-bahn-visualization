@@ -43,5 +43,9 @@
   "localGridNote": "{{side}} km hexagon sides · interior bins ≈ {{area}} km²; boundary bins are clipped.",
   "areaNavigation": "Area navigation",
   "detailHint": "Finest bin level · {{side}} km sides. Click a bin to zoom closer, or select a station for its details. Zooming keeps this grid.",
-  "backOneLevel": "Back one level"
+  "backOneLevel": "Back one level",
+  "hourlyDetails": "Hourly delay measurements · {{hour}}:00",
+  "fullPeriodDetails": "The following counts and rates describe the full exported period.",
+  "hourlyApproximateNote": "Means are approximate because this export contains rounded service-type averages.",
+  "mapGuidance": "Map guidance & data"
 }

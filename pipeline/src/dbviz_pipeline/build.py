@@ -83,6 +83,7 @@ def build_outputs(
         "stationId": row["station_id"],
         "trainType": row["train_type"],
         "hour": row["hour"],
+        "totalDelayMinutes": row["delay_sum"] or 0,
         "averageDelayMinutes": _ratio(row["delay_sum"], row["delay_count"]) or 0,
         "delayObservations": row["delay_count"],
     } for row in station_hours.iter_rows(named=True)]

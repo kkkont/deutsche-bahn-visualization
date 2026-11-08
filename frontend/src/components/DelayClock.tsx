@@ -1,66 +1,33 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useId, useRef } from 'react'
 import { arc, lineRadial, scaleLinear } from 'd3'
 import { useTranslation } from 'react-i18next'
 
-interface ClockHour {
-  hour: number
-  averageDelayMinutes: number | null
-  delayObservations: number
-}
-
-interface ClockData {
-  period: string
-  months?: string[]
-  source: string
-  timezone: string
-  hours: ClockHour[]
-}
+import type { ClockData, ClockHour } from '../data/linkedHourly'
+import { DELAY_MAX_MINUTES } from '../data/delayExplorer'
+import { PlaybackControls } from './PlaybackControls'
+import type { PlaybackProps } from './PlaybackControls'
 
 const hourLabel = (hour: number) => `${String(hour).padStart(2, '0')}:00`
 const hourAngle = (hour: number) => hour * Math.PI / 12
 const delayColors = ['#FFFFE5', '#FFF7BC', '#FEE391', '#FEC44F', '#FB9A29', '#EC7014', '#CC4C02', '#993404', '#662506']
 
-export function DelayClock() {
+export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, approximate }: {
+  data: ClockData; selectedHour: number; onHour: (hour: number) => void; scopeLabel: string; playback: PlaybackProps; approximate: boolean;
+}) {
   const { t, i18n } = useTranslation('charts')
   const titleId = useId()
-  const sliderId = useId()
   const gradientId = useId()
   const svgRef = useRef<SVGSVGElement>(null)
-  const [data, setData] = useState<ClockData | null>(null)
-  const [failed, setFailed] = useState(false)
-  const [selectedHour, setSelectedHour] = useState(12)
-
-  useEffect(() => {
-    const controller = new AbortController()
-    fetch(`${import.meta.env.BASE_URL}data/delay-clock.json`, { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error('Clock data unavailable')
-        return response.json() as Promise<ClockData>
-      })
-      .then((result) => {
-        if (result.hours.length !== 24 || result.hours.some((point, index) =>
-          point.hour !== index || !Number.isFinite(point.delayObservations) ||
-          (point.averageDelayMinutes !== null && !Number.isFinite(point.averageDelayMinutes)))) {
-          throw new Error('Invalid clock data')
-        }
-        if (!controller.signal.aborted) setData(result)
-      })
-      .catch(() => { if (!controller.signal.aborted) setFailed(true) })
-    return () => controller.abort()
-  }, [])
-
   const locale = i18n.resolvedLanguage ?? 'en'
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 })
   const count = new Intl.NumberFormat(locale)
   const measured = data?.hours.filter((point) => point.averageDelayMinutes !== null) ?? []
   const maximumDelay = Math.max(0, ...measured.map((point) => point.averageDelayMinutes!))
   const delayColor = scaleLinear<string>()
-    .domain(delayColors.map((_, index) => index * (maximumDelay || 1) / (delayColors.length - 1)))
+    .domain(delayColors.map((_, index) => index * DELAY_MAX_MINUTES / (delayColors.length - 1)))
     .range(delayColors)
     .clamp(true)
-  const legendTicks = maximumDelay > 0
-    ? [0, maximumDelay / 3, maximumDelay * 2 / 3, maximumDelay]
-    : [0]
+  const legendTicks = [0, 5, 10, 15, 20]
   const radius = scaleLinear()
     .domain([
       Math.min(0, ...measured.map((point) => point.averageDelayMinutes!)),
@@ -106,9 +73,6 @@ export function DelayClock() {
         </div>
         {data && <span className="delay-clock-period">{periodLabel}</span>}
       </header>
-      {failed ? <p role="alert">{t('clockError')}</p> : !data ? (
-        <p role="status">{t('clockLoading')}</p>
-      ) : (
         <div className="delay-clock-layout">
           <svg ref={svgRef} className="delay-clock-chart" viewBox="0 0 440 440"
             role="radiogroup" aria-labelledby={titleId}>
@@ -151,7 +115,7 @@ export function DelayClock() {
                   <g key={point.hour} data-hour={point.hour} className="delay-clock-hour"
                     role="radio" aria-checked={isSelected} tabIndex={isSelected ? 0 : -1}
                     aria-label={t('clockHourLabel', { hour: hourLabel(point.hour), delay: formatDelay(point.averageDelayMinutes) })}
-                    onClick={() => setSelectedHour(point.hour)}
+                    onClick={() => onHour(point.hour)}
                     onKeyDown={(event) => {
                       let next = point.hour
                       if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (next + 1) % 24
@@ -160,7 +124,7 @@ export function DelayClock() {
                       else if (event.key === 'End') next = 23
                       else if (event.key !== 'Enter' && event.key !== ' ') return
                       event.preventDefault()
-                      setSelectedHour(next)
+                      onHour(next)
                       svgRef.current?.querySelector<SVGGElement>(`[data-hour="${next}"]`)?.focus()
                     }}>
                     <path d={hitArea ?? undefined} className={isSelected ? 'delay-clock-sector selected' : 'delay-clock-sector'} />
@@ -180,24 +144,24 @@ export function DelayClock() {
             </g>
           </svg>
           <div className="delay-clock-details">
-            <p className="delay-clock-scope">{t('clockScope')}</p>
+            <p className="delay-clock-scope">{scopeLabel}</p>
+            <p className="linked-period-note">{t('typicalDayNote')} {approximate && t('approximateHourly')}</p>
+            <PlaybackControls {...playback} />
             <div className="delay-clock-legend">
               <span>{t('clockMeanDelay')}</span>
               <div className="delay-clock-legend-ramp" aria-hidden="true"
                 style={maximumDelay === 0 ? { background: measured.length ? delayColors[0] : 'var(--line)' } : undefined} />
               <div className="delay-clock-legend-ticks">
                 {measured.length ? legendTicks.map((value) => <span key={value}>
-                  {t('clockDelayValue', { value: number.format(value) })}
+                  {t('clockDelayValue', { value: number.format(value) })}{value === 20 ? '+' : ''}
                 </span>) : <span>{t('clockNoData')}</span>}
               </div>
             </div>
-            <label htmlFor={sliderId}>{t('clockSelectedHour')}</label>
+            <p className="linked-selected-hour-label">{t('clockSelectedHour')}</p>
             <div className="delay-clock-selected-hour">{hourLabel(selectedHour)}–{hourLabel((selectedHour + 1) % 24)}</div>
-            <input id={sliderId} type="range" min="0" max="23" step="1" value={selectedHour}
-              aria-valuetext={hourLabel(selectedHour)} onChange={(event) => setSelectedHour(Number(event.target.value))} />
-            <div className="delay-clock-readout" aria-live="polite" aria-atomic="true">
+            <div className="delay-clock-readout" aria-live={playback.playing ? 'off' : 'polite'} aria-atomic="true">
               <span>{t('clockMeanDelay')}</span>
-              <strong>{selectedDelay}</strong>
+              <strong>{approximate && selected?.averageDelayMinutes !== null ? '≈ ' : ''}{selectedDelay}</strong>
               <span>{t('clockObservationCount', { count: selected?.delayObservations ?? 0,
                 value: count.format(selected?.delayObservations ?? 0) })}</span>
             </div>
@@ -207,7 +171,6 @@ export function DelayClock() {
             </dl>
           </div>
         </div>
-      )}
     </section>
   )
 }
