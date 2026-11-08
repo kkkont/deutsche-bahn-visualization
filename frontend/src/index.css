@@ -126,3 +126,28 @@ h1 { margin: 8px 0 5px; font-size: 34px; line-height: 1.12; font-weight: 600; le
   .delay-clock-layout { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .delay-clock-chart { margin: 0 auto; }
 }
+
+.rail-map-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin-bottom: 16px; }
+.rail-map-scope { display: flex; flex: 1 1 240px; flex-direction: column; gap: 5px; }
+.rail-map-scope strong { font-size: 19px; }
+.rail-map-scope span, .rail-map-controls label { font-size: 12px; color: var(--muted); }
+.rail-map-controls label { display: flex; flex: 0 1 240px; flex-direction: column; gap: 6px; min-width: 0; }
+.rail-map-controls select { width: 100%; min-width: 0; padding: 8px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); }
+.rail-map-legend { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: start; padding: 16px 0; font-size: 12px; color: var(--muted); }
+.rail-map-legend > div { flex: 0 1 300px; min-width: 230px; }
+.rail-map-legend p { flex: 1 1 340px; line-height: 1.6; margin-bottom: 0; }
+.rail-map-legend a { color: inherit; font-size: 11px; }
+.rail-delay-ramp { height: 10px; margin-top: 8px; border: 1px solid var(--line); background: var(--delay-scale); }
+.rail-delay-ticks { display: flex; justify-content: space-between; margin-top: 5px; font-family: var(--mono); }
+.rail-station-key { display: inline-block; width: 9px; height: 9px; border: 1px solid #222222; border-radius: 50%; margin-right: 5px; background: #77AADD; }
+.rail-detail-period { margin: 10px 0 24px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.rail-detail-metrics { margin: 0 0 24px; }
+.rail-detail-metrics div { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.rail-detail-metrics dt { font-size: 12px; color: var(--muted); }
+.rail-detail-metrics dd { margin: 5px 0 0; overflow-wrap: anywhere; }
+.rail-cell-stations { padding: 0; list-style: none; }
+.rail-cell-stations button, .rail-parent-cell { border: 0; background: transparent; padding: 7px 0; text-align: left; text-decoration: underline; cursor: pointer; }
+@media (max-width: 680px) {
+  .rail-map-controls label { flex: 1 1 150px; }
+  .rail-map-controls { gap: 12px; }
+}

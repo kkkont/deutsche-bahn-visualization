@@ -64,6 +64,10 @@ cd .. && .venv/bin/python -m pytest pipeline/tests
 - i18next / react-i18next with English and German resource files
 - Python and Polars to turn monthly Parquet into browser-ready JSON
 
+The main map combines the 200 station markers (Tol Light blue) with clickable, fixed equal-area hexagons (50 km sides; Tol YlOrBr for mean delay, fixed 0–20+ minute scale). Bin and station profiles show the full exported period; bin lists link to station profiles. Both have keyboard-accessible selectors and English/German labels. The Germany viewport constraints remain active. The Explorer keeps its synthetic experiments.
+
+Map values combine all exported service types using measured-stop weights. New pipeline exports include `totalDelayMinutes` so bins divide summed delay totals by measured-stop counts. The existing committed annual `demo.json` predates that field; its weighted means are approximate because service-type means were rounded, and the map labels this explicitly. A subsequent `dbviz build` supplies exact delay totals automatically. Cancellation and over-five-minute percentages are also approximate when pooled from the existing rounded percentages. No new source download is required to run the map.
+
 The current view displays 200 stations as a MapLibre GeoJSON circle layer. For a future view with many thousands of geometries, a deck.gl overlay can be added as a separately validated rendering layer.
 
 ## Data and Attribution

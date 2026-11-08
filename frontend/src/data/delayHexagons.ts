@@ -54,10 +54,17 @@ function cellRing(q: number, r: number): [number, number][] {
 }
 
 export function summarizeHexagons(data: ExplorerDataset): DelayHexagon[] {
+  return binStationTotals(data.stations, data.daily.filter((row) => row.date >= data.periodStart && row.date <= data.periodEnd))
+}
+
+/** Bin period totals or daily records using the same fixed grid. */
+export function binStationTotals(stations: ExplorerStation[], totals: {
+  stationId: string; totalDelayMinutes: number; delayObservations: number;
+}[]): DelayHexagon[] {
   const cells = new Map<string, DelayHexagon>()
   const stationCells = new Map<string, DelayHexagon>()
   const measuredStations = new Set<string>()
-  for (const station of data.stations) {
+  for (const station of stations) {
     const [q, r] = stationCell(station)
     const cellId = `${q}:${r}`
     let cell = cells.get(cellId)
@@ -69,8 +76,8 @@ export function summarizeHexagons(data: ExplorerDataset): DelayHexagon[] {
     cell.stations.push(station)
     stationCells.set(station.stationId, cell)
   }
-  for (const row of data.daily) {
-    if (row.date < data.periodStart || row.date > data.periodEnd || row.delayObservations <= 0) continue
+  for (const row of totals) {
+    if (row.delayObservations <= 0) continue
     const cell = stationCells.get(row.stationId)
     if (!cell) continue
     cell.totalDelayMinutes += row.totalDelayMinutes

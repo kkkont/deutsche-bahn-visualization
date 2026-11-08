@@ -9,6 +9,7 @@ export interface StationMetric {
   trainTypes: string[]
   observations: number
   delayObservations: number
+  totalDelayMinutes?: number
   averageDelayMinutes: number
   delayedOverFivePercent: number
   cancelledPercent: number
@@ -24,6 +25,7 @@ export interface HourPoint {
 
 export interface Dataset {
   period: string
+  months?: string[]
   generatedAt: string
   source: string
   stations: StationMetric[]
