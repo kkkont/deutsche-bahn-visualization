@@ -19,10 +19,10 @@ export interface DelayHexagon {
   coordinates: [number, number][]
 }
 
-function stationCell(station: ExplorerStation): [number, number] {
+function stationCell(station: ExplorerStation, side: number): [number, number] {
   const [x, y] = projection([station.longitude, station.latitude])!
-  const q = (Math.sqrt(3) / 3 * x - y / 3) / HEX_SIDE_METRES
-  const r = 2 / 3 * y / HEX_SIDE_METRES
+  const q = (Math.sqrt(3) / 3 * x - y / 3) / side
+  const r = 2 / 3 * y / side
   // Round cube coordinates, correcting the largest rounding error.
   let a = Math.round(q), b = Math.round(r)
   const c = Math.round(-q - r)
@@ -32,12 +32,12 @@ function stationCell(station: ExplorerStation): [number, number] {
   return [a, b]
 }
 
-function cellRing(q: number, r: number): [number, number][] {
-  const x = HEX_SIDE_METRES * Math.sqrt(3) * (q + r / 2)
-  const y = HEX_SIDE_METRES * 1.5 * r
+function cellRing(q: number, r: number, side: number): [number, number][] {
+  const x = side * Math.sqrt(3) * (q + r / 2)
+  const y = side * 1.5 * r
   const corners = Array.from({ length: 6 }, (_, index) => {
     const angle = (60 * index - 30) * Math.PI / 180
-    return [x + HEX_SIDE_METRES * Math.cos(angle), y + HEX_SIDE_METRES * Math.sin(angle)]
+    return [x + side * Math.cos(angle), y + side * Math.sin(angle)]
   })
   // Densify straight projected edges before converting to geographic GeoJSON.
   const ring: [number, number][] = []
@@ -60,17 +60,17 @@ export function summarizeHexagons(data: ExplorerDataset): DelayHexagon[] {
 /** Bin period totals or daily records using the same fixed grid. */
 export function binStationTotals(stations: ExplorerStation[], totals: {
   stationId: string; totalDelayMinutes: number; delayObservations: number;
-}[]): DelayHexagon[] {
+}[], side = HEX_SIDE_METRES): DelayHexagon[] {
   const cells = new Map<string, DelayHexagon>()
   const stationCells = new Map<string, DelayHexagon>()
   const measuredStations = new Set<string>()
   for (const station of stations) {
-    const [q, r] = stationCell(station)
+    const [q, r] = stationCell(station, side)
     const cellId = `${q}:${r}`
     let cell = cells.get(cellId)
     if (!cell) {
       cell = { cellId, stations: [], measuredStationCount: 0, delayObservations: 0,
-        totalDelayMinutes: 0, averageDelayMinutes: null, coordinates: cellRing(q, r) }
+        totalDelayMinutes: 0, averageDelayMinutes: null, coordinates: cellRing(q, r, side) }
       cells.set(cellId, cell)
     }
     cell.stations.push(station)

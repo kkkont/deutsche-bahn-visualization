@@ -13,7 +13,7 @@ const latitude = (y: number) => 360 / Math.PI * Math.atan(Math.exp((1 - 2 * y) *
 const clamp = (value: number, low: number, high: number) => low > high ? (low + high) / 2 : Math.min(high, Math.max(low, value))
 
 /** Keep the visible area inside Germany and never zoom out further than the whole country. */
-export function lockToGermany(map: MapLibreMap, padding: number) {
+export function lockToGermany(map: MapLibreMap, padding: number, fitOnResize = true) {
   let minZoom = 0
   map.setTransformConstrain((center, zoom) => {
     const z = Math.max(zoom, minZoom)
@@ -24,12 +24,12 @@ export function lockToGermany(map: MapLibreMap, padding: number) {
     const y = clamp(mercatorY(center.lat), mercatorY(NORTH) + halfHeight, mercatorY(SOUTH) - halfHeight)
     return { center: new LngLat(x * 360 - 180, latitude(y)), zoom: z }
   })
-  const fit = () => {
+  const fit = (resetCamera = true) => {
     map.setMinZoom(null)
     minZoom = map.cameraForBounds(GERMANY_BOUNDS, { padding })?.zoom ?? 0
     map.setMinZoom(minZoom)
-    map.fitBounds(GERMANY_BOUNDS, { padding, duration: 0 })
+    if (resetCamera) map.fitBounds(GERMANY_BOUNDS, { padding, duration: 0 })
   }
   fit()
-  map.on('resize', fit)
+  map.on('resize', () => fit(fitOnResize))
 }
