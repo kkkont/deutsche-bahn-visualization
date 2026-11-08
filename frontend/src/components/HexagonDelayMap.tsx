@@ -6,6 +6,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { DELAY_COLORS, DELAY_MAX_MINUTES } from '../data/delayExplorer'
 import { HEX_AREA_KM2, HEX_SIDE_METRES } from '../data/delayHexagons'
 import type { DelayHexagon } from '../data/delayHexagons'
+import { lockToGermany } from './germanyBounds'
 
 setWorkerUrl(mapWorkerUrl)
 const number = new Intl.NumberFormat('en-GB')
@@ -42,9 +43,9 @@ export function HexagonDelayMap({ cells, period, selectedStationIds, onSelectSta
     const map = new MapLibreMap({
       container: container.current,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-      bounds: [[5.8, 47.2], [15.1, 55.1]], fitBoundsOptions: { padding: 35 },
-      minZoom: 2, maxZoom: 13, attributionControl: false,
+      maxZoom: 13, attributionControl: false,
     })
+    lockToGermany(map, 35)
     mapRef.current = map
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new AttributionControl({ compact: true }), 'bottom-right')

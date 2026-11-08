@@ -5,6 +5,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import { DELAY_COLORS, DELAY_MAX_MINUTES } from '../data/delayExplorer'
 import type { StationSummary } from '../data/delayExplorer'
+import { lockToGermany } from './germanyBounds'
 
 setWorkerUrl(mapWorkerUrl)
 interface Props {
@@ -42,8 +43,8 @@ export function AverageDelayMap(props: Props) {
   useEffect(() => {
     if (!container.current) return
     const map = new MapLibreMap({ container: container.current,
-      style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-      bounds: [[5.8, 47.2], [15.1, 55.1]], fitBoundsOptions: { padding: 35 }, minZoom: 2, maxZoom: 13, attributionControl: false })
+      style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json', maxZoom: 13, attributionControl: false })
+    lockToGermany(map, 35)
     mapRef.current = map
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new AttributionControl({ compact: true }), 'bottom-right')

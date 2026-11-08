@@ -3,6 +3,7 @@ import { AttributionControl, Map as MapLibreMap, NavigationControl, Popup, setWo
 import { useTranslation } from 'react-i18next'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
+import { lockToGermany } from './germanyBounds'
 
 setWorkerUrl(mapWorkerUrl)
 
@@ -32,12 +33,10 @@ export function RailMap() {
     const map = new MapLibreMap({
       container: containerRef.current,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-      bounds: [[5.8, 47.2], [15.1, 55.1]],
-      fitBoundsOptions: { padding: 24 },
-      minZoom: 2,
       maxZoom: 13,
       attributionControl: false,
     })
+    lockToGermany(map, 24)
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new AttributionControl({ compact: true }), 'bottom-right')
 
@@ -89,10 +88,7 @@ export function RailMap() {
       }
     })
 
-    const resizeObserver = new ResizeObserver(() => {
-      map.resize()
-      map.fitBounds([[5.8, 47.2], [15.1, 55.1]], { padding: 24, duration: 0 })
-    })
+    const resizeObserver = new ResizeObserver(() => map.resize())
     resizeObserver.observe(containerRef.current)
     mapRef.current = map
 
