@@ -10,6 +10,7 @@ interface ClockHour {
 
 interface ClockData {
   period: string
+  months?: string[]
   source: string
   timezone: string
   hours: ClockHour[]
@@ -91,6 +92,10 @@ export function DelayClock() {
     ? t('clockNoData')
     : t('clockDelayValue', { value: number.format(value) })
   const selectedDelay = formatDelay(selected?.averageDelayMinutes ?? null)
+  const monthFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' })
+  const months = data?.months?.length ? data.months : data ? [data.period] : []
+  const periodLabel = months.length ? [...new Set([months[0], months[months.length - 1]])]
+    .map((month) => monthFormat.format(new Date(`${month}-01T12:00:00Z`))).join(' – ') : ''
 
   return (
     <section className="delay-clock-section" aria-labelledby={titleId}>
@@ -99,9 +104,7 @@ export function DelayClock() {
           <p className="delay-clock-eyebrow">{t('clockOverview')}</p>
           <h2 id={titleId}>{t('clockTitle')}</h2>
         </div>
-        {data && <span className="delay-clock-period">{new Intl.DateTimeFormat(locale, {
-          month: 'long', year: 'numeric', timeZone: 'UTC',
-        }).format(new Date(`${data.period}-01T12:00:00Z`))}</span>}
+        {data && <span className="delay-clock-period">{periodLabel}</span>}
       </header>
       {failed ? <p role="alert">{t('clockError')}</p> : !data ? (
         <p role="status">{t('clockLoading')}</p>

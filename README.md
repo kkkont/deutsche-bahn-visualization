@@ -1,6 +1,6 @@
 # Deutsche Bahn Visualization
 
-An interactive map for exploring train delays and cancellations at major German stations. The browser receives a compact monthly JSON aggregate, never the source Parquet files.
+An interactive map for exploring train delays and cancellations at German stations over the last 12 months. The browser receives compact JSON aggregates, never the source Parquet files.
 
 ## Run the App
 
@@ -12,22 +12,41 @@ npm install
 npm run dev
 ```
 
-Vite prints the local URL (normally `http://localhost:5173`). The bundled `frontend/public/data/demo.json` is generated from a single real source month and is small enough to commit, so the app does not need a backend or a data download to start.
+Vite prints the local URL (normally `http://localhost:5173`). The JSON files in `frontend/public/data/` are generated from real source data and committed, so the app does not need a backend or a data download to start.
+
+## Which Data Is Shown
+
+**Time window: the last 12 months (currently November 2025 – October 2026).** The source changed its coverage in November 2025: before that it recorded about 130 major stations (~2 million measured stops per month), afterwards about 5,300 stations (~15 million per month). Averages that span that change would mix two different station networks and are not comparable, so `build` and `stations` use the 12 most recent cached months by default. Older months can still be built explicitly, e.g. `dbviz build 2024-11..2025-10`.
+
+**Stations: the busiest 200.** The source records ~5,400 stations, but showing all of them crowds the map and makes the detailed files too large for a browser (about 175 MB for daily station values and 46 MB for station × train type × hour). Most of them are small stops with few trains. So:
+
+- `stations.geojson` (map) contains only the 200 stations with the most observations. `build` writes detailed data only for the stations in that file, so `demo.json` and `delay-explorer.json` cover the same 200 (about 3 MB and 7 MB, under 1 MB gzipped).
+- `delay-clock.json` still includes every observation, so the national daily rhythm is not biased towards big stations.
+- Change the number with `dbviz stations --top N` and then run `dbviz build`; `--top 0` keeps every station.
 
 ## Refresh the Data
 
-The source has over 230 million rows and about 70 GB of Parquet. Download one month at a time; the default is July 2024, a roughly 108 MB file.
+The source has over 230 million rows and several GB of Parquet (60–380 MB per month), so the pipeline works in two steps:
+
+1. **`ingest`** fetches one month at a time from a *source* and caches small per-month summary tables (sums and counts, under 2 MB per month) in ignored `data/processed/<YYYY-MM>/`.
+2. **`build`** combines any set of cached months into the JSON files in `frontend/public/data/`, without touching the raw Parquet again.
 
 ```sh
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e "pipeline[test]"
-python -m dbviz_pipeline.aggregate --month 2024-07
+
+dbviz ingest 2025-11..2026-10   # download and summarise the last 12 months
+dbviz stations                  # update station locations
+dbviz build                     # write the JSON files for the app
 ```
 
-The command downloads only `monthly_processed_data/data-YYYY-MM.parquet` into ignored `data/raw/`, aggregates it with Polars, and writes the small result to `frontend/public/data/demo.json`. Restart or refresh Vite to see the new month. Other available months can be passed in `YYYY-MM` format. Source timestamps are German local time (`Europe/Berlin`) and are kept as provided.
+Each downloaded month (60–380 MB) is deleted once its summary is cached, because only the summary is used afterwards; pass `--keep-raw` to keep it. To add a new month later, run `dbviz ingest 2026-11` and then `stations` and `build` again. `dbviz list` shows cached months, and `--source local --local-dir <folder>` ingests Parquet files you already have.
 
-The first version includes mapped coordinates for a curated set of major hubs. Stations without a known coordinate are deliberately omitted rather than assigned an approximate location. The station and hourly summaries are grouped by train type; filters and station details are computed client-side from those small aggregates.
+`build` writes `demo.json` (station × train type summaries), `delay-clock.json` (national hourly profile) and `delay-explorer.json` (real station-day totals in the Delay Explorer format). Means are recomputed from summed counts, so combining months is exact. Restart or refresh Vite to see the new data. Source timestamps are German local time (`Europe/Berlin`) and are kept as provided.
+
+Stations are placed by EVA ID using `frontend/public/data/stations.geojson`; stations that are not in it (outside the busiest 200, or without known coordinates) are left off the map rather than given an approximate location. Station and hourly summaries are grouped by train type; filters and station details are computed client-side from those small aggregates.
+
 
 ## Checks
 
@@ -45,7 +64,7 @@ cd .. && .venv/bin/python -m pytest pipeline/tests
 - i18next / react-i18next with English and German resource files
 - Python and Polars to turn monthly Parquet into browser-ready JSON
 
-The current view displays a few dozen major stations, so it uses MapLibre markers directly. For a future view with many thousands of geometries, a deck.gl overlay can be added as a separately validated rendering layer.
+The current view displays 200 stations as a MapLibre GeoJSON circle layer. For a future view with many thousands of geometries, a deck.gl overlay can be added as a separately validated rendering layer.
 
 ## Data and Attribution
 
