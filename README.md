@@ -31,10 +31,22 @@ The source has over 230 million rows and several GB of Parquet (60–380 MB per 
 1. **`ingest`** fetches one month at a time from a *source* and caches small per-month summary tables (sums and counts, under 2 MB per month) in ignored `data/processed/<YYYY-MM>/`.
 2. **`build`** combines any set of cached months into the JSON files in `frontend/public/data/`, without touching the raw Parquet again.
 
+Requirements: Python 3.9+. Set up the environment once from the repository root, with either uv or the standard library `venv`:
+
 ```sh
+# Option A: uv
+uv venv .venv
+uv pip install --python .venv/bin/python -e "pipeline[test]"
+
+# Option B: venv + pip
 python3 -m venv .venv
+.venv/bin/python -m pip install -e "pipeline[test]"
+```
+
+An environment created by uv has no pip, so `python -m pip` fails with "No module named pip"; use the uv command for it. Then activate the environment and run the pipeline:
+
+```sh
 source .venv/bin/activate
-python -m pip install -e "pipeline[test]"
 
 dbviz ingest 2025-11..2026-10   # download and summarise the last 12 months
 dbviz stations                  # update station locations
