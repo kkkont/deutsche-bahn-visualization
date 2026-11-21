@@ -18,6 +18,7 @@ function App() {
   const [hour, setHour] = useState(12)
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState(1)
+  const [filterContainer, setFilterContainer] = useState<HTMLDivElement | null>(null)
   const [scope, setScope] = useState<MapScope>({ stationIds: [], name: null })
   useEffect(() => {
     const controller = new AbortController()
@@ -41,7 +42,7 @@ function App() {
   const changeScope = useCallback((next: MapScope) => setScope(next), [])
   const chooseHour = useCallback((next: number) => { setPlaying(false); setHour(next) }, [])
   const togglePlaying = useCallback(() => setPlaying((value) => !value), [])
-  const playback = { hour, playing, speed, onHour: chooseHour, onPlaying: togglePlaying, onSpeed: setSpeed }
+  const playback = { playing, speed, onPlaying: togglePlaying, onSpeed: setSpeed }
   const scopeLabel = scope.name ? `${scope.name} · ${chartText('mappedCount', { count: scope.stationIds.length })}` : chartText('mappedNetwork', { count: model?.stations.length ?? 0 })
   useEffect(() => {
     if (!playing) return
@@ -82,18 +83,20 @@ function App() {
       </section>
 
       {failed ? <p role="alert">{t('dataError')}</p> : !model || !clockData ? <p role="status">{t('loading')}</p> : <>
+        <section className="dashboard-toolbar" aria-label={chartText('dashboardFilters')}>
+          <div className="dashboard-context"><strong>{scopeLabel}</strong><p>{chartText('typicalDayNote')}</p></div>
+          <div className="dashboard-filter-row">
+            <div className="dashboard-map-filters" ref={setFilterContainer} />
+            <PlaybackControls {...playback} />
+          </div>
+        </section>
         <section className="station-map-dashboard" aria-label={chartText('linkedPlayback')}>
-        <div className="linked-day-controls">
-          <strong>{scopeLabel}</strong>
-          <p>{chartText('typicalDayNote')}</p>
-          <PlaybackControls {...playback} />
-        </div>
-        <section className="linked-map-view" aria-label={t('common:title')}>
-          <RailMap data={model} hourlyStations={stationHours[hour]} hour={hour} approximate={approximate} onScopeChange={changeScope} />
+          <section className="linked-map-view" aria-label={t('common:title')}>
+            <RailMap data={model} hourlyStations={stationHours[hour]} hour={hour} approximate={approximate} onScopeChange={changeScope} filterContainer={filterContainer} />
+          </section>
+          <HourlyPulse approximate={approximate} hours={hours} hour={hour} playing={playing} onHour={chooseHour} scopeLabel={scopeLabel} />
+          <DelayClock data={clockData} selectedHour={hour} onHour={chooseHour} scopeLabel={scopeLabel} playing={playing} approximate={approximate} />
         </section>
-        <HourlyPulse compact approximate={approximate} hours={hours} hour={hour} playing={playing} onHour={chooseHour} />
-        </section>
-        <DelayClock data={clockData} selectedHour={hour} onHour={chooseHour} scopeLabel={scopeLabel} playback={playback} approximate={approximate} />
       </>}
     </main>
   )

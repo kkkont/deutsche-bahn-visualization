@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { AttributionControl, Map as MapLibreMap, NavigationControl, Popup, setWorkerUrl } from 'maplibre-gl'
 import type { ExpressionSpecification, GeoJSONSource } from 'maplibre-gl'
 import { useTranslation } from 'react-i18next'
@@ -27,8 +28,8 @@ const stationFeatures = (stations: RailStation[]) => ({ type: 'FeatureCollection
   properties: { stationId: item.stationId, stationName: item.stationName },
 })) })
 
-export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange }: {
-  data: MapData; hourlyStations: RailStation[]; hour: number; approximate: boolean; onScopeChange: (scope: MapScope) => void;
+export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange, filterContainer }: {
+  filterContainer: HTMLDivElement | null; data: MapData; hourlyStations: RailStation[]; hour: number; approximate: boolean; onScopeChange: (scope: MapScope) => void;
 }) {
   const { t, i18n } = useTranslation('map')
   const { t: stationText } = useTranslation('stations')
@@ -190,9 +191,7 @@ export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange
   }, [data])
 
   const closePanel = () => { setSelection(null); mapRef.current?.getCanvas().focus() }
-  return <>
-    {data && <div className="rail-map-controls">
-      <div className="rail-map-scope"><strong>{t('delayMapTitle')}</strong><span>{period} · {String(hour).padStart(2, '0')}:00 · {t('coverage', { count: data.stations.length })}</span></div>
+  const filters = <div className="rail-map-filters">
       <label>{t('selectStation')}<select aria-label={t('selectStation')} value={station?.stationId ?? ''} onChange={(event) => setSelection(event.target.value ? { kind: 'station', id: event.target.value } : null)}>
         <option value="">{t('chooseStation')}</option>
         {data.stations.map((item) => <option key={item.stationId} value={item.stationId}>{item.stationName}</option>)}
@@ -201,7 +200,10 @@ export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange
         <option value="">{t('chooseCell')}</option>
         {cells.map((item) => <option key={item.cellId} value={item.cellId}>{item.cellId.split('/').at(-1)} · {item.stations.length} · {item.stations[0].stationName}</option>)}
       </select></label>
-    </div>}
+  </div>
+  return <>
+    {filterContainer ? createPortal(filters, filterContainer) : filters}
+    <header className="rail-map-heading"><h2>{t('delayMapTitle')}</h2><span>{period} · {String(hour).padStart(2, '0')}:00 · {t('coverage', { count: data.stations.length })}</span></header>
     {data && <div className="rail-drill-scope" role="status">
       <strong>{t('zoomScope', { side: side / 1000 })}</strong>
       <button type="button" className="rail-overview" onClick={backToGermany}>{t('backGermany')}</button>

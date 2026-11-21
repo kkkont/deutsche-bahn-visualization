@@ -1,21 +1,16 @@
 {
   "clockTitle": "24-hour delay clock",
-  "clockOverview": "DAILY RHYTHM",
-  "clockSelectedHour": "Selected hour",
   "clockMeanDelay": "Average delay",
   "clockDelayValue": "{{value}} min",
   "clockHourLabel": "{{hour}}: {{delay}}",
   "clockNoData": "No data",
   "clockObservationCount_one": "{{value}} measured train stop",
   "clockObservationCount_other": "{{value}} measured train stops",
-  "clockTimezone": "Local time",
-  "clockSource": "Source",
   "clockSourceName": "Deutsche Bahn · piebro dataset",
   "playDay": "Play day",
   "pauseDay": "Pause",
   "playSpeed": "Speed",
   "hoursPerSecond": "h/s",
-  "playbackHour": "Playback hour",
   "linkedPlayback": "Linked daily playback",
   "mappedCount": "{{count}} mapped stations",
   "mappedNetwork": "Mapped network · {{count}} stations",
@@ -25,5 +20,8 @@
   "pulseHint": "Hover for the hour range and delay. Grey line: weighted mean for the map selection. Click or drag to choose an hour; arrow keys also work.",
   "pulseTime": "Hour on the delay pulse",
   "mappedCount_one": "{{count}} mapped station",
-  "mappedCount_other": "{{count}} mapped stations"
+  "mappedCount_other": "{{count}} mapped stations",
+  "dashboardFilters": "Dashboard filters and playback",
+  "clockInteract": "Choose an hour here or in the line chart to update all three views.",
+  "profileDetails": "Period & source"
 }

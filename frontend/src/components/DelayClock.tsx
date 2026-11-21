@@ -4,14 +4,12 @@ import { useTranslation } from 'react-i18next'
 
 import type { ClockData, ClockHour } from '../data/linkedHourly'
 import { DELAY_COLORS as delayColors, DELAY_MAX_MINUTES } from '../data/delayColors'
-import { PlaybackControls } from './PlaybackControls'
-import type { PlaybackProps } from './PlaybackControls'
 
 const hourLabel = (hour: number) => `${String(hour).padStart(2, '0')}:00`
 const hourAngle = (hour: number) => hour * Math.PI / 12
 
-export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, approximate }: {
-  data: ClockData; selectedHour: number; onHour: (hour: number) => void; scopeLabel: string; playback: PlaybackProps; approximate: boolean;
+export function DelayClock({ data, selectedHour, onHour, scopeLabel, playing, approximate }: {
+  data: ClockData; selectedHour: number; onHour: (hour: number) => void; scopeLabel: string; playing: boolean; approximate: boolean;
 }) {
   const { t, i18n } = useTranslation('charts')
   const titleId = useId()
@@ -21,20 +19,18 @@ export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, a
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 })
   const count = new Intl.NumberFormat(locale)
   const measured = data?.hours.filter((point) => point.averageDelayMinutes !== null) ?? []
-  const maximumDelay = Math.max(0, ...measured.map((point) => point.averageDelayMinutes!))
   const delayColor = scaleLinear<string>()
     .domain(delayColors.map((_, index) => index * DELAY_MAX_MINUTES / (delayColors.length - 1)))
     .range(delayColors)
     .clamp(true)
-  const legendTicks = [0, 5, 10, 15, 20]
   const radius = scaleLinear()
     .domain([
       Math.min(0, ...measured.map((point) => point.averageDelayMinutes!)),
       Math.max(1, ...measured.map((point) => point.averageDelayMinutes!)),
     ])
     .nice(4)
-    .range([60, 158])
-  const ticks = radius.ticks(4)
+    .range([40, 104])
+  const ticks = radius.ticks(3)
   const radialLine = lineRadial<ClockHour>()
     .defined((point) => point.averageDelayMinutes !== null)
     .angle((point) => hourAngle(point.hour))
@@ -67,13 +63,12 @@ export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, a
     <section className="delay-clock-section" aria-labelledby={titleId}>
       <header className="delay-clock-heading">
         <div>
-          <p className="delay-clock-eyebrow">{t('clockOverview')}</p>
           <h2 id={titleId}>{t('clockTitle')}</h2>
         </div>
-        {data && <span className="delay-clock-period">{periodLabel}</span>}
+        <span className="chart-scope">{scopeLabel}</span>
       </header>
         <div className="delay-clock-layout">
-          <svg ref={svgRef} className="delay-clock-chart" viewBox="0 0 440 440"
+          <svg ref={svgRef} className="delay-clock-chart" viewBox="0 0 300 300"
             role="radiogroup" aria-labelledby={titleId}>
             <defs>
               {segments.map((segment) => (
@@ -84,7 +79,7 @@ export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, a
                 </linearGradient>
               ))}
             </defs>
-            <g transform="translate(220,220)">
+            <g transform="translate(150,150)">
               {ticks.map((tick) => (
                 <g key={tick} aria-hidden="true">
                   <circle r={radius(tick)} className="delay-clock-ring" />
@@ -94,10 +89,10 @@ export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, a
                 </g>
               ))}
               {data.hours.filter((point) => point.hour % 3 === 0).map((point) => (
-                <line key={point.hour} x1={Math.sin(hourAngle(point.hour)) * 60}
-                  y1={-Math.cos(hourAngle(point.hour)) * 60}
-                  x2={Math.sin(hourAngle(point.hour)) * 158}
-                  y2={-Math.cos(hourAngle(point.hour)) * 158}
+                <line key={point.hour} x1={Math.sin(hourAngle(point.hour)) * 40}
+                  y1={-Math.cos(hourAngle(point.hour)) * 40}
+                  x2={Math.sin(hourAngle(point.hour)) * 104}
+                  y2={-Math.cos(hourAngle(point.hour)) * 104}
                   className="delay-clock-spoke" aria-hidden="true" />
               ))}
               {segments.map((segment) => <path key={segment.hour} d={segment.path}
@@ -107,7 +102,7 @@ export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, a
               {data.hours.map((point) => {
                 const angle = hourAngle(point.hour)
                 const isSelected = point.hour === selectedHour
-                const hitArea = arc()({ innerRadius: 59, outerRadius: 205,
+                const hitArea = arc()({ innerRadius: 36, outerRadius: 145,
                   startAngle: angle - Math.PI / 24, endAngle: angle + Math.PI / 24 })
                 const valueRadius = radius(point.averageDelayMinutes ?? 0)
                 return (
@@ -127,7 +122,7 @@ export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, a
                       svgRef.current?.querySelector<SVGGElement>(`[data-hour="${next}"]`)?.focus()
                     }}>
                     <path d={hitArea ?? undefined} className={isSelected ? 'delay-clock-sector selected' : 'delay-clock-sector'} />
-                    <text x={Math.sin(angle) * 187} y={-Math.cos(angle) * 187}
+                    <text x={Math.sin(angle) * 132} y={-Math.cos(angle) * 132}
                       textAnchor="middle" dominantBaseline="middle" className="delay-clock-hour-label">
                       {String(point.hour).padStart(2, '0')}
                     </text>
@@ -143,31 +138,19 @@ export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, a
             </g>
           </svg>
           <div className="delay-clock-details">
-            <p className="delay-clock-scope">{scopeLabel}</p>
-            <p className="linked-period-note">{t('typicalDayNote')} {approximate && t('approximateHourly')}</p>
-            <PlaybackControls {...playback} />
-            <div className="delay-clock-legend">
-              <span>{t('clockMeanDelay')}</span>
-              <div className="delay-clock-legend-ramp" aria-hidden="true"
-                style={maximumDelay === 0 ? { background: measured.length ? delayColors[0] : 'var(--line)' } : undefined} />
-              <div className="delay-clock-legend-ticks">
-                {measured.length ? legendTicks.map((value) => <span key={value}>
-                  {t('clockDelayValue', { value: number.format(value) })}{value === 20 ? '+' : ''}
-                </span>) : <span>{t('clockNoData')}</span>}
-              </div>
-            </div>
-            <p className="linked-selected-hour-label">{t('clockSelectedHour')}</p>
             <div className="delay-clock-selected-hour">{hourLabel(selectedHour)}–{hourLabel((selectedHour + 1) % 24)}</div>
-            <div className="delay-clock-readout" aria-live={playback.playing ? 'off' : 'polite'} aria-atomic="true">
+            <div className="delay-clock-readout" aria-live={playing ? 'off' : 'polite'} aria-atomic="true">
               <span>{t('clockMeanDelay')}</span>
               <strong>{approximate && selected?.averageDelayMinutes !== null ? '≈ ' : ''}{selectedDelay}</strong>
               <span>{t('clockObservationCount', { count: selected?.delayObservations ?? 0,
                 value: count.format(selected?.delayObservations ?? 0) })}</span>
             </div>
-            <dl className="delay-clock-metadata">
-              <div><dt>{t('clockTimezone')}</dt><dd>{data.timezone}</dd></div>
-              <div><dt>{t('clockSource')}</dt><dd><a href={data.source} target="_blank" rel="noreferrer">{t('clockSourceName')}</a></dd></div>
-            </dl>
+            <p className="clock-interaction-hint">{t('clockInteract')}</p>
+            <details className="clock-metadata"><summary>{t('profileDetails')}</summary>
+              <p>{periodLabel} · {data.timezone}</p>
+              <p>{t('typicalDayNote')} {approximate && t('approximateHourly')}</p>
+              <a href={data.source} target="_blank" rel="noreferrer">{t('clockSourceName')}</a>
+            </details>
           </div>
         </div>
     </section>
