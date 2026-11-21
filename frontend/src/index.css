@@ -145,9 +145,6 @@ h1 { margin: 8px 0 5px; font-size: 34px; line-height: 1.12; font-weight: 600; le
 .rail-drill-scope strong { flex: 1 1 240px; }
 .rail-drill-scope > span { flex-basis: 100%; color: var(--muted); line-height: 1.5; }
 .rail-sparse-note { font-size: 12px; line-height: 1.5; color: var(--muted); }
-.rail-area-actions { position: sticky; top: 0; z-index: 1; background: var(--paper); padding-block: 8px; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-.rail-area-actions button { border: 1px solid var(--line); padding: 7px 10px; background: var(--paper); font-size: 12px; cursor: pointer; }
-.rail-area-actions button:disabled { opacity: 0.5; cursor: default; }
 .linked-day-controls { margin-bottom: 18px; padding: 16px; background: var(--paper); border: 1px solid var(--line); }
 .linked-day-controls > p, .linked-period-note { font-size: 12px; line-height: 1.6; color: var(--muted); margin: 8px 0 14px; }
 .linked-playback { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; font-size: 12px; margin-bottom: 16px; }
@@ -229,3 +226,5 @@ h1 { margin: 8px 0 5px; font-size: 34px; line-height: 1.12; font-weight: 600; le
 }
 .linked-pulse { position: relative; }
 .pulse-tooltip { position: absolute; bottom: calc(100% - 24px); transform: translateX(-50%); z-index: 6; display: flex; flex-direction: column; gap: 3px; min-width: 160px; max-width: 240px; padding: 9px 12px; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 2px 10px #0002; font-size: 12px; pointer-events: none; }
+
+.rail-overview { padding: 3px 8px; border: 1px solid var(--line); background: var(--paper); cursor: pointer; font-size: 11px; }

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { buildStationHours, hourlyIsApproximate, refreshCell, summarizeHourly } from '../src/data/linkedHourly.ts'
 import { prepareRailMap } from '../src/data/railMapData.ts'
 import { binStationTotals } from '../src/data/delayHexagons.ts'
-import { drillIntoCell } from '../src/data/railMapDrilldown.ts'
+import { buildZoomGrids } from '../src/data/zoomBins.ts'
 import type { Dataset, HourPoint } from '../src/data/types.ts'
 import type { RailStation } from '../src/data/railMapData.ts'
 
@@ -43,13 +43,12 @@ test('map and linked charts agree for bins and stations across every hour and pr
   const dataset: Dataset = read('demo.json')
   const model = prepareRailMap(dataset, read('stations.geojson'))
   const hours = buildStationHours(model.stations, dataset.hourly)
-  const parent = model.cells.find((cell) => cell.stations.length === 37)!
-  const children = drillIntoCell(parent, model.stations)
-  const detail = drillIntoCell(children.find((cell) => cell.stations.length === 24)!, model.stations, 2000)
-  for (const cell of [parent, ...children, ...detail]) {
+  const grids = buildZoomGrids(model.stations, model.cells)
+  const byHour = hours.map((stations) => new Map(stations.map((item) => [item.stationId, item])))
+  for (const cell of grids.flatMap((grid) => grid.cells)) {
     const profile = summarizeHourly(hours, cell.stations.map((item) => item.stationId))
     for (let hour = 0; hour < 24; hour++) {
-      const refreshed = refreshCell(cell, new Map(hours[hour].map((item) => [item.stationId, item])))
+      const refreshed = refreshCell(cell, byHour[hour])
       assert.equal(refreshed.averageDelayMinutes, profile[hour].averageDelayMinutes)
       assert.equal(refreshed.delayObservations, profile[hour].delayObservations)
       assert.equal(refreshed.coordinates, cell.coordinates)
