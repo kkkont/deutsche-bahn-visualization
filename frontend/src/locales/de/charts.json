@@ -1,7 +1,6 @@
 {
   "clockTitle": "24-Stunden-Verspätungsuhr",
   "clockOverview": "TAGESRHYTHMUS",
-  "clockScope": "Alle erfassten Bahnhöfe · alle Zugtypen",
   "clockSelectedHour": "Ausgewählte Stunde",
   "clockMeanDelay": "Mittlere Verspätung",
   "clockDelayValue": "{{value}} Min.",
@@ -12,12 +11,6 @@
   "clockTimezone": "Ortszeit",
   "clockSource": "Quelle",
   "clockSourceName": "Deutsche Bahn · piebro-Datensatz",
-  "clockLoading": "Stündliche Verspätungen werden geladen …",
-  "clockError": "Stündliche Verspätungen konnten nicht geladen werden. Bitte lade die Seite neu.",
-  "dayProfile": "TAGESVERLAUF",
-  "hourlyDelay": "Verspätung im Tagesverlauf",
-  "minutes": "MINUTEN",
-  "minutesShort": "Min.",
   "playDay": "Tag abspielen",
   "pauseDay": "Pause",
   "playSpeed": "Tempo",
@@ -31,7 +24,6 @@
   "pulseTitle": "Stündlicher Verspätungspuls",
   "pulseHint": "Beim Überfahren erscheinen Stundenbereich und Verspätung. Graue Linie: gewichteter Mittelwert der Kartenauswahl. Stunde per Klick, Ziehen oder Pfeiltasten wählen.",
   "pulseTime": "Stunde im Verspätungspuls",
-  "measuredStops": "gemessene Zughalte",
   "mappedCount_one": "{{count}} kartierter Bahnhof",
   "mappedCount_other": "{{count}} kartierte Bahnhöfe"
 }

@@ -66,7 +66,7 @@ def ingest(args: argparse.Namespace) -> None:
             continue
         path = source.fetch(month)
         tables = summarize_month(pl.scan_parquet(path))
-        rows = int(tables["hour"]["delay_count"].sum() or 0)
+        rows = int(tables["station_type"]["delay_count"].sum() or 0)
         write_month(args.processed_dir, month, tables, {"source": source.name, "sourceUrl": source.url})
         print(f"{month}: cached {rows:,} measured stops from {path}")
         if source.disposable and not args.keep_raw:
@@ -84,7 +84,7 @@ def build(args: argparse.Namespace) -> None:
         print(f"Wrote {path}")
     if unmapped:
         print(f"{len(unmapped)} EVA IDs are not in {args.stations.name} (outside the busiest stations or without "
-              "coordinates); they only count towards the delay clock")
+              "coordinates); they are omitted from the map and its linked charts")
 
 
 def stations(args: argparse.Namespace) -> None:

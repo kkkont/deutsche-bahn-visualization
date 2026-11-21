@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { line, scaleLinear } from 'd3'
 import { useTranslation } from 'react-i18next'
-import { DELAY_COLORS, DELAY_MAX_MINUTES } from '../data/delayExplorer'
+import { DELAY_COLORS, DELAY_MAX_MINUTES } from '../data/delayColors'
 import type { ClockHour } from '../data/linkedHourly'
 
 export function HourlyPulse({ hours, hour, playing, onHour, compact = false, approximate = false }: { approximate?: boolean; compact?: boolean; hours: ClockHour[]; hour: number; playing: boolean; onHour: (hour: number) => void }) {

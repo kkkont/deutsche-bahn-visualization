@@ -1,6 +1,6 @@
 # Deutsche Bahn Visualization
 
-An interactive map for exploring train delays and cancellations at German stations over the last 12 months. The browser receives compact JSON aggregates, never the source Parquet files.
+A single-page dashboard for exploring delays at German stations over the last 12 months. It combines a binned station map, hourly playback, a linked delay pulse and a 24-hour clock. The browser receives compact JSON aggregates, never the source Parquet files.
 
 ## Run the App
 
@@ -12,26 +12,43 @@ npm install
 npm run dev
 ```
 
-Vite prints the local URL (normally `http://localhost:5173`). The JSON files in `frontend/public/data/` are generated from real source data and committed, so the app does not need a backend or a data download to start.
+Open the local URL printed by Vite, normally `http://localhost:5173/#/map`. The Station map is the only page. Bare URLs and older bookmarked routes open the map. The generated JSON files are committed, so starting the app does not require a backend or a new data download. Map tiles and fonts require a network connection.
 
-## Which Data Is Shown
+## Dashboard
 
-**Time window: the last 12 months (currently November 2025 – October 2026).** The source changed its coverage in November 2025: before that it recorded about 130 major stations (~2 million measured stops per month), afterwards about 5,300 stations (~15 million per month). Averages that span that change would mix two different station networks and are not comparable, so `build` and `stations` use the 12 most recent cached months by default. Older months can still be built explicitly, e.g. `dbviz build 2024-11..2025-10`.
+- **Binned map:** Tol YlOrBr represents mean delay on a fixed 0–20+ minute scale. Blue markers identify station locations. Select a bin or station to inspect its details and update both linked charts.
+- **Drill-down:** click through 50 km, 10 km and 2 km hexagons, then inspect individual stations. The right-hand panel provides **Area summary**, **Back one level** and **Back to Germany**. Area summaries frame occupied child bins with padding; their parent boundary can extend beyond the viewport. Zooming alone never changes the bin resolution.
+- **Playback:** Play day loops through 00–23 at 0.5, 1, 2 or 4 hours per second. Map colours, hourly tooltips and detail counts update without resetting the camera. Changing the hour manually pauses playback; hiding the page also pauses it. The default hour is 12:00.
+- **Hourly pulse:** the grey line shows the observation-weighted mean for the map selection. Hover shows only the hour range and delay, to two decimal places. Click, drag, or use arrow/Home/End keys to choose an hour. Missing observations break the line.
+- **24-hour clock:** a circular view of the same selected hourly profile, below the compact map-and-pulse dashboard. Selecting a clock hour updates the map and pulse.
 
-**Stations: the busiest 200.** The source records ~5,400 stations, but showing all of them crowds the map and makes the detailed files too large for a browser (about 175 MB for daily station values and 46 MB for station × train type × hour). Most of them are small stops with few trains. So:
+The map, selectors, playback and pulse fit together at 1280 × 720. Smaller or shorter screens use a stacked layout. Longer instructions, coverage notes and provenance are available under **Map guidance & data**. English and German labels are supported. Camera transitions ease over 750 ms; reduced-motion preferences disable those animations and the pulse ring.
 
-- `stations.geojson` (map) contains only the 200 stations with the most observations. `build` writes detailed data only for the stations in that file, so `demo.json` and `delay-explorer.json` cover the same 200 (about 3 MB and 7 MB, under 1 MB gzipped).
-- `delay-clock.json` retains the national profile including every observation. The Station map’s linked clock uses only mapped stations, matching its map selection instead of mixing two station populations.
-- Change the number with `dbviz stations --top N` and then run `dbviz build`; `--top 0` keeps every station.
+### Geographic and temporal limits
+
+Playback is a **typical-day hourly profile pooled across the exported period**, in Europe/Berlin local time. It is not a recorded day or live feed. With no selection, both charts describe the mapped network; selecting a station or bin restricts them to exactly its station IDs.
+
+The three hexagonal grids do not nest. Local cells are clipped to their parent in a spherical Lambert azimuthal equal-area projection centred on 10°E, 52°N. Boundary pieces therefore have smaller areas than full cells (about 6,495 km² at 50 km sides, 260 km² at 10 km sides, and 10.4 km² at 2 km sides). Only the parent's mapped stations contribute. Empty areas are omitted; hollow bins mean no measured delays, while measured zero remains a valid low-colour value.
+
+Smaller bins do not add stations or observations. Dense cities can still have several stations per 2 km cell; station zoom and the station list provide further detail. The map keeps its Germany viewport constraints at every level.
+
+## Data Coverage and Metrics
+
+**Time window:** the last 12 cached months, currently November 2025–October 2026. The source expanded from about 130 major stations to about 5,300 stations in November 2025. The default window avoids mixing those two networks. Older windows can be built explicitly, for example `dbviz build 2024-11..2025-10`.
+
+**Stations:** the busiest 200 observed stations with known coordinates. `stations.geojson` defines their canonical EVA identities and positions; `demo.json` contains station/service-type and station/service-type/hour aggregates for that same set. Despite its legacy filename, `demo.json` contains real source data. The linked clock and pulse use the same mapped population rather than a separate national aggregate. Change coverage with `dbviz stations --top N` followed by `dbviz build`; `--top 0` keeps all matched stations.
+
+Averages combine delay totals and measured-stop counts across service types, stations and months. New exports include `totalDelayMinutes` in station and station-hour summaries. The current committed export predates that field, so the app weights its rounded service-type means and marks the result approximate. A subsequent `dbviz build` supplies exact delay totals. Full-period observed-stop counts and cancellation/over-five-minute percentages are labelled separately from hourly delay measurements; pooled percentages remain approximate when reconstructed from rounded percentages.
 
 ## Refresh the Data
 
-The source has over 230 million rows and several GB of Parquet (60–380 MB per month), so the pipeline works in two steps:
+The Python pipeline separates ingestion from export:
 
-1. **`ingest`** fetches one month at a time from a *source* and caches small per-month summary tables (sums and counts, under 2 MB per month) in ignored `data/processed/<YYYY-MM>/`.
-2. **`build`** combines any set of cached months into the JSON files in `frontend/public/data/`, without touching the raw Parquet again.
+1. `ingest` fetches one month's Parquet and caches station/service-type and station/service-type/hour sums and counts under ignored `data/processed/YYYY-MM/` directories.
+2. `stations` chooses the busiest stations and writes `frontend/public/data/stations.geojson`.
+3. `build` combines the selected cached months and writes `frontend/public/data/demo.json`, without rereading the raw Parquet.
 
-Requirements: Python 3.9+. Set up the environment once from the repository root, with either uv or the standard library `venv`:
+Requirements: Python 3.9+. Set up the environment once from the repository root:
 
 ```sh
 # Option A: uv
@@ -43,61 +60,41 @@ python3 -m venv .venv
 .venv/bin/python -m pip install -e "pipeline[test]"
 ```
 
-An environment created by uv has no pip, so `python -m pip` fails with "No module named pip"; use the uv command for it. Then activate the environment and run the pipeline:
+An environment created by uv has no pip; use the uv command for that environment. Then run:
 
 ```sh
 source .venv/bin/activate
-
-dbviz ingest 2025-11..2026-10   # download and summarise the last 12 months
-dbviz stations                  # update station locations
-dbviz build                     # write the JSON files for the app
+dbviz ingest 2025-11..2026-10
+dbviz stations
+dbviz build
 ```
 
-Each downloaded month (60–380 MB) is deleted once its summary is cached, because only the summary is used afterwards; pass `--keep-raw` to keep it. To add a new month later, run `dbviz ingest 2026-11` and then `stations` and `build` again. `dbviz list` shows cached months, and `--source local --local-dir <folder>` ingests Parquet files you already have.
+Downloaded months are deleted after caching unless `--keep-raw` is supplied. To add another month, ingest it and rerun `stations` and `build`. `dbviz list` shows cached months. `--source local --local-dir <folder>` ingests local `data-YYYY-MM.parquet` files. Existing caches remain usable: only `station_type.parquet` and `station_hour.parquet` are read; extra historical tables are ignored. Refresh the browser after rebuilding.
 
-`build` writes `demo.json` (station × train type summaries), `delay-clock.json` (national hourly profile) and `delay-explorer.json` (real station-day totals in the Delay Explorer format). Means are recomputed from summed counts, so combining months is exact. Restart or refresh Vite to see the new data. Source timestamps are German local time (`Europe/Berlin`) and are kept as provided.
-
-Stations are placed by EVA ID using `frontend/public/data/stations.geojson`; stations that are not in it (outside the busiest 200, or without known coordinates) are left off the map rather than given an approximate location. Station and hourly summaries are grouped by train type; filters and station details are computed client-side from those small aggregates.
-
+Stations outside the configured coverage, or without coordinates, are omitted from the dashboard. See [data sources and metric notes](docs/data-sources.md) for schema, attribution and coverage details.
 
 ## Checks
 
+From the repository root:
+
 ```sh
-cd frontend && npm run build
-cd .. && .venv/bin/python -m pytest pipeline/tests
+npm --prefix frontend run build
+npm --prefix frontend run lint
+node --experimental-strip-types --test frontend/tests/*.test.ts
+.venv/bin/python -m pytest pipeline/tests
 ```
 
-## Stack
+The frontend tests require Node.js with type stripping enabled, such as Node.js 22.12+.
+
+## Stack and Attribution
 
 - React and TypeScript with Vite
-- MapLibre GL JS for the basemap, OpenRailwayMap tile overlay, and selectable station markers
-- D3 scales and shapes for the station's hourly delay profile
-- Tailwind CSS and a small project stylesheet
-- i18next / react-i18next with English and German resource files
-- Python and Polars to turn monthly Parquet into browser-ready JSON
+- MapLibre GL JS with a CARTO Positron basemap
+- D3 for equal-area binning and linked charts
+- Tailwind CSS and component styles
+- i18next / react-i18next for English and German
+- Python and Polars for aggregation
 
-The main map combines the 200 station markers (Tol Light blue) with clickable, fixed equal-area hexagons (50 km sides; Tol YlOrBr for mean delay, fixed 0–20+ minute scale). Bin colours and delay readouts show the selected hourly bucket pooled over the full exported period; bin lists link to station profiles. Both have keyboard-accessible selectors and English/German labels. The Germany viewport constraints remain active. The Explorer keeps its synthetic experiments.
-
-On the Station map page, clicking a 50 km bin drills into its area using a fixed 10 km grid. Clicking a 10 km bin drills into a 2 km grid; clicking a 2 km bin zooms closer and shows its weighted summary; selecting a station from a marker, list, or selector zooms to station detail. The right-hand panel provides **Area summary**, **Back one level** at the finest level, and **Back to Germany**. Drill-down and area-summary views automatically frame the occupied child bins with padding, rather than the entire parent polygon. This reduces empty space; the parent outline remains on the map but may extend beyond the viewport. Individual-bin and station inspection retain their closer views. Camera transitions ease over 750 ms; the operating system’s reduced-motion preference disables animation. Zooming never changes the bin resolution. Local labels use collision avoidance, while the selected station name stays visible. The existing Explorer maps retain their original behaviour.
-
-The Station map has a compact desktop dashboard: Play day, speed and hour controls above the map; a grey hourly delay pulse directly below it. Map, filters, transport and pulse fit together at 1280 × 720. Small or short screens use a taller stacked layout. Longer map instructions and provenance remain available under **Map guidance & data**. The 24-hour clock sits below the dashboard as an alternative view of the same selected profile.
-
-Playback uses discrete hourly buckets (00–23) pooled across the exported months in Europe/Berlin: a typical-day profile, not a recorded day or live feed. Selecting a station, coarse bin, 10 km bin or 2 km bin updates the clock and pulse to exactly those station IDs. Area-summary/back buttons restore the corresponding population. Hour controls in either chart update bin colours, hourly tooltips and detail counts without resetting the map camera or drill-down. The default hour is 12:00.
-
-Play day loops at 0.5, 1, 2 or 4 hours per second. Hovering the pulse shows only the hour range and delay (up to two decimal places), without changing the active hour or stopping playback. Keyboard focus provides the same details. Clicking or dragging the pulse, using its arrow/Home/End keys, selecting a clock hour, or moving an hour slider pauses playback. Playback pauses when the page becomes hidden. Missing hourly observations produce hollow bins and chart gaps, while measured zero remains a valid low-colour value. All views share the fixed 0–20+ minute YlOrBr scale; the pulse’s grey line is the observation-weighted selected-group mean. The pulsing active-point ring respects reduced-motion preferences. Full-period station counts and cancellation percentages are labelled separately from hourly delay values.
-
-The three hexagonal grids do not nest: local cells are clipped to the parent geometry in the equal-area projection, so boundary pieces have smaller areas than full hexagons (about 260 km² at 10 km sides, or 10.4 km² at 2 km sides). Only the parent’s mapped stations contribute to its local bins. Unoccupied cells remain blank, measured zero differs from missing delay values, and the fixed 0–20+ minute scale and exported period stay unchanged at every level. Smaller cells do not add stations or observations; dense cities can still have many stations in a single local bin. For example, the current Hamburg area divides its 37 stations into four occupied local bins (largest: 24 stations), and Berlin divides its 66 into six (largest: 43). Drilling into those crowded bins produces ten 2 km bins for Hamburg (at most four stations each) and fourteen for Berlin (at most six). Use station zooms for further inspection.
-
-Map values combine all exported service types using measured-stop weights. New pipeline exports include `totalDelayMinutes` in station and station-hour summaries so bins and hourly profiles divide summed delay totals by measured-stop counts. The existing committed annual `demo.json` predates that field; its weighted means are approximate because service-type means were rounded, and the map labels this explicitly. A subsequent `dbviz build` supplies exact delay totals automatically. Cancellation and over-five-minute percentages are also approximate when pooled from the existing rounded percentages. No new source download is required to run the map.
-
-The current view displays 200 stations as a MapLibre GeoJSON circle layer. For a future view with many thousands of geometries, a deck.gl overlay can be added as a separately validated rendering layer.
-
-## Data and Attribution
-
-Train observations come from [piebro/deutsche-bahn-data](https://github.com/piebro/deutsche-bahn-data), published on [Hugging Face](https://huggingface.co/datasets/piebro/deutsche-bahn-data). The dataset is provided under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) by Deutsche Bahn. The GitHub project requests citation in academic work; see [docs/data-sources.md](docs/data-sources.md).
-
-Rail infrastructure tiles are from [OpenRailwayMap](https://www.openrailwaymap.org/) and [OpenStreetMap](https://www.openstreetmap.org/copyright). A network connection is required for map tiles and fonts.
-
-The [Statista punctuality page](https://www.statista.com/statistics/935040/deutsche-bahn-train-punctuality-germany/) is a cited comparison source only. It is a premium statistic, and its notes say the underlying source has not provided values since January 2024; no values are copied into this project. Its punctuality definition also uses different delay thresholds for local and long-distance services, so it should not be directly equated with the station-level metrics here.
+Train observations come from [piebro/deutsche-bahn-data](https://github.com/piebro/deutsche-bahn-data), published on [Hugging Face](https://huggingface.co/datasets/piebro/deutsche-bahn-data), under CC BY 4.0 by Deutsche Bahn. Station coordinates are derived from [derhuerst/db-stations](https://github.com/derhuerst/db-stations). Basemap attribution is shown on the map. Cite the dataset in academic work as requested by its author.
 
 This is an independent university project and is not affiliated with Deutsche Bahn.

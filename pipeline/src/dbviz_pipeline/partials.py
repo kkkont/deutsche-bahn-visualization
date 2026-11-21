@@ -15,7 +15,7 @@ import polars as pl
 
 from .sources import REQUIRED_COLUMNS
 
-TABLES = ("station_type", "station_hour", "station_day", "hour")
+TABLES = ("station_type", "station_hour")
 
 
 def normalize_eva(column: pl.Expr) -> pl.Expr:
@@ -34,7 +34,6 @@ def summarize_month(frame: pl.LazyFrame) -> Dict[str, pl.DataFrame]:
         pl.col("delay_in_min").cast(pl.Float64).alias("delay"),
         (pl.col("arrival_is_canceled") | pl.col("departure_is_canceled")).alias("cancelled"),
         pl.col("time").dt.hour().alias("hour"),
-        pl.col("time").dt.date().alias("date"),
     )
     delay = [pl.col("delay").count().alias("delay_count"), pl.col("delay").sum().alias("delay_sum")]
     queries = [
@@ -45,8 +44,6 @@ def summarize_month(frame: pl.LazyFrame) -> Dict[str, pl.DataFrame]:
             pl.col("cancelled").sum().alias("cancelled_count"),
         ),
         prepared.group_by("eva", "train_type", "hour").agg(*delay),
-        prepared.group_by("eva", "date").agg(*delay),
-        prepared.group_by("hour").agg(*delay),
     ]
     return dict(zip(TABLES, pl.collect_all(queries)))
 

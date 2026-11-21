@@ -23,19 +23,9 @@ button:focus-visible, select:focus-visible { outline: 2px solid #bd4438; outline
 .app-shell { max-width: 1600px; margin: 0 auto; padding: 0 42px 24px; }
 .station-map-page {
   --tol-light-blue: #77AADD;
-  --tol-light-orange: #EE8866;
-  --tol-light-yellow: #EEDD88;
-  --tol-light-pink: #FFAABB;
-  --tol-light-cyan: #99DDFF;
-  --tol-light-mint: #44BB99;
-  --tol-light-pear: #BBCC33;
-  --tol-light-olive: #AAAA00;
   --tol-light-grey: #DDDDDD;
   --delay-scale: linear-gradient(to right, #FFFFE5, #FFF7BC, #FEE391, #FEC44F, #FB9A29, #EC7014, #CC4C02, #993404, #662506);
-  --delay-change-scale: linear-gradient(to right, #125A56, #238F9D, #60BCE9, #C6DBED, #ECEADA, #F9D576, #FD9A44, #E94C1F, #A01813);
   --average-color: #666666;
-  --station-location-color: var(--tol-light-blue);
-  --station-location-outline: #333333;
   --ink: #222222;
   --muted: #666666;
   --line: var(--tol-light-grey);
@@ -187,7 +177,7 @@ h1 { margin: 8px 0 5px; font-size: 34px; line-height: 1.12; font-weight: 600; le
 .station-map-page .topbar { height: 46px; }
 .station-map-page .intro-row { padding: 10px 0; }
 .station-map-page h1 { font-size: 26px; margin: 0; }
-.station-map-dashboard { display: flex; flex-direction: column; gap: 8px; height: calc(100svh - 160px); min-height: 500px; }
+.station-map-dashboard { display: flex; flex-direction: column; gap: 8px; height: calc(100svh - 112px); min-height: 500px; }
 .station-map-dashboard .linked-day-controls { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 8px 12px; margin: 0; }
 .station-map-dashboard .linked-day-controls > strong { font-size: 12px; }
 .station-map-dashboard .linked-day-controls > p { font-size: 10px; margin: 0; flex: 1; }

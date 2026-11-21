@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import calendar
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -10,7 +9,6 @@ from typing import Dict, List, Optional, Sequence, Tuple
 
 import polars as pl
 
-TIMEZONE = "Europe/Berlin"
 STATION_COLUMNS = ["station_id", "station_name", "latitude", "longitude"]
 
 
@@ -33,11 +31,6 @@ def load_station_lookup(geojson_path: Path) -> pl.DataFrame:
 
 def _ratio(numerator: float, denominator: float, scale: float = 1, digits: int = 1) -> Optional[float]:
     return round(numerator / denominator * scale, digits) if denominator else None
-
-
-def _period(months: Sequence[str]) -> Tuple[str, str]:
-    year, month = map(int, months[-1].split("-"))
-    return f"{months[0]}-01", f"{months[-1]}-{calendar.monthrange(year, month)[1]:02d}"
 
 
 def build_outputs(
@@ -88,43 +81,7 @@ def build_outputs(
         "delayObservations": row["delay_count"],
     } for row in station_hours.iter_rows(named=True)]
 
-    # The national clock also counts stations that have no coordinates.
-    hours = {row["hour"]: row for row in tables["hour"].filter(pl.col("hour").is_not_null())
-             .group_by("hour").agg(pl.col(*sums).sum()).iter_rows(named=True)}
-    global_hourly = [{
-        "hour": hour,
-        "averageDelayMinutes": _ratio(hours[hour]["delay_sum"], hours[hour]["delay_count"], digits=2)
-        if hour in hours else None,
-        "delayObservations": hours[hour]["delay_count"] if hour in hours else 0,
-    } for hour in range(24)]
-
-    days = mapped("station_day").filter(pl.col("date").is_not_null()).group_by("station_id", "date").agg(
-        pl.col(*sums).sum(),
-    ).sort("station_id", "date")
-    explorer_stations = station_types.select(STATION_COLUMNS).unique().sort("station_name")
-    period_start, period_end = _period(months)
-
-    return {
-        "demo.json": {**meta, "stations": station_rows, "hourly": hourly, "globalHourly": global_hourly},
-        "delay-clock.json": {**meta, "timezone": TIMEZONE, "hours": global_hourly},
-        "delay-explorer.json": {
-            "synthetic": False,
-            **meta,
-            "periodStart": period_start,
-            "periodEnd": period_end,
-            "timezone": TIMEZONE,
-            "stations": [{
-                "stationId": row["station_id"], "stationName": row["station_name"],
-                "latitude": row["latitude"], "longitude": row["longitude"],
-            } for row in explorer_stations.iter_rows(named=True)],
-            "daily": [{
-                "stationId": row["station_id"],
-                "date": row["date"].isoformat(),
-                "totalDelayMinutes": round(row["delay_sum"] or 0, 2),
-                "delayObservations": row["delay_count"],
-            } for row in days.iter_rows(named=True)],
-        },
-    }, unmapped
+    return {"demo.json": {**meta, "stations": station_rows, "hourly": hourly}}, unmapped
 
 
 def write_outputs(outputs: Dict[str, dict], out_dir: Path) -> List[Path]:

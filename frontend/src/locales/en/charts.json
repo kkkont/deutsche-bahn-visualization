@@ -1,7 +1,6 @@
 {
   "clockTitle": "24-hour delay clock",
   "clockOverview": "DAILY RHYTHM",
-  "clockScope": "All observed stations · all train types",
   "clockSelectedHour": "Selected hour",
   "clockMeanDelay": "Average delay",
   "clockDelayValue": "{{value}} min",
@@ -12,12 +11,6 @@
   "clockTimezone": "Local time",
   "clockSource": "Source",
   "clockSourceName": "Deutsche Bahn · piebro dataset",
-  "clockLoading": "Loading hourly delays…",
-  "clockError": "Hourly delays could not be loaded. Please reload the page.",
-  "dayProfile": "DAY PROFILE",
-  "hourlyDelay": "Delay through the day",
-  "minutes": "MINUTES",
-  "minutesShort": "min",
   "playDay": "Play day",
   "pauseDay": "Pause",
   "playSpeed": "Speed",
@@ -31,7 +24,6 @@
   "pulseTitle": "Hourly delay pulse",
   "pulseHint": "Hover for the hour range and delay. Grey line: weighted mean for the map selection. Click or drag to choose an hour; arrow keys also work.",
   "pulseTime": "Hour on the delay pulse",
-  "measuredStops": "measured train stops",
   "mappedCount_one": "{{count}} mapped station",
   "mappedCount_other": "{{count}} mapped stations"
 }
