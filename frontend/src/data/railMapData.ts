@@ -1,8 +1,7 @@
 import { binStationTotals } from './delayHexagons.ts'
-import type { Dataset } from './types.ts'
-import type { ExplorerStation } from './delayExplorer.ts'
+import type { Dataset, StationLocation } from './types.ts'
 
-export interface RailStation extends ExplorerStation {
+export interface RailStation extends StationLocation {
   evas: string[]
   trainTypes: string[]
   observations: number

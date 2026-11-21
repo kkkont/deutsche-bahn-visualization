@@ -3,13 +3,12 @@ import { arc, lineRadial, scaleLinear } from 'd3'
 import { useTranslation } from 'react-i18next'
 
 import type { ClockData, ClockHour } from '../data/linkedHourly'
-import { DELAY_MAX_MINUTES } from '../data/delayExplorer'
+import { DELAY_COLORS as delayColors, DELAY_MAX_MINUTES } from '../data/delayColors'
 import { PlaybackControls } from './PlaybackControls'
 import type { PlaybackProps } from './PlaybackControls'
 
 const hourLabel = (hour: number) => `${String(hour).padStart(2, '0')}:00`
 const hourAngle = (hour: number) => hour * Math.PI / 12
-const delayColors = ['#FFFFE5', '#FFF7BC', '#FEE391', '#FEC44F', '#FB9A29', '#EC7014', '#CC4C02', '#993404', '#662506']
 
 export function DelayClock({ data, selectedHour, onHour, scopeLabel, playback, approximate }: {
   data: ClockData; selectedHour: number; onHour: (hour: number) => void; scopeLabel: string; playback: PlaybackProps; approximate: boolean;

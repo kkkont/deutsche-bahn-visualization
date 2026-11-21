@@ -1,5 +1,5 @@
 import { geoAzimuthalEqualArea } from 'd3'
-import type { ExplorerDataset, ExplorerStation } from './delayExplorer.ts'
+import type { StationLocation } from './types.ts'
 
 export const HEX_SIDE_METRES = 50_000
 export const HEX_AREA_KM2 = 3 * Math.sqrt(3) / 2 * HEX_SIDE_METRES ** 2 / 1_000_000
@@ -11,7 +11,7 @@ const projection = geoAzimuthalEqualArea()
 
 export interface DelayHexagon {
   cellId: string
-  stations: ExplorerStation[]
+  stations: StationLocation[]
   measuredStationCount: number
   delayObservations: number
   totalDelayMinutes: number
@@ -19,7 +19,7 @@ export interface DelayHexagon {
   coordinates: [number, number][]
 }
 
-function stationCell(station: ExplorerStation, side: number): [number, number] {
+function stationCell(station: StationLocation, side: number): [number, number] {
   const [x, y] = projection([station.longitude, station.latitude])!
   const q = (Math.sqrt(3) / 3 * x - y / 3) / side
   const r = 2 / 3 * y / side
@@ -53,12 +53,8 @@ function cellRing(q: number, r: number, side: number): [number, number][] {
   return ring.reverse()
 }
 
-export function summarizeHexagons(data: ExplorerDataset): DelayHexagon[] {
-  return binStationTotals(data.stations, data.daily.filter((row) => row.date >= data.periodStart && row.date <= data.periodEnd))
-}
-
-/** Bin period totals or daily records using the same fixed grid. */
-export function binStationTotals(stations: ExplorerStation[], totals: {
+/** Bin station totals using a fixed equal-area grid at the requested resolution. */
+export function binStationTotals(stations: StationLocation[], totals: {
   stationId: string; totalDelayMinutes: number; delayObservations: number;
 }[], side = HEX_SIDE_METRES): DelayHexagon[] {
   const cells = new Map<string, DelayHexagon>()

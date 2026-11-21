@@ -1,11 +1,12 @@
-export type Metric = 'delay' | 'late' | 'cancelled'
-
-export interface StationMetric {
+export interface StationLocation {
   stationId: string
   stationName: string
-  evas: string[]
   latitude: number
   longitude: number
+}
+
+export interface StationMetric extends StationLocation {
+  evas: string[]
   trainTypes: string[]
   observations: number
   delayObservations: number

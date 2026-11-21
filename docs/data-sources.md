@@ -23,12 +23,8 @@ source (Hugging Face | local Parquet | future API)   pipeline/src/dbviz_pipeline
 
 A source only has to produce a Parquet file per month with the columns in `REQUIRED_COLUMNS` (`eva`, `train_type`, `delay_in_min`, `time`, `arrival_is_canceled`, `departure_is_canceled`). An API-based source would collect responses for a month, map them to those columns, write `data/raw/<source>/data-YYYY-MM.parquet` and return its path; caching and building then work unchanged. Each cached month records its source in `meta.json`.
 
-Cached summaries are small (under 2 MB per month), so a full year can be rebuilt in seconds. Only the frontend JSON is meant to be committed.
+The cache retains station/service-type and station/service-type/hour sums and counts. Export writes only `demo.json`; `stations` writes `stations.geojson`. The map, pulse and clock use these same mapped-station aggregates. Existing cached months can be reused; extra tables from older pipeline versions are ignored. Only the frontend JSON and GeoJSON are meant to be committed.
 
 ## Station Coordinates and Rail Geometry
 
-Station coordinates come from `frontend/public/data/stations.geojson` (derived from [derhuerst/db-stations](https://github.com/derhuerst/db-stations)) and are joined by EVA ID; aliases of the same station are merged. They are not included in the train-stop Parquet schema. `dbviz stations` keeps the busiest 200 stations (`--top`); EVA IDs outside that set or without coordinates are omitted. Rail geometry is displayed from OpenRailwayMap tiles based on OpenStreetMap data; it is a visual network overlay, not a route-delay measurement. Tile attribution is displayed on the map.
-
-## Statista Comparison
-
-The [Statista series](https://www.statista.com/statistics/935040/deutsche-bahn-train-punctuality-germany/) describes the share of punctual passenger trains from January 2019 to October 2025. The page's supplementary note says the source has not supplied values since January 2024, and the chart is premium content. Therefore, this project does not bundle, infer, or scrape that series. The stated definition treats a stop as punctual under a six-minute threshold for local services or a sixteen-minute threshold for long-distance services; this differs from the project's station-level delay summaries.
+Station coordinates come from `frontend/public/data/stations.geojson` (derived from [derhuerst/db-stations](https://github.com/derhuerst/db-stations)) and are joined by EVA ID; aliases of the same station are merged. They are not included in the train-stop Parquet schema. `dbviz stations` keeps the busiest 200 stations (`--top`); EVA IDs outside that set or without coordinates are omitted. The CARTO Positron basemap uses OpenStreetMap data; it is geographic context, not a route-delay measurement. Attribution is displayed on the map.
