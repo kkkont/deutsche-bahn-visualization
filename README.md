@@ -17,20 +17,22 @@ Open the local URL printed by Vite, normally `http://localhost:5173/#/map`. The 
 ## Dashboard
 
 - **Binned map:** Tol YlOrBr represents mean delay on a fixed 0–20+ minute scale. Blue markers identify station locations. Select a bin or station to inspect its details and update both linked charts.
-- **Drill-down:** click through 50 km, 10 km and 2 km hexagons, then inspect individual stations. The right-hand panel provides **Area summary**, **Back one level** and **Back to Germany**. Area summaries frame occupied child bins with padding; their parent boundary can extend beyond the viewport. Zooming alone never changes the bin resolution.
+- **Zoom-driven bins:** wheel/pinch zoom or the map’s +/− controls change the grid automatically: 50 km sides below zoom 6.5, 10 km from zoom 6.5 to below 9, and 2 km at zoom 9 and above. The active size is always shown above the map and in the legend. Clicking a bin, marker or station-list entry opens details without zooming. **Back to Germany** resets the camera and clears the selection.
 - **Playback:** Play day loops through 00–23 at 0.5, 1, 2 or 4 hours per second. Map colours, hourly tooltips and detail counts update without resetting the camera. Changing the hour manually pauses playback; hiding the page also pauses it. The default hour is 12:00.
 - **Hourly pulse:** the grey line shows the observation-weighted mean for the map selection. Hover shows only the hour range and delay, to two decimal places. Click, drag, or use arrow/Home/End keys to choose an hour. Missing observations break the line.
 - **24-hour clock:** a circular view of the same selected hourly profile, below the compact map-and-pulse dashboard. Selecting a clock hour updates the map and pulse.
 
-The map, selectors, playback and pulse fit together at 1280 × 720. Smaller or shorter screens use a stacked layout. Longer instructions, coverage notes and provenance are available under **Map guidance & data**. English and German labels are supported. Camera transitions ease over 750 ms; reduced-motion preferences disable those animations and the pulse ring.
+The map, selectors, playback and pulse fit together at 1280 × 720. Smaller or shorter screens use a stacked layout. Longer instructions, coverage notes and provenance are available under **Map guidance & data**. English and German labels are supported. Returning to Germany eases over 750 ms; reduced-motion preferences disable that animation and the pulse ring.
 
 ### Geographic and temporal limits
 
 Playback is a **typical-day hourly profile pooled across the exported period**, in Europe/Berlin local time. It is not a recorded day or live feed. With no selection, both charts describe the mapped network; selecting a station or bin restricts them to exactly its station IDs.
 
-The three hexagonal grids do not nest. Local cells are clipped to their parent in a spherical Lambert azimuthal equal-area projection centred on 10°E, 52°N. Boundary pieces therefore have smaller areas than full cells (about 6,495 km² at 50 km sides, 260 km² at 10 km sides, and 10.4 km² at 2 km sides). Only the parent's mapped stations contribute. Empty areas are omitted; hollow bins mean no measured delays, while measured zero remains a valid low-colour value.
+The grids are independent full-network grids in a spherical Lambert azimuthal equal-area projection centred on 10°E, 52°N. They do not nest and are not clipped to previously selected bins. Full cells have areas of about 6,495 km² at 50 km sides, 260 km² at 10 km sides and 10.4 km² at 2 km sides. Every resolution includes each mapped station exactly once. Empty areas are omitted; hollow bins mean no measured delays, while measured zero remains a valid low-colour value.
 
-Smaller bins do not add stations or observations. Dense cities can still have several stations per 2 km cell; station zoom and the station list provide further detail. The map keeps its Germany viewport constraints at every level.
+Zooming changes geographic grouping, not data coverage or the colour scale. A selected bin retains its original station IDs, outline, size label, details and linked hourly profile across zoom levels. Its stations stay highlighted; the sidebar explains when its selection resolution differs from the visible grid. New bin colours describe all stations in each current cell, while the charts continue to describe the selected group. Click another bin or clear the selection to change that population. Station selections are also preserved when zooming or panning.
+
+Smaller bins do not add observations. Dense cities can still have several stations per 2 km cell; the station list and marker details provide individual values. Panning and zooming alone never filter the linked charts by viewport. The map keeps its Germany viewport constraints at every resolution.
 
 ## Data Coverage and Metrics
 
