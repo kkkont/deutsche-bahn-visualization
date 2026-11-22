@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs'
 import { prepareRailMap } from '../src/data/railMapData.ts'
 import type { Dataset, StationMetric } from '../src/data/types.ts'
 import type { StationLocations } from '../src/data/railMapData.ts'
+import { calendarMonthGroups, combineMonths, filterDashboard, formatMonths, toggleCalendarMonth } from '../src/data/dashboardFilters.ts'
+import { buildStationHours, summarizeHourly } from '../src/data/linkedHourly.ts'
 
 const locations: StationLocations = { type: 'FeatureCollection', features: ['a', 'b', 'missing'].map((id) => ({
   type: 'Feature', geometry: { type: 'Point', coordinates: [10, 52] }, properties: { id, name: id },
@@ -41,13 +43,48 @@ test('legacy summaries are explicitly approximate and remain observation weighte
   assert.equal(result.cells[0].averageDelayMinutes, 1)
 })
 
-test('current annual export maps all 200 stations once and conserves all measured stops', () => {
+test('calendar-month selection combines available years and keeps at least one month', () => {
+  const months = ['2025-11', '2025-01', '2026-02', '2026-01', '2026-11']
+  const groups = calendarMonthGroups(months)
+  assert.deepEqual(groups[0].months, ['2025-01', '2026-01'])
+  assert.deepEqual(groups[1].months, ['2026-02'])
+  assert.deepEqual(groups[10].months, ['2025-11', '2026-11'])
+  const january = toggleCalendarMonth(months, months, 1)
+  assert.deepEqual(january, ['2025-01', '2026-01'])
+  assert.deepEqual(toggleCalendarMonth(months, january, 1), january)
+  assert.deepEqual(toggleCalendarMonth(months, january, 3), january)
+  const withFebruary = toggleCalendarMonth(months, january, 2)
+  assert.deepEqual(withFebruary, ['2025-01', '2026-02', '2026-01'])
+  assert.deepEqual(toggleCalendarMonth(months, withFebruary, 1), ['2026-02'])
+})
+
+test('selected months and services drive the same ranked stations and weighted hourly profile', () => {
+  const ice = row('a', 1, 20)
+  const regional = { ...row('a', 100, 0), trainTypes: ['RE'] }
+  const first: Dataset = { ...dataset([ice, regional]), months: ['2026-01'],
+    hourly: [{ stationId: 'a', trainType: 'ICE', hour: 12, delayObservations: 1, totalDelayMinutes: 20, averageDelayMinutes: 20 },
+      { stationId: 'a', trainType: 'RE', hour: 12, delayObservations: 100, totalDelayMinutes: 0, averageDelayMinutes: 0 }] }
+  const second: Dataset = { ...dataset([row('a', 9, 0), row('b', 30, 60)]), months: ['2026-03'],
+    hourly: [{ stationId: 'a', trainType: 'ICE', hour: 12, delayObservations: 9, totalDelayMinutes: 0, averageDelayMinutes: 0 },
+      { stationId: 'b', trainType: 'ICE', hour: 12, delayObservations: 30, totalDelayMinutes: 60, averageDelayMinutes: 2 }] }
+  const combined = combineMonths([first, second], ['2026-01', '2026-03'])
+  const filtered = filterDashboard(combined, locations, ['ICE'], 1)
+  assert.deepEqual(filtered.locations.features.map((feature) => feature.properties.id), ['b'])
+  const map = prepareRailMap(filtered.dataset, filtered.locations)
+  assert.equal(map.stations[0].averageDelayMinutes, 2)
+  assert.equal(summarizeHourly(buildStationHours(map.stations, filtered.dataset.hourly), [])[12].averageDelayMinutes, 2)
+  const all = filterDashboard(combined, locations, ['ICE'], 0)
+  assert.equal(prepareRailMap(all.dataset, all.locations).stations.find((item) => item.stationId === 'a')?.averageDelayMinutes, 2)
+  assert.equal(formatMonths(combined.months!, 'en'), 'Jan 2026, Mar 2026')
+})
+
+test('current annual export maps stations once and conserves all measured stops', () => {
   const data: Dataset = JSON.parse(readFileSync(new URL('../public/data/demo.json', import.meta.url), 'utf8'))
   const geo: StationLocations = JSON.parse(readFileSync(new URL('../public/data/stations.geojson', import.meta.url), 'utf8'))
   const result = prepareRailMap(data, geo)
   assert.equal(data.months?.length, 12)
-  assert.equal(result.stations.length, 200)
-  assert.equal(result.stations.filter((station) => station.delayObservations > 0).length, 200)
-  assert.equal(new Set(result.cells.flatMap((cell) => cell.stations.map((station) => station.stationId))).size, 200)
+  assert.equal(result.stations.length, geo.features.length)
+  assert.equal(result.stations.filter((station) => station.delayObservations > 0).length, geo.features.length)
+  assert.equal(new Set(result.cells.flatMap((cell) => cell.stations.map((station) => station.stationId))).size, geo.features.length)
   assert.equal(result.cells.reduce((sum, cell) => sum + cell.delayObservations, 0), data.stations.reduce((sum, row) => sum + row.delayObservations, 0))
 })

@@ -1,14 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RailMap } from './components/RailMap'
 import { DelayClock } from './components/DelayClock'
 import { PlaybackControls } from './components/PlaybackControls'
 import { HourlyPulse } from './components/HourlyPulse'
+import { DashboardFilters } from './components/DashboardFilters'
 import { prepareRailMap } from './data/railMapData'
 import type { StationLocations } from './data/railMapData'
 import type { Dataset } from './data/types'
 import { buildStationHours, hourlyIsApproximate, summarizeHourly } from './data/linkedHourly'
 import type { MapScope } from './data/linkedHourly'
+import { combineMonths, filterDashboard, formatMonths } from './data/dashboardFilters'
 
 function App() {
   const { t, i18n } = useTranslation('common')
@@ -18,8 +20,17 @@ function App() {
   const [hour, setHour] = useState(12)
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState(1)
-  const [filterContainer, setFilterContainer] = useState<HTMLDivElement | null>(null)
   const [scope, setScope] = useState<MapScope>({ stationIds: [], name: null })
+  const [stationId, setStationId] = useState<string | null>(null)
+  const [services, setServices] = useState<string[]>([])
+  const [stationLimit, setStationLimit] = useState(0)
+  const [selectedMonths, setSelectedMonths] = useState<string[]>([])
+  const [activeMonths, setActiveMonths] = useState<string[]>([])
+  const [monthData, setMonthData] = useState<Dataset[] | null>(null)
+  const [loadingMonths, setLoadingMonths] = useState(false)
+  const [monthError, setMonthError] = useState(false)
+  const monthCache = useRef(new Map<string, Dataset>())
+  const monthRequest = useRef<AbortController | null>(null)
   useEffect(() => {
     const controller = new AbortController()
     const read = async (name: string) => {
@@ -28,17 +39,68 @@ function App() {
       return response.json()
     }
     void Promise.all([read('demo.json'), read('stations.geojson')]).then(([dataset, locations]) => {
-      if (!controller.signal.aborted) setLoaded({ dataset, locations })
+      if (!controller.signal.aborted) {
+        setLoaded({ dataset, locations })
+        setSelectedMonths(dataset.months ?? [])
+        setActiveMonths(dataset.months ?? [])
+      }
     }).catch(() => { if (!controller.signal.aborted) setFailed(true) })
     return () => controller.abort()
   }, [])
-  const model = useMemo(() => loaded ? { ...prepareRailMap(loaded.dataset, loaded.locations),
-    source: loaded.dataset.source, period: loaded.dataset.period } : null, [loaded])
-  const stationHours = useMemo(() => model && loaded ? buildStationHours(model.stations, loaded.dataset.hourly) : [], [model, loaded])
+  useEffect(() => () => monthRequest.current?.abort(), [])
+  const changeMonths = async (months: string[]) => {
+    if (!loaded || !months.length) return
+    const requested = [...months].sort()
+    const allMonths = loaded.dataset.months ?? []
+    monthRequest.current?.abort()
+    setSelectedMonths(requested)
+    setMonthError(false)
+    if (requested.length === allMonths.length && allMonths.every((month) => requested.includes(month))) {
+      setMonthData(null)
+      setActiveMonths(allMonths)
+      setLoadingMonths(false)
+      return
+    }
+    const controller = new AbortController()
+    monthRequest.current = controller
+    setLoadingMonths(true)
+    try {
+      const datasets = await Promise.all(requested.map(async (month) => {
+        const cached = monthCache.current.get(month)
+        if (cached) return cached
+        const response = await fetch(`${import.meta.env.BASE_URL}data/months/${month}.json`, { signal: controller.signal })
+        if (!response.ok) throw new Error('Monthly data unavailable')
+        const data = await response.json() as Dataset
+        monthCache.current.set(month, data)
+        return data
+      }))
+      if (!controller.signal.aborted) {
+        setMonthData(datasets)
+        setActiveMonths(requested)
+        setLoadingMonths(false)
+      }
+    } catch {
+      if (!controller.signal.aborted) {
+        setLoadingMonths(false)
+        setMonthError(true)
+        setSelectedMonths(activeMonths)
+      }
+    }
+  }
+  const filtered = useMemo(() => {
+    if (!loaded) return null
+    const data = monthData ? combineMonths(monthData, activeMonths) : loaded.dataset
+    return filterDashboard(data, loaded.locations, services, stationLimit)
+  }, [loaded, monthData, activeMonths, services, stationLimit])
+  const model = useMemo(() => filtered ? { ...prepareRailMap(filtered.dataset, filtered.locations),
+    source: filtered.dataset.source, period: filtered.dataset.period,
+    periodLabel: formatMonths(filtered.dataset.months ?? [], i18n.resolvedLanguage ?? 'en') } : null, [filtered, i18n.resolvedLanguage])
+  const stationHours = useMemo(() => model && filtered ? buildStationHours(model.stations, filtered.dataset.hourly) : [], [model, filtered])
   const hours = useMemo(() => summarizeHourly(stationHours, scope.stationIds), [stationHours, scope.stationIds])
-  const clockData = useMemo(() => loaded ? { period: loaded.dataset.period, months: loaded.dataset.months,
-    source: loaded.dataset.source, timezone: 'Europe/Berlin', hours } : null, [loaded, hours])
-  const approximate = loaded ? hourlyIsApproximate(loaded.dataset) : false
+  const clockData = useMemo(() => filtered ? { period: filtered.dataset.period, months: filtered.dataset.months,
+    source: filtered.dataset.source, timezone: 'Europe/Berlin', hours } : null, [filtered, hours])
+  const approximate = filtered ? hourlyIsApproximate(filtered.dataset) : false
+  const serviceOptions = useMemo(() => loaded ? [...new Set(loaded.dataset.stations.flatMap((row) => row.trainTypes))].sort() : [], [loaded])
   const changeScope = useCallback((next: MapScope) => setScope(next), [])
   const chooseHour = useCallback((next: number) => { setPlaying(false); setHour(next) }, [])
   const togglePlaying = useCallback(() => setPlaying((value) => !value), [])
@@ -86,13 +148,19 @@ function App() {
         <section className="dashboard-toolbar" aria-label={chartText('dashboardFilters')}>
           <div className="dashboard-context"><strong>{scopeLabel}</strong><p>{chartText('typicalDayNote')}</p></div>
           <div className="dashboard-filter-row">
-            <div className="dashboard-map-filters" ref={setFilterContainer} />
+            <DashboardFilters stations={model.stations} stationId={stationId} onStation={setStationId}
+              services={serviceOptions} selectedServices={services} onServices={setServices}
+              stationLimit={stationLimit} onStationLimit={setStationLimit}
+              months={loaded?.dataset.months ?? []} selectedMonths={selectedMonths} onMonths={(months) => void changeMonths(months)}
+              loadingMonths={loadingMonths} />
             <PlaybackControls {...playback} />
           </div>
+          {monthError && <p role="alert">{chartText('monthLoadError')}</p>}
         </section>
         <section className="station-map-dashboard" aria-label={chartText('linkedPlayback')}>
           <section className="linked-map-view" aria-label={t('common:title')}>
-            <RailMap data={model} hourlyStations={stationHours[hour]} hour={hour} approximate={approximate} onScopeChange={changeScope} filterContainer={filterContainer} />
+            <RailMap data={model} hourlyStations={stationHours[hour]} hour={hour} approximate={approximate}
+              onScopeChange={changeScope} stationId={stationId} onStationChange={setStationId} />
           </section>
           <HourlyPulse approximate={approximate} hours={hours} hour={hour} playing={playing} onHour={chooseHour} scopeLabel={scopeLabel} />
           <DelayClock data={clockData} selectedHour={hour} onHour={chooseHour} scopeLabel={scopeLabel} playing={playing} approximate={approximate} />

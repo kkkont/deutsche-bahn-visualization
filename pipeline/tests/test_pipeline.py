@@ -115,6 +115,9 @@ def test_stations_geojson_keeps_observed_evas_and_merges_aliases():
     ]
     assert collection["features"][0]["geometry"]["coordinates"] == [13.4, 52.5]
     assert unmatched == ["42"]
+    all_stations, _ = stations_geojson(records, {"8011160": 5, "8000261": 4}, ["2024-07"], "x")
+    assert len(all_stations["features"]) == 2
+    assert all_stations["coverage"].startswith("All observed")
 
 
 def test_parse_months_expands_ranges_across_years():
@@ -141,4 +144,38 @@ def test_ingest_local_files_then_build(tmp_path):
     assert result["hourly"] == [{"stationId": "8000261", "trainType": "ICE", "hour": 10,
                                   "totalDelayMinutes": 4, "averageDelayMinutes": 4, "delayObservations": 1}]
     assert result["stations"][0]["stationName"] == "München Hbf"
-    assert {path.name for path in out.iterdir()} == {"demo.json"}
+    month = json.loads((out / "months" / "2024-07.json").read_text(encoding="utf-8"))
+    assert month.pop("generatedAt")
+    assert result.pop("generatedAt")
+    assert month == result
+
+
+def test_build_exports_individual_months_and_weighted_default(tmp_path):
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    rows("8011160", [10], [datetime(2024, 6, 1, 8)]).write_parquet(raw / "data-2024-06.parquet")
+    rows("8011160", [0, 0, 0], [datetime(2024, 7, 1, 8)] * 3).write_parquet(raw / "data-2024-07.parquet")
+    station_path = tmp_path / "stations.geojson"
+    station_path.write_text(json.dumps(STATIONS), encoding="utf-8")
+    processed, out = tmp_path / "processed", tmp_path / "out"
+    main(["--processed-dir", str(processed), "ingest", "2024-06..2024-07",
+          "--source", "local", "--local-dir", str(raw)])
+    meta_path = processed / "2024-07" / "meta.json"
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    meta["sourceUrl"] = "https://example.test/july"
+    meta_path.write_text(json.dumps(meta), encoding="utf-8")
+    main(["--processed-dir", str(processed), "build", "2024-06..2024-07",
+          "--stations", str(station_path), "--out", str(out)])
+
+    default = json.loads((out / "demo.json").read_text(encoding="utf-8"))
+    june = json.loads((out / "months" / "2024-06.json").read_text(encoding="utf-8"))
+    july = json.loads((out / "months" / "2024-07.json").read_text(encoding="utf-8"))
+    assert default["months"] == ["2024-06", "2024-07"]
+    assert default["stations"][0]["averageDelayMinutes"] == 2.5
+    for data, month, delay, count in [(june, "2024-06", 10, 1), (july, "2024-07", 0, 3)]:
+        assert set(data) == {"period", "months", "generatedAt", "source", "stations", "hourly"}
+        assert data["period"] == month
+        assert data["months"] == [month]
+        assert data["stations"][0]["averageDelayMinutes"] == delay
+        assert data["hourly"][0]["delayObservations"] == count
+    assert july["source"] == "https://example.test/july"

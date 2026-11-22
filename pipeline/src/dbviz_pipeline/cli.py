@@ -20,7 +20,7 @@ PROCESSED_DIR = ROOT / "data" / "processed"
 FRONTEND_DATA_DIR = ROOT / "frontend" / "public" / "data"
 # The source grew from ~130 to ~5,300 stations in Nov 2025, so older months are not comparable.
 DEFAULT_WINDOW_MONTHS = 12
-DEFAULT_TOP_STATIONS = 200
+DEFAULT_TOP_STATIONS = 1000
 
 
 def parse_months(specs: Sequence[str]) -> List[str]:
@@ -79,6 +79,11 @@ def build(args: argparse.Namespace) -> None:
     stations = load_station_lookup(args.stations)
     source_url = read_meta(args.processed_dir, months[0])["sourceUrl"]
     outputs, unmapped = build_outputs(tables, stations, months, source_url)
+    for month in months:
+        monthly_tables = read_months(args.processed_dir, [month])
+        monthly_source = read_meta(args.processed_dir, month)["sourceUrl"]
+        monthly_outputs, _ = build_outputs(monthly_tables, stations, [month], monthly_source)
+        outputs[f"months/{month}.json"] = monthly_outputs["demo.json"]
     print(f"Months {months[0]} to {months[-1]}")
     for path in write_outputs(outputs, args.out):
         print(f"Wrote {path}")

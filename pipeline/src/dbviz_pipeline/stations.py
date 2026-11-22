@@ -58,7 +58,8 @@ def stations_geojson(records: Iterable[dict], observations: Dict[str, int], mont
         "unmatchedStationIds": unmatched,
         "attribution": "Deutsche Bahn (DB), CC BY 4.0",
         "license": "https://creativecommons.org/licenses/by/4.0/",
-        "coverage": "Only the busiest observed stations (topStations) with known coordinates are displayed.",
+        "coverage": ("Only the busiest observed stations (topStations) with known coordinates are displayed."
+                     if top else "All observed stations with known coordinates are displayed."),
         "features": features,
     }, unmatched
 

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import type { ClockData, ClockHour } from '../data/linkedHourly'
 import { DELAY_COLORS as delayColors, DELAY_MAX_MINUTES } from '../data/delayColors'
+import { formatMonths } from '../data/dashboardFilters'
 
 const hourLabel = (hour: number) => `${String(hour).padStart(2, '0')}:00`
 const hourAngle = (hour: number) => hour * Math.PI / 12
@@ -54,10 +55,8 @@ export function DelayClock({ data, selectedHour, onHour, scopeLabel, playing, ap
     ? t('clockNoData')
     : t('clockDelayValue', { value: number.format(value) })
   const selectedDelay = formatDelay(selected?.averageDelayMinutes ?? null)
-  const monthFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' })
   const months = data?.months?.length ? data.months : data ? [data.period] : []
-  const periodLabel = months.length ? [...new Set([months[0], months[months.length - 1]])]
-    .map((month) => monthFormat.format(new Date(`${month}-01T12:00:00Z`))).join(' – ') : ''
+  const periodLabel = formatMonths(months, locale)
 
   return (
     <section className="delay-clock-section" aria-labelledby={titleId}>

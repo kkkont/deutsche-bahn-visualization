@@ -89,6 +89,7 @@ def write_outputs(outputs: Dict[str, dict], out_dir: Path) -> List[Path]:
     written = []
     for filename, content in outputs.items():
         path = out_dir / filename
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(content, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
         written.append(path)
     return written

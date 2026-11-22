@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
 import { AttributionControl, Map as MapLibreMap, NavigationControl, Popup, setWorkerUrl } from 'maplibre-gl'
 import type { ExpressionSpecification, GeoJSONSource } from 'maplibre-gl'
 import { useTranslation } from 'react-i18next'
@@ -17,7 +16,7 @@ import type { MapScope } from '../data/linkedHourly'
 
 setWorkerUrl(mapWorkerUrl)
 type Selection = { kind: 'station'; id: string } | { kind: 'cell'; cell: DelayHexagon; side: number } | null
-type MapData = ReturnType<typeof prepareRailMap> & { source: string; period: string }
+type MapData = ReturnType<typeof prepareRailMap> & { source: string; period: string; periodLabel: string }
 
 const cellFeatures = (cells: DelayHexagon[]) => ({ type: 'FeatureCollection' as const, features: cells.map((item) => ({
   type: 'Feature' as const, geometry: { type: 'Polygon' as const, coordinates: [item.coordinates] },
@@ -28,8 +27,9 @@ const stationFeatures = (stations: RailStation[]) => ({ type: 'FeatureCollection
   properties: { stationId: item.stationId, stationName: item.stationName },
 })) })
 
-export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange, filterContainer }: {
-  filterContainer: HTMLDivElement | null; data: MapData; hourlyStations: RailStation[]; hour: number; approximate: boolean; onScopeChange: (scope: MapScope) => void;
+export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange, stationId, onStationChange }: {
+  data: MapData; hourlyStations: RailStation[]; hour: number; approximate: boolean; onScopeChange: (scope: MapScope) => void;
+  stationId: string | null; onStationChange: (id: string | null) => void;
 }) {
   const { t, i18n } = useTranslation('map')
   const { t: stationText } = useTranslation('stations')
@@ -44,9 +44,11 @@ export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange
   const cells = useMemo(() => grids.find((grid) => grid.side === side)!.cells, [grids, side])
   const chooseCell = (id: string) => {
     const target = cells.find((item) => item.cellId === id)
-    if (target) setSelection({ kind: 'cell', cell: target, side })
+    if (target) { onStationChange(null); setSelection({ kind: 'cell', cell: target, side }) }
   }
+  const chooseStation = (id: string) => { onStationChange(id); setSelection({ kind: 'station', id }) }
   const backToGermany = () => {
+    onStationChange(null)
     setSelection(null)
     mapRef.current?.fitBounds(GERMANY_BOUNDS, { padding: 24, linear: true,
       duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 750,
@@ -58,20 +60,38 @@ export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange
   const count = new Intl.NumberFormat(locale)
   const decimal = new Intl.NumberFormat(locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 })
   const value = (mean: number | null | undefined) => mean == null ? t('noMeasurements') : `${approximate ? '≈ ' : ''}${decimal.format(mean)} min`
-  const period = data?.period.split('/').map((month) => new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${month}-01T00:00:00Z`))).join(' – ') ?? ''
-  const latest = useRef({ t, stationText, value, count, period, cells, side, chooseCell, hourlyStations, hour })
-  useEffect(() => { latest.current = { t, stationText, value, count, period, cells, side, chooseCell, hourlyStations, hour } })
+  const period = data.periodLabel
+  const latest = useRef({ t, stationText, value, count, period, cells, side, chooseCell, chooseStation, hourlyStations, hour, data })
+  useEffect(() => { latest.current = { t, stationText, value, count, period, cells, side, chooseCell, chooseStation, hourlyStations, hour, data } })
   const station = selection?.kind === 'station' ? data?.stations.find((item) => item.stationId === selection.id) : null
-  const cell = selection?.kind === 'cell' ? selection.cell : null
+  const cell = useMemo(() => {
+    if (selection?.kind !== 'cell') return null
+    return grids.find((grid) => grid.side === selection.side)?.cells.find((item) => item.cellId === selection.cell.cellId) ?? null
+  }, [selection, grids])
   const selectedSide = selection?.kind === 'cell' ? selection.side : side
   const highlightedIds = useMemo(() => station ? [station.stationId] : cell?.stations.map((item) => item.stationId) ?? [], [station, cell])
 
-  const scopeIds = useMemo(() => station ? [station.stationId] : cell ? cell.stations.map((item) => item.stationId) : data.stations.map((item) => item.stationId), [station, cell, data])
-  const scopeName = station?.stationName ?? (cell ? t('binTitle', { id: cell.cellId.split('/').at(-1), side: selectedSide / 1000 }) : null)
+  const scopeIds = useMemo(() => station ? [station.stationId] : cell?.stations.length ? cell.stations.map((item) => item.stationId) : data.stations.map((item) => item.stationId), [station, cell, data])
+  const scopeName = station?.stationName ?? (cell?.stations.length ? t('binTitle', { id: cell.cellId.split('/').at(-1), side: selectedSide / 1000 }) : null)
   useEffect(() => onScopeChange({ stationIds: scopeIds, name: scopeName }), [scopeIds, scopeName, onScopeChange])
   const stationById = useMemo(() => new Map(hourlyStations.map((item) => [item.stationId, item])), [hourlyStations])
   const displayCells = useMemo(() => cells.map((item) => refreshCell(item, stationById)), [cells, stationById])
   const summary = station ? stationById.get(station.stationId)! : cell ? refreshCell(cell, stationById) : null
+
+  useEffect(() => {
+    if (stationId && data.stations.some((item) => item.stationId === stationId)) {
+      setSelection((current) => current?.kind === 'station' && current.id === stationId ? current : { kind: 'station', id: stationId })
+    } else if (stationId) {
+      onStationChange(null)
+      setSelection(null)
+    } else {
+      setSelection((current) => current?.kind === 'station' ? null : current)
+    }
+  }, [stationId, data.stations, onStationChange])
+
+  useEffect(() => {
+    if (selection?.kind === 'cell' && !cell) setSelection(null)
+  }, [cell, selection])
 
   useEffect(() => {
     if (selection) {
@@ -98,7 +118,12 @@ export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange
   }, [displayCells, side, status])
 
   useEffect(() => {
-    if (!containerRef.current || !data) return
+    const source = mapRef.current?.getSource<GeoJSONSource>('stations')
+    source?.setData(stationFeatures(data.stations))
+  }, [data.stations, status])
+
+  useEffect(() => {
+    if (!containerRef.current) return
     const map = new MapLibreMap({
       container: containerRef.current,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
@@ -130,7 +155,7 @@ export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange
       map.addLayer({ id: 'selected-bin-outline', type: 'line', source: 'selected-bin', paint: {
         'line-color': '#222222', 'line-width': 3, 'line-dasharray': [4, 2],
       } })
-      map.addSource('stations', { type: 'geojson', data: stationFeatures(data.stations),
+      map.addSource('stations', { type: 'geojson', data: stationFeatures(latest.current.data.stations),
         attribution: 'Station locations: Deutsche Bahn · CC BY 4.0 · db-stations' })
       map.addLayer({ id: 'stations', type: 'circle', source: 'stations', paint: {
         'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 3.5, 10, 7],
@@ -159,7 +184,7 @@ export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange
         popup.remove()
         if (!feature) return
         if (feature.layer.id === 'stations') {
-          setSelection({ kind: 'station', id: String(feature.properties.stationId) })
+          latest.current.chooseStation(String(feature.properties.stationId))
         }
         else latest.current.chooseCell(String(feature.properties.cellId))
       })
@@ -188,21 +213,10 @@ export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange
     const observer = new ResizeObserver(() => map.resize())
     observer.observe(containerRef.current)
     return () => { popup.remove(); observer.disconnect(); map.remove(); mapRef.current = null }
-  }, [data])
+  }, [])
 
-  const closePanel = () => { setSelection(null); mapRef.current?.getCanvas().focus() }
-  const filters = <div className="rail-map-filters">
-      <label>{t('selectStation')}<select aria-label={t('selectStation')} value={station?.stationId ?? ''} onChange={(event) => setSelection(event.target.value ? { kind: 'station', id: event.target.value } : null)}>
-        <option value="">{t('chooseStation')}</option>
-        {data.stations.map((item) => <option key={item.stationId} value={item.stationId}>{item.stationName}</option>)}
-      </select></label>
-      <label>{t('selectCell')}<select aria-label={t('selectCell')} value={cells.some((item) => item.cellId === cell?.cellId) ? cell!.cellId : ''} onChange={(event) => event.target.value ? chooseCell(event.target.value) : setSelection(null)}>
-        <option value="">{t('chooseCell')}</option>
-        {cells.map((item) => <option key={item.cellId} value={item.cellId}>{item.cellId.split('/').at(-1)} · {item.stations.length} · {item.stations[0].stationName}</option>)}
-      </select></label>
-  </div>
+  const closePanel = () => { onStationChange(null); setSelection(null); mapRef.current?.getCanvas().focus() }
   return <>
-    {filterContainer ? createPortal(filters, filterContainer) : filters}
     <header className="rail-map-heading"><h2>{t('delayMapTitle')}</h2><span>{period} · {String(hour).padStart(2, '0')}:00 · {t('coverage', { count: data.stations.length })}</span></header>
     {data && <div className="rail-drill-scope" role="status">
       <strong>{t('zoomScope', { side: side / 1000 })}</strong>
@@ -241,7 +255,7 @@ export function RailMap({ data, hourlyStations, hour, approximate, onScopeChange
         </dl>
         {station && <p>{t('coordinates', { latitude: station.latitude.toFixed(4), longitude: station.longitude.toFixed(4) })}</p>}
         {cell && <><h3>{t('stationsInCell')}</h3><ul className="rail-cell-stations">{cell.stations.map((item) => <li key={item.stationId}>
-          <button type="button" onClick={() => setSelection({ kind: 'station', id: item.stationId })}>{item.stationName}</button>
+          <button type="button" onClick={() => chooseStation(item.stationId)}>{item.stationName}</button>
         </li>)}</ul></>}
         {station && <button type="button" className="rail-parent-cell" onClick={() => chooseCell(cells.find((item) => item.stations.some((entry) => entry.stationId === station.stationId))!.cellId)}>{t('viewCell')}</button>}
       </aside>}
