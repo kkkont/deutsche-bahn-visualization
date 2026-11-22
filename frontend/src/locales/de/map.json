@@ -23,7 +23,7 @@
   "dataSource": "Daten: Deutsche Bahn · CC BY 4.0 · piebro/deutsche-bahn-data",
   "backGermany": "Zurück zu Deutschland",
   "hourlyDetails": "Stündliche Verspätungsmessungen · {{hour}}:00",
-  "fullPeriodDetails": "Die folgenden Anzahlen und Anteile gelten für die ausgewählten Monate und Verkehrsarten.",
+  "fullPeriodDetails": "Die folgenden Anzahlen und Anteile gelten für die ausgewählten Monate, Wochentage und Verkehrsarten.",
   "hourlyApproximateNote": "Näherungswerte, da dieser Export gerundete Mittelwerte je Verkehrsart enthält.",
   "mapGuidance": "Kartenhinweise & Daten",
   "binTitle": "Hexagon {{id}} · {{side}} km",

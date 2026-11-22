@@ -48,6 +48,30 @@ def summarize_month(frame: pl.LazyFrame) -> Dict[str, pl.DataFrame]:
     return dict(zip(TABLES, pl.collect_all(queries)))
 
 
+def summarize_weekdays(frame: pl.LazyFrame) -> Dict[str, pl.DataFrame]:
+    missing = set(REQUIRED_COLUMNS) - set(frame.collect_schema().names())
+    if missing:
+        raise ValueError(f"Source data is missing expected columns: {', '.join(sorted(missing))}")
+    prepared = frame.select(
+        normalize_eva(pl.col("eva")).alias("eva"),
+        pl.col("train_type").fill_null("Other"),
+        pl.col("delay_in_min").cast(pl.Float64).alias("delay"),
+        (pl.col("arrival_is_canceled") | pl.col("departure_is_canceled")).alias("cancelled"),
+        pl.col("time").dt.hour().alias("hour"),
+        pl.col("time").dt.weekday().alias("weekday"),
+    ).filter(pl.col("weekday").is_not_null())
+    delay = [pl.col("delay").count().alias("delay_count"), pl.col("delay").sum().alias("delay_sum")]
+    queries = [
+        prepared.group_by("eva", "train_type", "weekday").agg(
+            pl.len().alias("observations"), *delay,
+            (pl.col("delay") > 5).sum().alias("over_five_count"),
+            pl.col("cancelled").sum().alias("cancelled_count"),
+        ),
+        prepared.group_by("eva", "train_type", "hour", "weekday").agg(*delay),
+    ]
+    return dict(zip(TABLES, pl.collect_all(queries)))
+
+
 def write_month(processed_dir: Path, month: str, tables: Dict[str, pl.DataFrame], source: dict) -> Path:
     directory = processed_dir / month
     directory.mkdir(parents=True, exist_ok=True)

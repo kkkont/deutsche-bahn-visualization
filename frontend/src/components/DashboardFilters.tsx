@@ -16,17 +16,17 @@ export interface DashboardFiltersProps {
   services: string[]
   selectedServices: string[]
   onServices: (services: string[]) => void
-  stationLimit: number
-  onStationLimit: (limit: number) => void
   months: string[]
   selectedMonths: string[]
   onMonths: (months: string[]) => void
+  weekday: number | null
+  onWeekday: (weekday: number | null) => void
   loadingMonths: boolean
 }
 
 export function DashboardFilters({
   stations, stationId, onStation, services, selectedServices, onServices,
-  stationLimit, onStationLimit, months, selectedMonths, onMonths, loadingMonths,
+  months, selectedMonths, onMonths, weekday, onWeekday, loadingMonths,
 }: DashboardFiltersProps) {
   const { t, i18n } = useTranslation('charts')
   const id = useId()
@@ -170,15 +170,6 @@ export function DashboardFilters({
         </details>
       </div>
 
-      <label className="dashboard-filter-field dashboard-filter-limit">
-        <span className="dashboard-filter-label">{t('filterStationLimit')}</span>
-        <select value={stationLimit} onChange={(event) => onStationLimit(Number(event.target.value))}>
-          {![0, 50, 100, 200, 500, 1000].includes(stationLimit) &&
-            <option value={stationLimit}>{stationLimit.toLocaleString(i18n.language)}</option>}
-          {[50, 100, 200, 500, 1000, 0].map((limit) =>
-            <option key={limit} value={limit}>{limit === 0 ? t('filterAllStations') : limit.toLocaleString(i18n.language)}</option>)}
-        </select>
-      </label>
     </div>
 
     <fieldset className="dashboard-month-filter" aria-busy={loadingMonths} disabled={loadingMonths || months.length === 0}>
@@ -189,7 +180,7 @@ export function DashboardFilters({
         {calendarMonths.map((group) => {
           const selected = group.months.length > 0 && group.months.every((month) => effectiveMonths.includes(month))
           const keepOne = selected && selectedCount === 1
-          return <button type="button" key={group.number} aria-pressed={selected}
+          return <button type="button" key={group.number} aria-pressed={selected && !allMonths}
             disabled={!group.months.length || keepOne}
             title={!group.months.length ? t('filterMonthUnavailable') : keepOne ? t('filterKeepOneMonth') : undefined}
             onClick={() => onMonths(toggleCalendarMonth(months, effectiveMonths, group.number))}>
@@ -202,5 +193,19 @@ export function DashboardFilters({
       {loadingMonths ? t('filterLoadingMonths') : months.length === 0 ? t('filterNoMonths')
         : t('filterMonthSelection', { count: selectedCount })}
     </p>
+    <fieldset className="dashboard-month-filter" aria-busy={loadingMonths} disabled={loadingMonths || months.length === 0}>
+      <legend>{t('filterWeekday')}</legend>
+      <div className="dashboard-month-buttons">
+        <button type="button" className="dashboard-month-reset" aria-pressed={weekday === null}
+          onClick={() => onWeekday(null)}>{t('filterAllWeekdays')}</button>
+        {Array.from({ length: 7 }, (_, index) => {
+          const value = index + 1
+          const label = new Intl.DateTimeFormat(i18n.language, { weekday: 'short', timeZone: 'UTC' })
+            .format(new Date(Date.UTC(2024, 0, value)))
+          return <button type="button" key={value} aria-pressed={weekday === value}
+            onClick={() => onWeekday(value)}>{label}</button>
+        })}
+      </div>
+    </fieldset>
   </div>
 }

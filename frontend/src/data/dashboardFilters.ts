@@ -31,7 +31,7 @@ export function combineMonths(datasets: Dataset[], months: string[]): Dataset {
   }
 }
 
-export function filterDashboard(dataset: Dataset, locations: StationLocations, services: string[], limit: number) {
+export function filterDashboard(dataset: Dataset, locations: StationLocations, services: string[]) {
   const selected = new Set(services)
   const stations = selected.size ? dataset.stations.filter((row) => row.trainTypes.some((type) => selected.has(type))) : dataset.stations
   const hourly = selected.size ? dataset.hourly.filter((row) => selected.has(row.trainType)) : dataset.hourly
@@ -42,7 +42,7 @@ export function filterDashboard(dataset: Dataset, locations: StationLocations, s
       || a.properties.id.localeCompare(b.properties.id))
   return {
     dataset: { ...dataset, stations, hourly },
-    locations: { ...locations, features: limit > 0 ? features.slice(0, limit) : features },
+    locations: { ...locations, features: features.slice(0, 1000) },
   }
 }
 

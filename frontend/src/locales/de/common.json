@@ -3,6 +3,6 @@
   "brand": "BAHNBEOBACHTUNG",
   "title": "Deutschland",
   "loading": "Bahnhofsdaten werden geladen …",
-  "dataError": "Der eingebundene Datensatz konnte nicht geladen werden. Starte die Datenpipeline gemäß README.",
+  "dataError": "Der lokale Datensatz konnte nicht geladen werden. Führe die Dateneinrichtung gemäß README aus.",
   "switchLanguage": "Oberflächensprache wechseln"
 }

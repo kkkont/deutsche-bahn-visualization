@@ -3,6 +3,6 @@
   "brand": "RAILWAY OBSERVATORY",
   "title": "Germany",
   "loading": "Loading the station dataset…",
-  "dataError": "The bundled dataset could not be loaded. Run the data pipeline from the project README.",
+  "dataError": "The local dataset could not be loaded. Run data setup as described in the project README.",
   "switchLanguage": "Switch interface language"
 }

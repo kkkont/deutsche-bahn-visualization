@@ -179,3 +179,58 @@ def test_build_exports_individual_months_and_weighted_default(tmp_path):
         assert data["stations"][0]["averageDelayMinutes"] == delay
         assert data["hourly"][0]["delayObservations"] == count
     assert july["source"] == "https://example.test/july"
+
+
+def test_weekday_exports_preserve_service_hour_and_month(tmp_path):
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    frame = pl.concat([
+        rows("8011160", [10, 0], [datetime(2024, 7, 1, 8), datetime(2024, 7, 8, 8)]),
+        rows("8011160", [30], [datetime(2024, 7, 2, 8)], train_type="RE"),
+    ])
+    frame.write_parquet(raw / "data-2024-07.parquet")
+    station_path = tmp_path / "stations.geojson"
+    station_path.write_text(json.dumps(STATIONS), encoding="utf-8")
+    processed, out = tmp_path / "processed", tmp_path / "out"
+    base = ["--processed-dir", str(processed)]
+    ingest = ["ingest", "2024-07", "--source", "local", "--local-dir", str(raw)]
+    main(base + ingest)
+    with pytest.raises(SystemExit, match="Weekday caches missing"):
+        main(base + ["build", "2024-07", "--stations", str(station_path), "--out", str(out), "--weekdays"])
+    main(base + ingest + ["--weekdays"])
+    main(base + ["build", "2024-07", "--stations", str(station_path), "--out", str(out), "--weekdays"])
+    monday = json.loads((out / "weekdays" / "2024-07" / "1.json").read_text())
+    tuesday = json.loads((out / "weekdays" / "2024-07" / "2.json").read_text())
+    sunday = json.loads((out / "weekdays" / "2024-07" / "7.json").read_text())
+    assert monday["stations"][0]["trainTypes"] == ["ICE"]
+    assert monday["stations"][0]["observations"] == 2
+    assert monday["hourly"][0]["totalDelayMinutes"] == 10
+    assert monday["hourly"][0]["delayObservations"] == 2
+    assert tuesday["stations"][0]["trainTypes"] == ["RE"]
+    assert tuesday["hourly"][0]["totalDelayMinutes"] == 30
+    assert sunday["stations"] == sunday["hourly"] == []
+
+
+def test_setup_builds_all_dashboard_files_from_fresh_local_source(tmp_path, monkeypatch):
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    rows("8011160", [10, 0], [datetime(2024, 7, 1, 8), datetime(2024, 7, 2, 8)]).write_parquet(
+        raw / "data-2024-07.parquet")
+    monkeypatch.setattr("dbviz_pipeline.cli.download_db_stations", lambda: [
+        {"id": "8011160", "additionalIds": [], "name": "Berlin Hbf",
+         "location": {"latitude": 52.5, "longitude": 13.4}},
+    ])
+    processed, out = tmp_path / "processed", tmp_path / "out"
+    args = ["--processed-dir", str(processed), "setup", "2024-07", "--source", "local",
+            "--local-dir", str(raw), "--out", str(out)]
+    main(args)
+    assert (raw / "data-2024-07.parquet").exists()
+    assert (out / "stations.geojson").exists()
+    assert json.loads((out / "demo.json").read_text())["months"] == ["2024-07"]
+    assert json.loads((out / "months" / "2024-07.json").read_text())["stations"][0]["observations"] == 2
+    monday = json.loads((out / "weekdays" / "2024-07" / "1.json").read_text())
+    assert monday["stations"][0]["observations"] == 1
+    assert monday["hourly"][0]["totalDelayMinutes"] == 10
+    assert len(list((out / "weekdays" / "2024-07").glob("*.json"))) == 7
+    (raw / "data-2024-07.parquet").unlink()
+    main(args)

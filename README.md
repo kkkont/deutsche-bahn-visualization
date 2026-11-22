@@ -4,7 +4,17 @@ A single-page dashboard for exploring delays at German stations over the last 12
 
 ## Run the App
 
-Requirements: Node.js 20.19+ and npm.
+Requirements: Node.js 20.19+, npm and Python 3.9+. From the repository root, install the pipeline and generate the data once:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -e "pipeline[test]"
+.venv/bin/dbviz setup
+```
+
+Setup downloads source data and station coordinates, then generates all dashboard files locally. It may take several minutes and requires several GB of free disk space. Generated data is ignored by Git. Run it again to restore missing files or refresh station coordinates; cached summaries are reused.
+
+Then start the app:
 
 ```sh
 cd frontend
@@ -12,12 +22,14 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite, normally `http://localhost:5173/#/map`. The Station map is the only page. Bare URLs and older bookmarked routes open the map. The generated JSON files are committed, so starting the app does not require a backend or a new data download. Map tiles and fonts require a network connection.
+Open the local URL printed by Vite, normally `http://localhost:5173/#/map`. The Station map is the only page. Bare URLs and older bookmarked routes open the map. No backend is needed; map tiles and fonts require a network connection.
+
+For deployment, run data setup before the frontend build and publish the generated files with the app; Git ignoring them does not make a deployed copy private.
 
 ## Dashboard
 
 - **Binned map:** Tol YlOrBr represents mean delay on a fixed 0–20+ minute scale. Blue markers identify station locations. Select a bin or station to inspect its details and update both linked charts.
-- **Filters:** Search for a station or select one or more service codes; service presets cover the exact codes shown in their labels. Choose how many of the busiest stations to show, ranked by observed stops for the selected months and services. Each calendar month combines that month across all available years. Click a month to start a selection, click additional months to add or remove them, and use **All months** to reset. All three views update together.
+- **Filters:** Search for a station or select one or more service codes; service presets cover the exact codes shown in their labels. Each calendar month combines that month across all available years. Click a month to start a selection, click additional months to add or remove them, and use **All months** to reset. Select a weekday to pool that weekday across the selected months. All three views update together.
 - **Zoom-driven bins:** wheel/pinch zoom or the map’s +/− controls change the grid automatically: 50 km sides below zoom 6.5, 10 km from zoom 6.5 to below 9, and 2 km at zoom 9 and above. The active size is always shown above the map and in the legend. Clicking a bin, marker or station-list entry opens details without zooming. **Back to Germany** resets the camera and clears the selection.
 - **Playback:** Play day loops through 00–23 at 0.5, 1, 2 or 4 hours per second. Map colours, hourly tooltips and detail counts update without resetting the camera. Changing the hour manually pauses playback; hiding the page also pauses it. The default hour is 12:00. There is one shared playback control; its hour state is visible in the map header, chart cursor and clock.
 - **Hourly pulse:** the grey line shows the observation-weighted mean for the map selection. Hover shows only the hour range and delay, to two decimal places. Click, drag, or use arrow/Home/End keys to choose an hour. Missing observations break the line.
@@ -37,44 +49,27 @@ Smaller bins do not add observations. Dense cities can still have several statio
 
 ## Data Coverage and Metrics
 
-**Time window:** the last 12 cached months, currently November 2025–October 2026. The source expanded from about 130 major stations to about 5,300 stations in November 2025. The default window avoids mixing those two networks. Older windows can be built explicitly, for example `dbviz build 2024-11..2025-10`.
+**Time window:** setup defaults to November 2025–October 2026. The source expanded from about 130 major stations to about 5,300 stations in November 2025. The default window avoids mixing those two networks. A different window can be specified, for example `dbviz setup 2024-11..2025-10`.
 
-**Stations:** the busiest 1,000 observed stations with known coordinates. `stations.geojson` defines their canonical EVA identities and positions; `demo.json` contains station/service-type and station/service-type/hour aggregates for that same set. Despite its legacy filename, `demo.json` contains real source data. The linked clock and pulse use the same mapped population rather than a separate national aggregate. Change coverage with `dbviz stations --top N` followed by `dbviz build`; `--top 0` keeps all matched stations.
+**Stations:** setup selects the busiest 1,000 observed stations with known coordinates. The dashboard displays at most 1,000 stations with observations for the active filters, ranked by observed stops. `stations.geojson` defines their canonical EVA identities and positions; `demo.json` contains station/service-type and station/service-type/hour aggregates for that same set. Despite its legacy filename, `demo.json` contains real source data. The linked clock and pulse use the same mapped population rather than a separate national aggregate.
 
 Averages combine delay totals and measured-stop counts across service types, stations and months. Exports include `totalDelayMinutes` in station and station-hour summaries for exact delay aggregation. Full-period observed-stop counts and cancellation/over-five-minute percentages are labelled separately from hourly delay measurements; pooled percentages remain approximate when reconstructed from rounded percentages.
 
 ## Refresh the Data
 
+From the repository root, rerun `.venv/bin/dbviz setup` or specify a range such as `.venv/bin/dbviz setup 2025-11..2026-10`. It reuses cached summaries, fetches missing data and rebuilds all exports for the selected window. It does not update cached months automatically if the upstream source changes; use `dbviz ingest --force` and `dbviz ingest --weekdays --force` for those months before running setup again.
+
 The Python pipeline separates ingestion from export:
 
-1. `ingest` fetches one month's Parquet and caches station/service-type and station/service-type/hour sums and counts under ignored `data/processed/YYYY-MM/` directories.
+1. `setup` fetches each month's Parquet and caches monthly and weekday sums and counts under ignored `data/processed/YYYY-MM/` directories.
 2. `stations` chooses the busiest stations and writes `frontend/public/data/stations.geojson`.
 3. `build` combines the selected cached months into `frontend/public/data/demo.json` and writes each selected month to `frontend/public/data/months/YYYY-MM.json`, without rereading the raw Parquet. Each monthly file has the same dataset shape, with its exact month in `period` and a one-element `months` array. The aggregate's `months` array lists the files for that build; older files from other builds are not removed.
 
-Requirements: Python 3.9+. Set up the environment once from the repository root:
-
-```sh
-# Option A: uv
-uv venv .venv
-uv pip install --python .venv/bin/python -e "pipeline[test]"
-
-# Option B: venv + pip
-python3 -m venv .venv
-.venv/bin/python -m pip install -e "pipeline[test]"
-```
-
-An environment created by uv has no pip; use the uv command for that environment. Then run:
-
-```sh
-source .venv/bin/activate
-dbviz ingest 2025-11..2026-10
-dbviz stations
-dbviz build
-```
-
-Downloaded months are deleted after caching unless `--keep-raw` is supplied. To add another month, ingest it and rerun `stations` and `build`. `dbviz list` shows cached months. `--source local --local-dir <folder>` ingests local `data-YYYY-MM.parquet` files. Existing caches remain usable: only `station_type.parquet` and `station_hour.parquet` are read; extra historical tables are ignored. Refresh the browser after rebuilding.
+Setup removes newly downloaded source Parquet after caching unless `--keep-raw` is supplied; existing raw files are preserved. `dbviz list` shows cached months. `dbviz setup --source local --local-dir <folder> <months>` uses existing local `data-YYYY-MM.parquet` files without deleting them. Refresh the browser after rebuilding.
 
 Stations outside the configured coverage, or without coordinates, are omitted from the dashboard. See [data sources and metric notes](docs/data-sources.md) for schema, attribution and coverage details.
+
+Weekday files are written to `frontend/public/data/weekdays/` and can be large. Weekdays use the source's local timestamps; rows without a timestamp are excluded.
 
 ## Checks
 

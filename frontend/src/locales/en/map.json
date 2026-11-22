@@ -23,7 +23,7 @@
   "dataSource": "Data: Deutsche Bahn · CC BY 4.0 · piebro/deutsche-bahn-data",
   "backGermany": "Back to Germany",
   "hourlyDetails": "Hourly delay measurements · {{hour}}:00",
-  "fullPeriodDetails": "The following counts and rates describe the selected months and services.",
+  "fullPeriodDetails": "The following counts and rates describe the selected months, weekdays and services.",
   "hourlyApproximateNote": "Means are approximate because this export contains rounded service-type averages.",
   "mapGuidance": "Map guidance & data",
   "binTitle": "Bin {{id}} · {{side}} km",

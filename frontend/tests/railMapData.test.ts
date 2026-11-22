@@ -56,6 +56,9 @@ test('calendar-month selection combines available years and keeps at least one m
   const withFebruary = toggleCalendarMonth(months, january, 2)
   assert.deepEqual(withFebruary, ['2025-01', '2026-02', '2026-01'])
   assert.deepEqual(toggleCalendarMonth(months, withFebruary, 1), ['2026-02'])
+  const allManually = toggleCalendarMonth(months, withFebruary, 11)
+  assert.deepEqual(allManually, months)
+  assert.deepEqual(toggleCalendarMonth(months, allManually, 2), ['2026-02'])
 })
 
 test('selected months and services drive the same ranked stations and weighted hourly profile', () => {
@@ -68,14 +71,24 @@ test('selected months and services drive the same ranked stations and weighted h
     hourly: [{ stationId: 'a', trainType: 'ICE', hour: 12, delayObservations: 9, totalDelayMinutes: 0, averageDelayMinutes: 0 },
       { stationId: 'b', trainType: 'ICE', hour: 12, delayObservations: 30, totalDelayMinutes: 60, averageDelayMinutes: 2 }] }
   const combined = combineMonths([first, second], ['2026-01', '2026-03'])
-  const filtered = filterDashboard(combined, locations, ['ICE'], 1)
-  assert.deepEqual(filtered.locations.features.map((feature) => feature.properties.id), ['b'])
+  const filtered = filterDashboard(combined, locations, ['ICE'])
+  assert.deepEqual(filtered.locations.features.map((feature) => feature.properties.id), ['b', 'a'])
   const map = prepareRailMap(filtered.dataset, filtered.locations)
   assert.equal(map.stations[0].averageDelayMinutes, 2)
   assert.equal(summarizeHourly(buildStationHours(map.stations, filtered.dataset.hourly), [])[12].averageDelayMinutes, 2)
-  const all = filterDashboard(combined, locations, ['ICE'], 0)
-  assert.equal(prepareRailMap(all.dataset, all.locations).stations.find((item) => item.stationId === 'a')?.averageDelayMinutes, 2)
+  assert.equal(map.stations.find((item) => item.stationId === 'a')?.averageDelayMinutes, 2)
   assert.equal(formatMonths(combined.months!, 'en'), 'Jan 2026, Mar 2026')
+})
+
+test('dashboard keeps at most the 1000 busiest matching stations', () => {
+  const ids = Array.from({ length: 1001 }, (_, index) => `s${index}`)
+  const geo: StationLocations = { type: 'FeatureCollection', features: ids.map((id) => ({
+    type: 'Feature', geometry: { type: 'Point', coordinates: [10, 52] }, properties: { id, name: id },
+  })) }
+  const filtered = filterDashboard(dataset(ids.map((id, index) => row(id, index + 1, 0))), geo, ['ICE'])
+  assert.equal(filtered.locations.features.length, 1000)
+  assert.equal(filtered.locations.features[0].properties.id, 's1000')
+  assert.ok(!filtered.locations.features.some((feature) => feature.properties.id === 's0'))
 })
 
 test('current annual export maps stations once and conserves all measured stops', () => {

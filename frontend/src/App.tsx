@@ -23,12 +23,13 @@ function App() {
   const [scope, setScope] = useState<MapScope>({ stationIds: [], name: null })
   const [stationId, setStationId] = useState<string | null>(null)
   const [services, setServices] = useState<string[]>([])
-  const [stationLimit, setStationLimit] = useState(0)
   const [selectedMonths, setSelectedMonths] = useState<string[]>([])
   const [activeMonths, setActiveMonths] = useState<string[]>([])
+  const [selectedWeekday, setSelectedWeekday] = useState<number | null>(null)
+  const [activeWeekday, setActiveWeekday] = useState<number | null>(null)
   const [monthData, setMonthData] = useState<Dataset[] | null>(null)
   const [loadingMonths, setLoadingMonths] = useState(false)
-  const [monthError, setMonthError] = useState(false)
+  const [monthError, setMonthError] = useState<'month' | 'weekday' | null>(null)
   const monthCache = useRef(new Map<string, Dataset>())
   const monthRequest = useRef<AbortController | null>(null)
   useEffect(() => {
@@ -48,16 +49,18 @@ function App() {
     return () => controller.abort()
   }, [])
   useEffect(() => () => monthRequest.current?.abort(), [])
-  const changeMonths = async (months: string[]) => {
+  const changePeriod = async (months: string[], weekday: number | null) => {
     if (!loaded || !months.length) return
     const requested = [...months].sort()
     const allMonths = loaded.dataset.months ?? []
     monthRequest.current?.abort()
     setSelectedMonths(requested)
-    setMonthError(false)
-    if (requested.length === allMonths.length && allMonths.every((month) => requested.includes(month))) {
+    setSelectedWeekday(weekday)
+    setMonthError(null)
+    if (weekday === null && requested.length === allMonths.length && allMonths.every((month) => requested.includes(month))) {
       setMonthData(null)
       setActiveMonths(allMonths)
+      setActiveWeekday(null)
       setLoadingMonths(false)
       return
     }
@@ -66,35 +69,40 @@ function App() {
     setLoadingMonths(true)
     try {
       const datasets = await Promise.all(requested.map(async (month) => {
-        const cached = monthCache.current.get(month)
+        const key = weekday === null ? `months/${month}.json` : `weekdays/${month}/${weekday}.json`
+        const cached = weekday === null ? monthCache.current.get(key) : undefined
         if (cached) return cached
-        const response = await fetch(`${import.meta.env.BASE_URL}data/months/${month}.json`, { signal: controller.signal })
-        if (!response.ok) throw new Error('Monthly data unavailable')
+        const response = await fetch(`${import.meta.env.BASE_URL}data/${key}`, { signal: controller.signal })
+        if (!response.ok) throw new Error('Filtered data unavailable')
         const data = await response.json() as Dataset
-        monthCache.current.set(month, data)
+        if (weekday === null) monthCache.current.set(key, data)
         return data
       }))
       if (!controller.signal.aborted) {
         setMonthData(datasets)
         setActiveMonths(requested)
+        setActiveWeekday(weekday)
         setLoadingMonths(false)
       }
     } catch {
       if (!controller.signal.aborted) {
         setLoadingMonths(false)
-        setMonthError(true)
+        setMonthError(weekday === null ? 'month' : 'weekday')
         setSelectedMonths(activeMonths)
+        setSelectedWeekday(activeWeekday)
       }
     }
   }
   const filtered = useMemo(() => {
     if (!loaded) return null
     const data = monthData ? combineMonths(monthData, activeMonths) : loaded.dataset
-    return filterDashboard(data, loaded.locations, services, stationLimit)
-  }, [loaded, monthData, activeMonths, services, stationLimit])
+    return filterDashboard(data, loaded.locations, services)
+  }, [loaded, monthData, activeMonths, services])
+  const weekdayLabel = activeWeekday === null ? '' : new Intl.DateTimeFormat(i18n.resolvedLanguage ?? 'en',
+    { weekday: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2024, 0, activeWeekday)))
   const model = useMemo(() => filtered ? { ...prepareRailMap(filtered.dataset, filtered.locations),
     source: filtered.dataset.source, period: filtered.dataset.period,
-    periodLabel: formatMonths(filtered.dataset.months ?? [], i18n.resolvedLanguage ?? 'en') } : null, [filtered, i18n.resolvedLanguage])
+    periodLabel: [formatMonths(filtered.dataset.months ?? [], i18n.resolvedLanguage ?? 'en'), weekdayLabel].filter(Boolean).join(' · ') } : null, [filtered, i18n.resolvedLanguage, weekdayLabel])
   const stationHours = useMemo(() => model && filtered ? buildStationHours(model.stations, filtered.dataset.hourly) : [], [model, filtered])
   const hours = useMemo(() => summarizeHourly(stationHours, scope.stationIds), [stationHours, scope.stationIds])
   const clockData = useMemo(() => filtered ? { period: filtered.dataset.period, months: filtered.dataset.months,
@@ -105,7 +113,7 @@ function App() {
   const chooseHour = useCallback((next: number) => { setPlaying(false); setHour(next) }, [])
   const togglePlaying = useCallback(() => setPlaying((value) => !value), [])
   const playback = { playing, speed, onPlaying: togglePlaying, onSpeed: setSpeed }
-  const scopeLabel = scope.name ? `${scope.name} · ${chartText('mappedCount', { count: scope.stationIds.length })}` : chartText('mappedNetwork', { count: model?.stations.length ?? 0 })
+  const scopeLabel = [scope.name ? `${scope.name} · ${chartText('mappedCount', { count: scope.stationIds.length })}` : chartText('mappedNetwork', { count: model?.stations.length ?? 0 }), weekdayLabel].filter(Boolean).join(' · ')
   useEffect(() => {
     if (!playing) return
     const timer = window.setInterval(() => setHour((value) => (value + 1) % 24), 1000 / speed)
@@ -150,12 +158,12 @@ function App() {
           <div className="dashboard-filter-row">
             <DashboardFilters stations={model.stations} stationId={stationId} onStation={setStationId}
               services={serviceOptions} selectedServices={services} onServices={setServices}
-              stationLimit={stationLimit} onStationLimit={setStationLimit}
-              months={loaded?.dataset.months ?? []} selectedMonths={selectedMonths} onMonths={(months) => void changeMonths(months)}
+              months={loaded?.dataset.months ?? []} selectedMonths={selectedMonths} onMonths={(months) => void changePeriod(months, selectedWeekday)}
+              weekday={selectedWeekday} onWeekday={(weekday) => void changePeriod(selectedMonths, weekday)}
               loadingMonths={loadingMonths} />
             <PlaybackControls {...playback} />
           </div>
-          {monthError && <p role="alert">{chartText('monthLoadError')}</p>}
+          {monthError && <p role="alert">{chartText(monthError === 'weekday' ? 'weekdayLoadError' : 'monthLoadError')}</p>}
         </section>
         <section className="station-map-dashboard" aria-label={chartText('linkedPlayback')}>
           <section className="linked-map-view" aria-label={t('common:title')}>
